@@ -8,6 +8,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {DataService} from "./services/data.service";
 import {HttpClientModule} from "@angular/common/http";
 import {AuthGuard} from "./guards/auth.guard";
+import {TokenInterceptorModule} from "./modules/token-interceptor/token-interceptor.module";
 
 @NgModule({
   declarations: [
@@ -19,11 +20,12 @@ import {AuthGuard} from "./guards/auth.guard";
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TokenInterceptorModule
   ],
   providers: [
     DataService,
-    AuthGuard
+    AuthGuard,
   ],
   bootstrap: [AppComponent]
 })
