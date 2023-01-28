@@ -7,6 +7,7 @@ import { LoginComponent} from "./components/login/login.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {DataService} from "./services/data.service";
 import {HttpClientModule} from "@angular/common/http";
+import {AuthGuard} from "./guards/auth.guard";
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import {HttpClientModule} from "@angular/common/http";
   ],
   providers: [
     DataService,
+    AuthGuard
   ],
   bootstrap: [AppComponent]
 })
