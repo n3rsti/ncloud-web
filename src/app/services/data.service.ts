@@ -19,6 +19,10 @@ export class DataService {
     )
   }
 
+  refreshToken(){
+    return this.http.get(`${Config.Host}/api/token/refresh`, {observe: 'response'});
+  }
+
 
 }
 
