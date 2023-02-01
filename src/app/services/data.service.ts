@@ -27,15 +27,17 @@ export class DataService {
 
   getDirectory(id: string){
     return this.http.get(`${Config.Host}/api/directories/${id}`).pipe(
-      map((data: any) => {
+      map((data: any) => (data || Array()).map((directory: any) => {
         return new DirectoryBuilder()
-          .setId(data.id)
-          .setName(data.name)
-          .setParentDirectory(data.parent_directory)
-          .setUser(data.user)
+          .setId(directory.id)
+          .setName(directory.name)
+          .setParentDirectory(directory.parent_directory)
+          .setUser(directory.user)
           .build();
-      })
+
+      }))
     )
+
   }
 
 
