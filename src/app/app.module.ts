@@ -9,11 +9,13 @@ import {DataService} from "./services/data.service";
 import {HttpClientModule} from "@angular/common/http";
 import {AuthGuard} from "./guards/auth.guard";
 import {TokenInterceptorModule} from "./modules/token-interceptor/token-interceptor.module";
+import { MainComponent } from './components/main/main.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent
+    LoginComponent,
+    MainComponent
   ],
   imports: [
     BrowserModule,
