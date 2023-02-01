@@ -29,10 +29,20 @@ export class DataService {
     return this.http.get(`${Config.Host}/api/directories/${id}`).pipe(
       map((data: any) => (data || Array()).map((directory: any) => {
         return new DirectoryBuilder()
-          .setId(directory.id)
+          .setId(directory._id)
           .setName(directory.name)
           .setParentDirectory(directory.parent_directory)
           .setUser(directory.user)
+          .setDirectories(
+            directory.directories.map((dir: any) => {
+              return new DirectoryBuilder()
+                .setId(dir._id)
+                .setName(dir.name)
+                .setParentDirectory(dir.parent_directory)
+                .setUser(dir.user)
+                .build();
+            })
+          )
           .build();
 
       }))
