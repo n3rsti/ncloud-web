@@ -1,4 +1,4 @@
-import {ModuleWithProviders, NgModule} from '@angular/core';
+import {Injectable, ModuleWithProviders, NgModule} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   HTTP_INTERCEPTORS,
@@ -17,13 +17,15 @@ import {Config} from "../../config";
 const JWT_REFRESH_ENDPOINT = '/api/token/refresh'
 
 const WHITELISTED_URLS = [
-  '/api/logout',
+  '/api/login',
   '/logout',
   JWT_REFRESH_ENDPOINT
 ]
 
 
-
+@Injectable({
+  providedIn: 'root'
+})
 export class TokenInterceptor implements HttpInterceptor {
   returnUrl = '';
 
@@ -56,15 +58,46 @@ export class TokenInterceptor implements HttpInterceptor {
         }
       })
 
-      next.handle(reqWithToken).subscribe((data) => {
-        console.log(data);
-        if(data instanceof HttpResponse){
-          if(data.status === 200){
-            console.log(data.body)
-            localStorage.setItem("access_token", data.body["access_token"]);
+      return next.handle(reqWithToken).pipe(
+        retry(1),
+        catchError((error: HttpErrorResponse) => {
+          // Check for UNAUTHORIZED response status
+          if(error.status === 401){
+
+            // Attempt to refresh token
+            return this.data.refreshToken().pipe(
+              retry(1),
+              catchError((error: HttpErrorResponse) => {
+                if (error.status === 401) {
+                  return this.router.navigate(['/login'], {
+                    queryParams: {
+                      return: this.returnUrl
+                    }
+                  });
+                }
+                return ""
+              }),
+              tap((event: any) => {
+                if (event instanceof HttpResponse) {
+                  if (event.status === 200){
+                    localStorage.setItem("access_token", event.body?.access_token);
+                  }
+                }
+              })
+            );
+
           }
+          return ""
+        }),
+      );
+
+    }
+    else {
+      this.router.navigate(['/login'], {
+        queryParams: {
+          return: this.returnUrl
         }
-      })
+      });
     }
 
 
