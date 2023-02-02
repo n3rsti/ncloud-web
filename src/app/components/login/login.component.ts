@@ -35,9 +35,9 @@ export class LoginComponent {
     this.data.login(this.username, this.password).subscribe({
       next: (data: any) => {
         if (data["access_token"] != "" && data["refresh_token"] != "") {
-          console.log(data);
           localStorage.setItem("access_token", data["access_token"]);
           localStorage.setItem("refresh_token", data["refresh_token"]);
+          localStorage.setItem("username", data["username"]);
 
           this.router.navigate([this.returnUrl]);
         }

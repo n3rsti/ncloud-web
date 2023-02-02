@@ -1,15 +1,18 @@
 <div class="navbar bg-base-100">
-  <div class="flex-1">
-    <a class="btn btn-ghost normal-case text-xl">daisyUI</a>
+  <div>
+    <a class="btn btn-ghost normal-case text-xl text-indigo-700">Ncloud</a>
   </div>
-  <div class="flex-none gap-2">
-    <div class="form-control">
+  <div>
+    <div class="form-control ml-10">
       <input type="text" placeholder="Search" class="input input-bordered" />
     </div>
+  </div>
+  <div class="flex-none gap-2 ml-auto mr-5">
+
     <div class="dropdown dropdown-end">
-      <label tabindex="0" class="btn btn-ghost btn-circle avatar">
-        <div class="w-10 rounded-full">
-          <img src="/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+      <label tabindex="0" class="btn btn-ghost btn-circle">
+        <div class="w-10 rounded-full flex items-center justify-center">
+          <p>{{ username[0] }}</p>
         </div>
       </label>
       <ul tabindex="0" class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52">
