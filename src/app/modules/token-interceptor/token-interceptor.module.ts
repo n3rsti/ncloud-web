@@ -1,14 +1,14 @@
 import {Injectable, ModuleWithProviders, NgModule} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule} from '@angular/common';
 import {
   HTTP_INTERCEPTORS,
   HttpErrorResponse,
   HttpEvent,
   HttpHandler,
   HttpInterceptor,
-  HttpRequest, HttpResponse
+  HttpRequest,
 } from "@angular/common/http";
-import {catchError, Observable, retry, take, tap, throwError} from "rxjs";
+import {catchError, Observable, switchMap} from "rxjs";
 import {Router} from "@angular/router";
 import {DataService} from "../../services/data.service";
 import {Config} from "../../config";
@@ -38,8 +38,8 @@ export class TokenInterceptor implements HttpInterceptor {
     const token: string = localStorage.getItem('access_token') || '';
     const refresh_token: string = localStorage.getItem('refresh_token') || '';
 
-    if(WHITELISTED_URLS.includes(req.url.replace(Config.Host, ''))){
-      if(req.url.replace(Config.Host, '') == JWT_REFRESH_ENDPOINT){
+    if (WHITELISTED_URLS.includes(req.url.replace(Config.Host, ''))) {
+      if (req.url.replace(Config.Host, '') == JWT_REFRESH_ENDPOINT) {
         const reqWithToken = req.clone({
           setHeaders: {
             Authorization: `Bearer ${refresh_token}`
@@ -51,48 +51,23 @@ export class TokenInterceptor implements HttpInterceptor {
       return next.handle(req);
     }
 
-    if(token != "" && token != null){
-      const reqWithToken = req.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`
+    if (token != "" && token != null) {
+      const reqWithToken = this.addTokenHeader(req, token);
+
+      return next.handle(this.addTokenHeader(req, token)).pipe(catchError(error => {
+        if (error instanceof HttpErrorResponse) {
+          return this.handle401Error(reqWithToken, next);
         }
-      })
-
-      return next.handle(reqWithToken).pipe(
-        retry(1),
-        catchError((error: HttpErrorResponse) => {
-          // Check for UNAUTHORIZED response status
-          if(error.status === 401){
-
-            // Attempt to refresh token
-            return this.data.refreshToken().pipe(
-              retry(1),
-              catchError((error: HttpErrorResponse) => {
-                if (error.status === 401) {
-                  return this.router.navigate(['/login'], {
-                    queryParams: {
-                      return: this.returnUrl
-                    }
-                  });
-                }
-                return ""
-              }),
-              tap((event: any) => {
-                if (event instanceof HttpResponse) {
-                  if (event.status === 200){
-                    localStorage.setItem("access_token", event.body?.access_token);
-                  }
-                }
-              })
-            );
-
+        this.router.navigate(['/login'], {
+          queryParams: {
+            return: this.returnUrl
           }
-          return ""
-        }),
-      );
+        })
+        throw error;
+      }))
 
-    }
-    else {
+
+    } else {
       this.router.navigate(['/login'], {
         queryParams: {
           return: this.returnUrl
@@ -100,9 +75,33 @@ export class TokenInterceptor implements HttpInterceptor {
       });
     }
 
-
     return next.handle(req);
 
+  }
+
+  private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
+    const refreshToken = localStorage.getItem("refresh_token");
+
+    if (refreshToken) {
+      return this.data.refreshToken().pipe(
+        switchMap((token: any) => {
+          console.log("tu jest token")
+          console.log(token.body.access_token)
+          localStorage.setItem("access_token", token.body.access_token);
+
+          return next.handle(this.addTokenHeader(request, token.body.access_token));
+        }),
+      )
+    }
+    throw "";
+  }
+
+  private addTokenHeader(request: HttpRequest<any>, token: string) {
+    return request.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`
+      }
+    });
   }
 
 }
@@ -122,8 +121,8 @@ export class TokenInterceptor implements HttpInterceptor {
     }
   ]
 })
-export class TokenInterceptorModule{
-  static forRoot(): ModuleWithProviders<TokenInterceptorModule>{
+export class TokenInterceptorModule {
+  static forRoot(): ModuleWithProviders<TokenInterceptorModule> {
     return {
       ngModule: TokenInterceptorModule,
       providers: [
