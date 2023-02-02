@@ -10,12 +10,16 @@ import {HttpClientModule} from "@angular/common/http";
 import {AuthGuard} from "./guards/auth.guard";
 import {TokenInterceptorModule} from "./modules/token-interceptor/token-interceptor.module";
 import { MainComponent } from './components/main/main.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { MainWrapperComponent } from './components/main-wrapper/main-wrapper.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    MainComponent
+    MainComponent,
+    NavbarComponent,
+    MainWrapperComponent
   ],
   imports: [
     BrowserModule,
