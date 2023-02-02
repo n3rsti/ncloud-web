@@ -1,4 +1,4 @@
-class FileModel {
+export class FileModel {
   private _id: string;
   private _name: string;
   private _parent_directory: string;
@@ -46,7 +46,7 @@ class FileModel {
   }
 }
 
-class FileBuilder extends FileModel {
+export class FileBuilder extends FileModel {
 
   constructor() {
     super('', '', '', '');
