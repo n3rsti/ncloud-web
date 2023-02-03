@@ -1,15 +1,22 @@
-<main class="w-full min-h-screen flex p-3">
-  <a *ngFor="let dir of directory.directories"
-       class="p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800
-       dark:border-gray-700 dark:hover:bg-gray-700 flex flex-col justify-center items-center h-24 w-40 cursor-pointer mr-3">
-    <i class="fa-solid fa-folder text-indigo-700 text-4xl mb-1"></i>
-    <p class="text-sm text-gray-600 font-medium">{{ dir.name }}</p>
-  </a>
-  <a *ngFor="let file of directory.files"
-     class="p-2 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800
-       dark:border-gray-700 dark:hover:bg-gray-700 flex flex-col justify-center items-center h-24 w-40 cursor-pointer">
-    <i class="fa-solid fa-file text-indigo-700 text-4xl mb-1"></i>
-    <img [src]="file.src" alt="">
-    <p [title]="file.name" class="text-sm text-gray-600 font-medium w-full whitespace-nowrap overflow-hidden overflow-ellipsis">{{ file.name }}</p>
-  </a>
+<main class="w-full min-h-screen p-3">
+  <h2 class="mb-2 font-semibold">Folders</h2>
+  <div>
+    <a *ngFor="let dir of directory.directories"
+       class="p-6 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 dark:bg-gray-800
+       dark:border-gray-700 dark:hover:bg-gray-700 flex flex-col justify-center items-center h-24 w-40 cursor-default mr-3">
+      <i class="fa-solid fa-folder text-indigo-700 text-4xl mb-1"></i>
+      <p class="text-sm text-gray-600 font-medium">{{ dir.name }}</p>
+    </a>
+  </div>
+  <h2 class="mt-5 mb-2 font-semibold">Files</h2>
+  <div class="flex">
+    <a *ngFor="let file of directory.files"
+       class="pb-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 dark:bg-gray-800
+       dark:border-gray-700 dark:hover:bg-gray-700 flex flex-col justify-center items-center w-52 mr-3">
+      <img [src]="file.src" alt="" *ngIf="file.src !== ''" class="w-full h-32 object-cover">
+      <i class="fa-solid fa-file text-indigo-700 text-4xl mb-1" *ngIf="file.src === ''"></i>
+      <p [title]="file.name"
+         class="text-sm text-gray-600 font-medium w-full whitespace-nowrap overflow-hidden overflow-ellipsis text-center mt-2 px-3 cursor-default">{{ file.name }}</p>
+    </a>
+  </div>
 </main>
