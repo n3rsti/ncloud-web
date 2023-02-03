@@ -1,8 +1,10 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Config} from "../config";
 import {map} from "rxjs";
 import {DirectoryBuilder} from "../models/directory.model";
+import {FileBuilder} from "../models/file.model";
+
 
 @Injectable({
   providedIn: 'root'
@@ -43,11 +45,26 @@ export class DataService {
                 .build();
             })
           )
+          .setFiles(
+            directory.files.map((file: any) => {
+              return new FileBuilder()
+                .setId(file._id)
+                .setName(file.name)
+                .setParentDirectory(file.parent_directory)
+                .setUser(file.user)
+                .setType(file.type)
+                .build()
+            })
+          )
           .build();
 
       }))
     )
 
+  }
+
+  getFile(id: string,){
+    return this.http.get(Config.Host + `/files/${id}`, {responseType: 'blob', observe: 'body'});
   }
 
 

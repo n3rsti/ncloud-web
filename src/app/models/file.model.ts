@@ -1,17 +1,21 @@
+import {SafeUrl} from "@angular/platform-browser";
+
 export class FileModel {
   private _id: string;
   private _name: string;
   private _parent_directory: string;
   private _user: string;
+  private _type: string;
+  private _src: SafeUrl = '';
 
 
-  constructor(id: string, name: string, parent_directory: string, user: string) {
+  constructor(id: string, name: string, parent_directory: string, user: string, type: string) {
     this._id = id;
     this._name = name;
     this._parent_directory = parent_directory;
     this._user = user;
+    this._type = type;
   }
-
 
   get id(): string {
     return this._id;
@@ -44,17 +48,35 @@ export class FileModel {
   set user(value: string) {
     this._user = value;
   }
+
+  setId(id: string){
+    this.id = id;
+    return this;
+  }
+
+
+  get type(): string {
+    return this._type;
+  }
+
+  set type(value: string) {
+    this._type = value;
+  }
+
+
+  get src(): SafeUrl {
+    return this._src;
+  }
+
+  set src(value: SafeUrl) {
+    this._src = value;
+  }
 }
 
 export class FileBuilder extends FileModel {
 
   constructor() {
-    super('', '', '', '');
-  }
-
-  setId(id: string){
-    this.id = id;
-    return this;
+    super('', '', '', '', '');
   }
 
   setName(name: string){
@@ -72,8 +94,13 @@ export class FileBuilder extends FileModel {
     return this;
   }
 
+  setType(type: string){
+    this.type = type;
+    return this;
+  }
+
   build(){
-    return new FileModel(this.id, this.name, this.parent_directory, this.user);
+    return new FileModel(this.id, this.name, this.parent_directory, this.user, this.type);
   }
 
 }
