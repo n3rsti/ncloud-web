@@ -56,7 +56,12 @@ export class TokenInterceptor implements HttpInterceptor {
 
       return next.handle(this.addTokenHeader(req, token)).pipe(catchError(error => {
         if (error instanceof HttpErrorResponse) {
-          return this.handle401Error(reqWithToken, next);
+          if(error.status === 401){
+            return this.handle401Error(reqWithToken, next);
+          }
+          else if(error.status === 400){
+            throw error;
+          }
         }
         this.router.navigate(['/login'], {
           queryParams: {
