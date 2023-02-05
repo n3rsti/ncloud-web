@@ -67,6 +67,20 @@ export class DataService {
     return this.http.get(Config.Host + `/files/${id}`, {responseType: 'blob', observe: 'body'});
   }
 
+  createDirectory(name: string, parentDirectory: string){
+    return this.http.post(Config.Host + '/api/directories', {
+      'name': name,
+      'parent_directory': parentDirectory
+    }).pipe(
+      map((data: any) => (data || Array().map((directory: any) => {
+        return new DirectoryBuilder()
+          .setId(directory.id)
+          .setName(directory.name)
+          .build()
+      })))
+    )
+  }
+
 
 }
 
