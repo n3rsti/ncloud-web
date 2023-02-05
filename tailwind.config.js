@@ -7,10 +7,19 @@ module.exports = {
   },
   darkMode: 'class', // or 'media' or 'class'
   theme: {
-    extend: {},
+    extend: {
+      spacing: {
+        '1/10': '10%',
+        '1/8': '12.5%',
+        '1/7': 'calc(100% / 7)'
+      }
+    },
   },
   variants: {
     extend: {},
   },
-  plugins: [require('@tailwindcss/forms'),require('@tailwindcss/typography'), require('daisyui')],
+  plugins: [require('@tailwindcss/forms'),require('@tailwindcss/typography'), require('daisyui'), require('flowbite/plugin')],
+  content: [
+    "./node_modules/flowbite/**/*.js"
+  ]
 };
