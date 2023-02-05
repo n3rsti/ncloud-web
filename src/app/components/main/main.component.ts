@@ -3,6 +3,7 @@ import {DataService} from "../../services/data.service";
 import {Directory, DirectoryBuilder} from "../../models/directory.model";
 import {DomSanitizer} from "@angular/platform-browser";
 import {FormControl} from "@angular/forms";
+import {ActivatedRoute} from "@angular/router";
 
 
 const FILES_TO_DOWNLOAD = [
@@ -19,17 +20,30 @@ export class MainComponent {
   newDirectoryName = new FormControl('');
   modalToggle = new FormControl('');
   directory: Directory = new DirectoryBuilder().build();
+  directoryId: string = '';
 
-  constructor(private data: DataService, public sanitizer: DomSanitizer) {
+  constructor(private data: DataService, public sanitizer: DomSanitizer, private route: ActivatedRoute) {
   }
 
-  ngOnInit(){
-    this.data.getDirectory("").subscribe({
+  ngOnInit() {
+    this.route.params.subscribe(params => {
+      if (params["id"]) {
+        this.directoryId = params["id"];
+      }
+
+      this.getDirectory();
+    })
+
+
+  }
+
+  getDirectory() {
+    this.data.getDirectory(this.directoryId).subscribe({
       next: (data: Directory[]) => {
         this.directory = data[0];
 
         this.directory.files.forEach(file => {
-          if(FILES_TO_DOWNLOAD.includes(file.type)){
+          if (FILES_TO_DOWNLOAD.includes(file.type)) {
             this.data.getFile(file.id).subscribe({
               next: (data) => {
                 // Convert blob to URL
@@ -39,24 +53,15 @@ export class MainComponent {
             })
           }
         })
-
-
-
-
       }
     })
-
-
-
   }
 
-  newDirectory(){
-
-
-    if(this.newDirectoryName.value !== null){
+  newDirectory() {
+    if (this.newDirectoryName.value !== null) {
       this.data.createDirectory(this.newDirectoryName.value, this.directory.id).subscribe({
         next: (data: Directory) => {
-          if(data){
+          if (data) {
             this.directory.directories.push(data);
 
             // Close modal
@@ -65,6 +70,5 @@ export class MainComponent {
         }
       })
     }
-
   }
 }

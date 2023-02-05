@@ -1,9 +1,9 @@
 <main class="w-full p-3">
   <h2 class="mb-2 font-semibold">Folders</h2>
   <div class="grid grid-cols-9 max-2xl:grid-cols-8 max-xl:grid-cols-5 max-lg:grid-cols-5 max-md:grid-cols-4 max-sm:grid-cols-2 gap-2">
-    <a *ngFor="let dir of directory.directories"
+    <a *ngFor="let dir of directory.directories" [routerLink]="['/' + dir.id]"
        class="bg-white border border-gray-200 rounded-lg hover:bg-gray-100 dark:bg-gray-800
-       dark:border-gray-700 dark:hover:bg-gray-700 flex flex-col justify-center items-center h-24 w-full cursor-default mr-3">
+       dark:border-gray-700 dark:hover:bg-gray-700 flex flex-col justify-center items-center h-24 w-full cursor-pointer mr-3">
       <i class="fa-solid fa-folder text-indigo-700 text-4xl mb-1"></i>
       <p class="text-sm text-gray-600 font-medium">{{ dir.name }}</p>
     </a>
