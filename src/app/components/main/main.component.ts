@@ -17,6 +17,7 @@ const FILES_TO_DOWNLOAD = [
 })
 export class MainComponent {
   newDirectoryName = new FormControl('');
+  modalToggle = new FormControl('');
   directory: Directory = new DirectoryBuilder().build();
 
   constructor(private data: DataService, public sanitizer: DomSanitizer) {
@@ -50,6 +51,20 @@ export class MainComponent {
   }
 
   newDirectory(){
-    console.log(this.newDirectoryName.value);
+
+
+    if(this.newDirectoryName.value !== null){
+      this.data.createDirectory(this.newDirectoryName.value, this.directory.id).subscribe({
+        next: (data: Directory) => {
+          if(data){
+            this.directory.directories.push(data);
+
+            // Close modal
+            this.modalToggle.setValue('');
+          }
+        }
+      })
+    }
+
   }
 }
