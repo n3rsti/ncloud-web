@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {DataService} from "../../services/data.service";
 import {Directory, DirectoryBuilder} from "../../models/directory.model";
 import {DomSanitizer} from "@angular/platform-browser";
+import {FormControl} from "@angular/forms";
 
 
 const FILES_TO_DOWNLOAD = [
@@ -15,7 +16,7 @@ const FILES_TO_DOWNLOAD = [
   styleUrls: ['./main.component.scss']
 })
 export class MainComponent {
-
+  newDirectoryName = new FormControl('');
   directory: Directory = new DirectoryBuilder().build();
 
   constructor(private data: DataService, public sanitizer: DomSanitizer) {
@@ -46,5 +47,9 @@ export class MainComponent {
 
 
 
+  }
+
+  newDirectory(){
+    console.log(this.newDirectoryName.value);
   }
 }
