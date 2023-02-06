@@ -17,9 +17,7 @@ export class FileCarouselComponent {
       this.changeCounter(-1);
     }
     else if(event.key === 'Escape'){
-      this.opened = false;
-      this.width = 0;
-      this.height = 0;
+      this.closeCarousel();
     }
   }
 
@@ -76,5 +74,11 @@ export class FileCarouselComponent {
       this.height = 0;
     }
 
+  }
+
+  closeCarousel(){
+    this.opened = false;
+    this.width = 0;
+    this.height = 0;
   }
 }
