@@ -81,6 +81,14 @@ export class DataService {
     )
   }
 
+  uploadFiles(files: FileList, directoryId: string){
+    let formData = new FormData();
+    formData.append("file", files[0]);
+    formData.append("directory", directoryId);
+
+    return this.http.post(Config.Host + '/api/upload', formData, {observe: "response"});
+  }
+
 
 }
 

@@ -62,6 +62,9 @@ export class TokenInterceptor implements HttpInterceptor {
           else if(error.status === 400){
             throw error;
           }
+          else if(error.status === 200){
+            throw error;
+          }
         }
         this.router.navigate(['/login'], {
           queryParams: {

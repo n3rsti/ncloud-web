@@ -9,7 +9,8 @@ import {Subject} from "rxjs";
 
 const FILES_TO_DOWNLOAD = [
   'image/jpeg',
-  'image/png'
+  'image/png',
+  'image/bmp'
 ]
 
 @Component({
@@ -78,5 +79,20 @@ export class MainComponent {
         }
       })
     }
+  }
+  fileInputDrop(event: any){
+    event.preventDefault();
+    this.data.uploadFiles(event.dataTransfer.files, this.directory.id).subscribe({
+      next: (response) => {
+        console.log(response);
+      },
+      error: (err) => {
+        console.log(err.status);
+      }
+    });
+
+  }
+  preventEvent(event: any){
+    event.preventDefault();
   }
 }

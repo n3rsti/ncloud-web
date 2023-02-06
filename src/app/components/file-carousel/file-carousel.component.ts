@@ -21,6 +21,12 @@ export class FileCarouselComponent {
     }
   }
 
+  IMAGE_FORMATS = [
+    'image/jpeg',
+    'image/png',
+    'image/bmp'
+  ]
+
 
   @Input() files: FileModel[] = [];
   @Input() fileCounter = 0;

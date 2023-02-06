@@ -28,7 +28,7 @@
         </span>
   </button>
 
-  <img #img [src]="files.length > 0 ? files[fileCounter].src : ''" (load)="onImgLoad()" [width]="width"
+  <img #img *ngIf="IMAGE_FORMATS.includes(files[fileCounter].type)" [src]="files.length > 0 ? files[fileCounter].src : ''" (load)="onImgLoad()" [width]="width"
        [height]="height"
        [alt]="files[fileCounter].name + ' image'" class="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2">
 
