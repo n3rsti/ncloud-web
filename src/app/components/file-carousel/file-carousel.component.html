@@ -1,4 +1,4 @@
-<section class="fixed top-0 left-0 w-full h-screen bg-black bg-opacity-50">
+<section class="fixed top-0 left-0 w-full h-screen bg-black bg-opacity-50" *ngIf="opened">
   <button *ngIf="fileCounter > 0" (click)="changeCounter(-1)" type="button"
           class="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
           data-carousel-prev>

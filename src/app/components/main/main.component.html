@@ -16,7 +16,7 @@
   </div>
   <h2 class="mt-5 mb-2 font-semibold">Files</h2>
   <div class="grid grid-cols-8 max-2xl:grid-cols-6 max-xl:grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-3 max-sm:grid-cols-2 gap-2">
-    <button *ngFor="let file of directory.files; let i = index" (click)="openedFileCarousel = true; fileCarouselCounter = i"
+    <button *ngFor="let file of directory.files; let i = index" (click)="openFileCarousel(); fileCarouselCounter = i"
        class="pb-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 dark:bg-gray-800
        dark:border-gray-700 dark:hover:bg-gray-700 flex flex-col justify-center items-center w-full">
       <img [src]="file.src" alt="" *ngIf="file.src !== ''" class="w-full h-32 object-cover">
@@ -42,4 +42,4 @@
     </form>
   </label>
 </label>
-<app-file-carousel *ngIf="directory.files.length > 0 && openedFileCarousel" [files]="directory.files" [fileCounter]="fileCarouselCounter"></app-file-carousel>
+<app-file-carousel *ngIf="directory.files.length > 0" [files]="directory.files" [fileCounter]="fileCarouselCounter" [openedSubject]="fileCarouselSubject"></app-file-carousel>

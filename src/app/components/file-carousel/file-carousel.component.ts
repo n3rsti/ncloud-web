@@ -1,5 +1,6 @@
 import {Component, ElementRef, HostListener, Input, ViewChild} from '@angular/core';
 import {FileModel} from "../../models/file.model";
+import {Subject} from "rxjs";
 
 @Component({
   selector: 'app-file-carousel',
@@ -15,17 +16,33 @@ export class FileCarouselComponent {
     else if(event.key === 'ArrowLeft'){
       this.changeCounter(-1);
     }
+    else if(event.key === 'Escape'){
+      this.opened = false;
+      this.width = 0;
+      this.height = 0;
+    }
   }
 
 
   @Input() files: FileModel[] = [];
   @Input() fileCounter = 0;
+  @Input() openedSubject: Subject<any> = new Subject<any>();
+  opened = false;
   width = 0;
   height = 0;
   @ViewChild('img', { static: false }) pic: ElementRef | undefined;
 
 
+  ngOnInit(){
+    this.openedSubject.subscribe({
+      next: (data) => {
+        this.opened = true;
+      }
+    })
+  }
+
   onImgLoad() {
+
     if(this.pic != undefined){
       const imgWidth = (this.pic.nativeElement as HTMLImageElement).naturalWidth;
       const imgHeight = (this.pic.nativeElement as HTMLImageElement).naturalHeight;

@@ -4,6 +4,7 @@ import {Directory, DirectoryBuilder} from "../../models/directory.model";
 import {DomSanitizer} from "@angular/platform-browser";
 import {FormControl} from "@angular/forms";
 import {ActivatedRoute} from "@angular/router";
+import {Subject} from "rxjs";
 
 
 const FILES_TO_DOWNLOAD = [
@@ -17,19 +18,13 @@ const FILES_TO_DOWNLOAD = [
   styleUrls: ['./main.component.scss']
 })
 export class MainComponent {
-  @HostListener('window:keydown', ['$event'])
-  keyEvent(event: KeyboardEvent) {
-    if(event.key === 'Escape'){
-      this.openedFileCarousel = false;
-    }
-  }
 
   newDirectoryName = new FormControl('');
   modalToggle = new FormControl('');
   directory: Directory = new DirectoryBuilder().build();
   directoryId: string = '';
-  openedFileCarousel: boolean = false;
   fileCarouselCounter = 0;
+  fileCarouselSubject: Subject<any> = new Subject();
 
   constructor(private data: DataService, public sanitizer: DomSanitizer, private route: ActivatedRoute) {
   }
@@ -44,6 +39,10 @@ export class MainComponent {
     })
 
 
+  }
+
+  openFileCarousel(){
+    this.fileCarouselSubject.next(true);
   }
 
   getDirectory() {
