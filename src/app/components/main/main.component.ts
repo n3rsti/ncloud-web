@@ -27,6 +27,7 @@ export class MainComponent {
   directoryId: string = '';
   fileCarouselCounter = 0;
   fileCarouselSubject: Subject<any> = new Subject();
+  fileUploadPanelOpened = false;
 
   constructor(private data: DataService, public sanitizer: DomSanitizer, private route: ActivatedRoute) {
   }
@@ -43,7 +44,7 @@ export class MainComponent {
 
   }
 
-  openFileCarousel(){
+  openFileCarousel() {
     this.fileCarouselSubject.next(true);
   }
 
@@ -81,15 +82,33 @@ export class MainComponent {
       })
     }
   }
-  fileInputDrop(event: any){
-    const files: FileList = event.dataTransfer.files;
+
+  fileInputDrop(event: any) {
     event.preventDefault();
-    this.data.uploadFiles(event.dataTransfer.files, this.directory.id).subscribe({
+
+    const files: FileList = event.dataTransfer.files;
+    this.uploadFiles(files);
+  }
+
+  preventEvent(event: any) {
+    event.preventDefault();
+  }
+
+  fileUploadChange(event: any) {
+    const files = event.target.files;
+    if (files.length > 0) {
+      this.uploadFiles(files);
+      event.target.form.reset();
+    }
+  }
+
+  uploadFiles(files: FileList) {
+    this.data.uploadFiles(files, this.directory.id).subscribe({
       next: (data: FileModel[]) => {
         // Combine data from API Response (id, name) with data from HTML Input (src, type)
         // to create FileModel object and push to already existing file list
 
-        for(let i = 0; i < files.length; i++){
+        for (let i = 0; i < files.length; i++) {
           let imgSrc: any = '';
           const reader = new FileReader();
 
@@ -110,9 +129,5 @@ export class MainComponent {
         console.log(err);
       }
     });
-
-  }
-  preventEvent(event: any){
-    event.preventDefault();
   }
 }
