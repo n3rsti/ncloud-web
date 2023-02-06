@@ -12,6 +12,7 @@ import {TokenInterceptorModule} from "./modules/token-interceptor/token-intercep
 import { MainComponent } from './components/main/main.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { MainWrapperComponent } from './components/main-wrapper/main-wrapper.component';
+import { FileCarouselComponent } from './components/file-carousel/file-carousel.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { MainWrapperComponent } from './components/main-wrapper/main-wrapper.com
     LoginComponent,
     MainComponent,
     NavbarComponent,
-    MainWrapperComponent
+    MainWrapperComponent,
+    FileCarouselComponent
   ],
   imports: [
     BrowserModule,

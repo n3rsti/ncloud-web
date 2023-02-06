@@ -16,14 +16,14 @@
   </div>
   <h2 class="mt-5 mb-2 font-semibold">Files</h2>
   <div class="grid grid-cols-8 max-2xl:grid-cols-6 max-xl:grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-3 max-sm:grid-cols-2 gap-2">
-    <a *ngFor="let file of directory.files"
+    <button *ngFor="let file of directory.files; let i = index" (click)="openedFileCarousel = true; fileCarouselCounter = i"
        class="pb-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 dark:bg-gray-800
        dark:border-gray-700 dark:hover:bg-gray-700 flex flex-col justify-center items-center w-full">
       <img [src]="file.src" alt="" *ngIf="file.src !== ''" class="w-full h-32 object-cover">
       <i class="fa-solid fa-file text-indigo-700 text-4xl mb-1" *ngIf="file.src === ''"></i>
       <p [title]="file.name"
          class="text-sm text-gray-600 font-medium w-full whitespace-nowrap overflow-hidden overflow-ellipsis text-center mt-2 px-3 cursor-default">{{ file.name }}</p>
-    </a>
+    </button>
   </div>
 </main>
 <input [formControl]="modalToggle" type="checkbox" id="my-modal-4" class="modal-toggle" />
@@ -42,3 +42,4 @@
     </form>
   </label>
 </label>
+<app-file-carousel *ngIf="directory.files.length > 0 && openedFileCarousel" [files]="directory.files" [fileCounter]="fileCarouselCounter"></app-file-carousel>
