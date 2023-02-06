@@ -86,7 +86,14 @@ export class DataService {
     formData.append("file", files[0]);
     formData.append("directory", directoryId);
 
-    return this.http.post(Config.Host + '/api/upload', formData, {observe: "response"});
+    return this.http.post(Config.Host + '/api/upload', formData).pipe(
+      map((data: any) => (data || Array().map((file: any) => {
+        return new FileBuilder()
+          .setName(file.name)
+          .setId(file.id)
+          .build();
+      })))
+    );
   }
 
 

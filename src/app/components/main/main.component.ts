@@ -1,10 +1,11 @@
-import {Component, HostListener} from '@angular/core';
+import {Component} from '@angular/core';
 import {DataService} from "../../services/data.service";
 import {Directory, DirectoryBuilder} from "../../models/directory.model";
 import {DomSanitizer} from "@angular/platform-browser";
 import {FormControl} from "@angular/forms";
 import {ActivatedRoute} from "@angular/router";
 import {Subject} from "rxjs";
+import {FileModel} from "../../models/file.model";
 
 
 const FILES_TO_DOWNLOAD = [
@@ -81,13 +82,32 @@ export class MainComponent {
     }
   }
   fileInputDrop(event: any){
+    const files: FileList = event.dataTransfer.files;
     event.preventDefault();
     this.data.uploadFiles(event.dataTransfer.files, this.directory.id).subscribe({
-      next: (response) => {
-        console.log(response);
+      next: (data: FileModel[]) => {
+        // Combine data from API Response (id, name) with data from HTML Input (src, type)
+        // to create FileModel object and push to already existing file list
+
+        for(let i = 0; i < files.length; i++){
+          let imgSrc: any = '';
+          const reader = new FileReader();
+
+          reader.addEventListener("load", () => {
+            imgSrc = reader.result;
+            let newFile = data[i];
+            newFile.src = imgSrc;
+            newFile.type = files[i].type;
+
+            this.directory.files.push(newFile)
+
+          }, false)
+
+          reader.readAsDataURL(files[i]);
+        }
       },
       error: (err) => {
-        console.log(err.status);
+        console.log(err);
       }
     });
 
