@@ -1,0 +1,12 @@
+.a:hover i {
+  color: rgb(66 56 157);
+}
+.a:hover p {
+  color: rgb(17 24 39);
+}
+.selected p {
+  font-weight: 600;
+}
+.selected > * {
+  color: rgb(81 69 205);
+}

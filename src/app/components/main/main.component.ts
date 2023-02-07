@@ -115,7 +115,12 @@ export class MainComponent {
           reader.addEventListener("load", () => {
             imgSrc = reader.result;
             let newFile = data[i];
-            newFile.src = imgSrc;
+            if(FILES_TO_DOWNLOAD.includes(files[i].type)){
+              newFile.src = imgSrc;
+            }
+            else {
+              newFile.src = '';
+            }
             newFile.type = files[i].type;
 
             this.directory.files.push(newFile)

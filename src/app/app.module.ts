@@ -13,6 +13,7 @@ import { MainComponent } from './components/main/main.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { MainWrapperComponent } from './components/main-wrapper/main-wrapper.component';
 import { FileCarouselComponent } from './components/file-carousel/file-carousel.component';
+import { SideNavbarComponent } from './components/side-navbar/side-navbar.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { FileCarouselComponent } from './components/file-carousel/file-carousel.
     MainComponent,
     NavbarComponent,
     MainWrapperComponent,
-    FileCarouselComponent
+    FileCarouselComponent,
+    SideNavbarComponent
   ],
   imports: [
     BrowserModule,
