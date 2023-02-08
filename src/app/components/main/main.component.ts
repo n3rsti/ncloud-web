@@ -135,4 +135,15 @@ export class MainComponent {
       }
     });
   }
+  mobileFileUpload(event: any){
+    const files = event.target[0].files || null;
+    console.log(files);
+    if(files && files.length > 0){
+      this.uploadFiles(files);
+
+      // Reset and close form
+      event.target.reset();
+      this.fileUploadPanelOpened = false;
+    }
+  }
 }

@@ -93,8 +93,6 @@ export class TokenInterceptor implements HttpInterceptor {
     if (refreshToken) {
       return this.data.refreshToken().pipe(
         switchMap((token: any) => {
-          console.log("tu jest token")
-          console.log(token.body.access_token)
           localStorage.setItem("access_token", token.body.access_token);
 
           return next.handle(this.addTokenHeader(request, token.body.access_token));

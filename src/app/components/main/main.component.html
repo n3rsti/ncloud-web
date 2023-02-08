@@ -6,7 +6,8 @@
     </label>
   </div>
   <div class="flex items-center">
-    <h1 class="ml-2.5 text-xl font-semibold text-indigo-700 max-md:pl-3">{{ directory.name != "" ? directory.name : "Main folder" }}</h1>
+    <h1
+      class="ml-2.5 text-xl font-semibold text-indigo-700 max-md:pl-3">{{ directory.name != "" ? directory.name : "Main folder" }}</h1>
   </div>
 </div>
 <section class="flex">
@@ -75,15 +76,18 @@
         <label for="file-upload" class="text-lg font-bold mb-0 mr-auto">Select files</label>
         <button (click)="fileUploadPanelOpened = false" class="btn btn-sm btn-circle">✕</button>
       </div>
-      <input type="file" name="file-upload" id="file-upload" multiple>
-      <button type="submit"
-              class="mt-3 w-full text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">
-        Upload
-      </button>
+      <form action="" (ngSubmit)="mobileFileUpload($event)">
+        <input type="file" name="file-upload" id="file-upload" multiple>
+        <button type="submit"
+                class="mt-3 w-full text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">
+          Upload
+        </button>
+      </form>
     </section>
     <button (click)="fileUploadPanelOpened = !fileUploadPanelOpened"
-            class="fixed bottom-6 right-6 w-14 h-14 bg-indigo-700 hover:bg-indigo-800 rounded rounded-xl text-white max-md:bottom-20"><i
-      class="fa-solid fa-upload"></i></button>
+            class="fixed bottom-6 right-6 w-14 h-14 bg-indigo-700 hover:bg-indigo-800 rounded rounded-xl text-white max-md:bottom-20">
+      <i
+        class="fa-solid fa-upload"></i></button>
   </main>
 </section>
 
