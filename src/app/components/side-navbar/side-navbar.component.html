@@ -1,4 +1,4 @@
-<section class="min-h-screen w-56 bg-white mt-3 max-md:hidden">
+<section class="w-56 bg-white mt-3 max-md:hidden">
   <a class="a w-full flex flex-col items-center cursor-pointer selected">
     <div class="flex items-center py-2  w-9/12 select-none">
       <i class="fa-solid fa-hard-drive text-indigo-700 text-xl mr-2 w-6"></i>
@@ -12,3 +12,17 @@
     </div>
   </a>
 </section>
+<div class="btm-nav h-16 hidden max-md:flex">
+  <button class="active text-indigo-700" [routerLink]="['']">
+    <i class="fa-solid fa-home h-7 flex items-center text-xl"></i>
+    <p class="text-xs font-semibold">Home</p>
+  </button>
+  <label for="folder-modal" class="text-accent">
+    <i class="fa-solid fa-circle-plus text-2xl h-7"></i>
+    <p class="text-xs font-semibold">New folder</p>
+  </label>
+  <button class="text-red-700">
+    <i class="fa-solid fa-trash h-7 flex items-center text-xl"></i>
+    <p class="text-xs font-semibold">Trash</p>
+  </button>
+</div>

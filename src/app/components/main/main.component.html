@@ -1,17 +1,17 @@
 <div class="flex mt-5">
-  <div class="w-56 flex justify-center">
-    <label for="my-modal-4"
+  <div class="w-56 flex justify-center max-md:hidden">
+    <label for="folder-modal"
            class="w-9/12 text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800 cursor-pointer">
       New folder
     </label>
   </div>
   <div class="flex items-center">
-    <h1 class="ml-2.5 text-xl font-semibold text-indigo-700">Main folder</h1>
+    <h1 class="ml-2.5 text-xl font-semibold text-indigo-700 max-md:pl-3">{{ directory.name != "" ? directory.name : "Main folder" }}</h1>
   </div>
 </div>
 <section class="flex">
   <app-side-navbar></app-side-navbar>
-  <main class="p-3">
+  <main class="p-3 w-full">
     <div
       class="grid grid-cols-9 max-2xl:grid-cols-6 max-xl:grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-4 max-sm:grid-cols-2 gap-2 mb-5">
       <a *ngFor="let dir of directory.directories" [routerLink]="['/' + dir.id]"
@@ -21,7 +21,7 @@
         <p [title]="dir.name"
            class="text-sm text-gray-600 font-medium whitespace-nowrap overflow-hidden overflow-ellipsis text-center px-3 w-full">{{ dir.name }}</p>
       </a>
-      <label for="my-modal-4"
+      <label for="folder-modal"
              class="bg-white border border-gray-200 rounded-lg hover:bg-gray-100 dark:bg-gray-800
        dark:border-gray-700 dark:hover:bg-gray-700 flex flex-col justify-center items-center h-24 w-full mr-3 cursor-pointer">
         <i class="fa-solid fa-circle-plus text-indigo-700 text-4xl mb-1"></i>
@@ -29,7 +29,7 @@
       </label>
     </div>
     <div
-      class="grid grid-cols-8 max-2xl:grid-cols-6 max-xl:grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-3 max-sm:grid-cols-2 gap-2">
+      class="grid grid-cols-8 max-2xl:grid-cols-6 max-xl:grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-3 max-sm:grid-cols-2 gap-2 last-of-type:mb-16">
       <button *ngFor="let file of directory.files; let i = index" (click)="openFileCarousel(); fileCarouselCounter = i"
               class="pb-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 dark:bg-gray-800
        dark:border-gray-700 dark:hover:bg-gray-700 flex flex-col justify-center items-center w-full">
@@ -70,7 +70,7 @@
       </form>
     </section>
     <section [ngClass]="{'translate-y-full': !fileUploadPanelOpened}"
-             class="z-10 fixed bottom-0 left-0 w-full bg-white rounded-t rounded-xl p-5 border-t border-indigo-700 transition-all">
+             class="z-10 fixed bottom-0 left-0 w-full bg-white rounded-t rounded-xl p-5 border-t border-indigo-700 transition-all hidden max-sm:block">
       <div class="flex items-end mb-3">
         <label for="file-upload" class="text-lg font-bold mb-0 mr-auto">Select files</label>
         <button (click)="fileUploadPanelOpened = false" class="btn btn-sm btn-circle">✕</button>
@@ -82,16 +82,16 @@
       </button>
     </section>
     <button (click)="fileUploadPanelOpened = !fileUploadPanelOpened"
-            class="fixed bottom-6 right-6 w-14 h-14 bg-indigo-700 hover:bg-indigo-800 rounded rounded-xl text-white"><i
+            class="fixed bottom-6 right-6 w-14 h-14 bg-indigo-700 hover:bg-indigo-800 rounded rounded-xl text-white max-md:bottom-20"><i
       class="fa-solid fa-upload"></i></button>
   </main>
 </section>
 
-<input [formControl]="modalToggle" type="checkbox" id="my-modal-4" class="modal-toggle"/>
-<label for="my-modal-4" class="modal cursor-pointer">
+<input [formControl]="modalToggle" type="checkbox" id="folder-modal" class="modal-toggle"/>
+<label for="folder-modal" class="modal cursor-pointer">
   <label class="modal-box relative bg-white rounded-lg shadow dark:bg-gray-700" for="">
     <div class="flex items-end mb-3">
-      <h3 class="text-lg font-bold mb-0 mr-auto">New folder</h3><label for="my-modal-4"
+      <h3 class="text-lg font-bold mb-0 mr-auto">New folder</h3><label for="folder-modal"
                                                                        class="btn btn-sm btn-circle">✕</label>
     </div>
 
