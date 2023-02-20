@@ -28,7 +28,12 @@ export class DataService {
   }
 
   getDirectory(id: string){
-    return this.http.get(`${Config.Host}/api/directories/${id}`).pipe(
+    let reqUrl = `${Config.Host}/api/directories`;
+    if(id){
+      reqUrl += '/' + id;
+    }
+
+    return this.http.get(reqUrl).pipe(
       map((data: any) => (data || Array()).map((directory: any) => {
         return new DirectoryBuilder()
           .setId(directory._id)

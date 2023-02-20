@@ -35,6 +35,7 @@ export class TokenInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    console.log(1)
     const token: string = localStorage.getItem('access_token') || '';
     const refresh_token: string = localStorage.getItem('refresh_token') || '';
 
@@ -92,6 +93,16 @@ export class TokenInterceptor implements HttpInterceptor {
 
     if (refreshToken) {
       return this.data.refreshToken().pipe(
+        catchError((err) => {
+          if(err.status === 401){
+            this.router.navigate(['/login'], {
+              queryParams: {
+                return: this.returnUrl
+              }
+            });
+          }
+          throw err;
+        }),
         switchMap((token: any) => {
           localStorage.setItem("access_token", token.body.access_token);
 
@@ -99,6 +110,11 @@ export class TokenInterceptor implements HttpInterceptor {
         }),
       )
     }
+    this.router.navigate(['/login'], {
+      queryParams: {
+        return: this.returnUrl
+      }
+    });
     throw "";
   }
 
