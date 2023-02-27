@@ -52,6 +52,9 @@ export class MainComponent {
     this.data.getDirectory(this.directoryId).subscribe({
       next: (data: Directory[]) => {
         this.directory = data[0];
+        if(this.directory.name === ""){
+          this.directory.name = "Main folder";
+        }
 
         this.directory.files.forEach(file => {
           if (FILES_TO_DOWNLOAD.includes(file.type)) {
@@ -146,4 +149,26 @@ export class MainComponent {
       this.fileUploadPanelOpened = false;
     }
   }
+
+  openContextMenu(event: any, id: string){
+    event.preventDefault();
+
+    let contextMenu = document.querySelector<HTMLElement>(`#context-menu[data-id="${id}"]`);
+
+    if(contextMenu == null || !event.target.classList.contains("context-menu-clickable")){
+      return
+    }
+
+    contextMenu.classList.remove("scale-0");
+    contextMenu.style.transform = `translate(${event.x}px, ${event.y}px)`;
+
+  }
+
+  onFocusOut(event: any){
+    let contextMenu = event.target.children[0];
+
+    contextMenu.classList.add("scale-0");
+    contextMenu.style.transform = null;
+  }
 }
+

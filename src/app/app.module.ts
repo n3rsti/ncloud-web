@@ -14,6 +14,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { MainWrapperComponent } from './components/main-wrapper/main-wrapper.component';
 import { FileCarouselComponent } from './components/file-carousel/file-carousel.component';
 import { SideNavbarComponent } from './components/side-navbar/side-navbar.component';
+import { FileDetailsComponent } from './components/file-details/file-details.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { SideNavbarComponent } from './components/side-navbar/side-navbar.compon
     NavbarComponent,
     MainWrapperComponent,
     FileCarouselComponent,
-    SideNavbarComponent
+    SideNavbarComponent,
+    FileDetailsComponent
   ],
   imports: [
     BrowserModule,
