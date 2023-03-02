@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {DataService} from "../../services/data.service";
 import {Directory, DirectoryBuilder} from "../../models/directory.model";
 import {DomSanitizer} from "@angular/platform-browser";
@@ -29,10 +29,18 @@ export class MainComponent {
   fileCarouselSubject: Subject<any> = new Subject();
   fileUploadPanelOpened = false;
 
+  contextMenuId = "";
+  @ViewChild('contextMenu', {static: false}) contextMenu: ElementRef | undefined;
+
   constructor(private data: DataService, public sanitizer: DomSanitizer, private route: ActivatedRoute) {
   }
 
   ngOnInit() {
+    document.addEventListener("click", (e) => {
+      if ( e.button === 0 ) {
+        this.closeContextMenu();
+      }
+    })
     this.route.params.subscribe(params => {
       if (params["id"]) {
         this.directoryId = params["id"];
@@ -153,22 +161,43 @@ export class MainComponent {
   openContextMenu(event: any, id: string){
     event.preventDefault();
 
-    let contextMenu = document.querySelector<HTMLElement>(`#context-menu[data-id="${id}"]`);
+    this.contextMenuId = id;
 
-    if(contextMenu == null || !event.target.classList.contains("context-menu-clickable")){
-      return
+    if(!this.contextMenu){
+      return;
     }
 
-    contextMenu.classList.remove("scale-0");
-    contextMenu.style.transform = `translate(${event.x}px, ${event.y}px)`;
+    this.contextMenu.nativeElement.classList.remove("scale-0");
+    this.contextMenu.nativeElement.style.transform = `translate(${event.x}px, ${event.y}px)`;
 
   }
 
-  onFocusOut(event: any){
-    let contextMenu = event.target.children[0];
+  closeContextMenu(){
+    if(!this.contextMenu){
+      return;
+    }
 
-    contextMenu.classList.add("scale-0");
-    contextMenu.style.transform = null;
+    this.contextMenuId = "";
+
+    this.contextMenu.nativeElement.classList.add("scale-0");
+    this.contextMenu.nativeElement.style.transform = null;
+  }
+
+  isClickedInsideElement(event: any, idName: string){
+    let el = event.target || event.src;
+
+    console.log(event);
+
+    if (el.id == idName){
+      return true;
+    }
+    while(el = el.parentNode){
+      if (el && el.id == idName){
+        return true;
+      }
+    }
+
+    return false;
   }
 }
 

@@ -12,6 +12,12 @@
 </div>
 <section class="flex">
   <app-side-navbar></app-side-navbar>
+  <div #contextMenu id="contextMenu" class="scale-0 absolute top-0 left-0 bg-white border border-gray-200 rounded w-44 text-sm hidden md:block">
+    <ul class="text-left font-medium">
+      <li class="flex items-center text-gray-600 cursor-pointer hover:bg-gray-100 py-2 pl-4" (click)="openFileCarousel()"><i class="fa-solid fa-circle-info w-4 mr-2"></i>Details</li>
+      <li class="flex items-center text-red-600 cursor-pointer hover:bg-gray-100 py-2 pl-4"><i class="fa-solid fa-trash w-4 mr-2"></i>Delete</li>
+    </ul>
+  </div>
   <main class="p-3 w-full">
     <div
       class="grid grid-cols-8 max-2xl:grid-cols-6 max-xl:grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-3 max-sm:grid-cols-2 gap-2 mb-5">
@@ -33,15 +39,8 @@
       class="grid grid-cols-8 max-2xl:grid-cols-6 max-xl:grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-3 max-sm:grid-cols-2 gap-2 last-of-type:mb-16">
       <button *ngFor="let file of directory.files; let i = index"
               (dblclick)="openFileCarousel(); fileCarouselCounter = i;" (contextmenu)="openContextMenu($event, file.id)"
-              (focusout)="onFocusOut($event)"
               class="pb-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 dark:bg-gray-800
        dark:border-gray-700 dark:hover:bg-gray-700 flex flex-col justify-center items-center w-full cursor-default focus:bg-gray-200 context-menu-clickable">
-        <div id="context-menu" class="scale-0 absolute top-0 left-0 bg-white border border-gray-200 rounded w-44 text-sm" [attr.data-id]="file.id">
-          <ul class="text-left font-medium">
-            <li class="flex items-center text-gray-600 cursor-pointer hover:bg-gray-100 py-2 pl-4"><i class="fa-solid fa-circle-info w-4 mr-2"></i>Details</li>
-            <li class="flex items-center text-red-600 cursor-pointer hover:bg-gray-100 py-2 pl-4"><i class="fa-solid fa-trash w-4 mr-2"></i>Delete</li>
-          </ul>
-        </div>
         <img [src]="file.src" alt="" *ngIf="file.src !== ''" class="w-full h-32 object-cover context-menu-clickable">
         <div *ngIf="file.src === ''" class="flex h-32 items-center context-menu-clickable">
           <i class="fa-solid fa-file text-indigo-700 text-6xl mb-1"></i>
