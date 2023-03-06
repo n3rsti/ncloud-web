@@ -1,5 +1,10 @@
 import {SafeUrl} from "@angular/platform-browser";
 
+interface additionalData {
+  name: string;
+  value: string | number;
+}
+
 export class FileModel {
   private _id: string;
   private _name: string;
@@ -8,6 +13,7 @@ export class FileModel {
   private _type: string;
   private _src: SafeUrl = '';
   private _size: number;
+  private _additional_data: [additionalData] | null = null;
 
 
   constructor(id: string, name: string, parent_directory: string, user: string, type: string, size: number) {
@@ -80,6 +86,19 @@ export class FileModel {
 
   set size(value: number) {
     this._size = value;
+  }
+
+
+  get additional_data(): [additionalData] | null {
+    return this._additional_data;
+  }
+
+  set additional_data(value: [additionalData] | null) {
+    this._additional_data = value;
+  }
+
+  get creationDate(){
+    return new Date(parseInt(this.id.substring(0, 8), 16) * 1000);
   }
 }
 

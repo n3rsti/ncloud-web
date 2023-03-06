@@ -1,0 +1,40 @@
+<ng-container *ngIf="opened">
+  <div class="fixed top-0 left-0 w-full h-screen bg-black bg-opacity-50" (click)="opened = false">
+
+  </div>
+  <div *ngIf="files.length > 0"
+       class="fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 bg-white w-1/2 shadow sm:rounded-lg overflow-hidden">
+    <div class="px-4 py-5 sm:px-6">
+      <div class="flex items-center">
+        <h3 class="text-base font-semibold leading-6 text-gray-900">File details</h3>
+        <button class="ml-auto btn btn-sm btn-circle" (click)="opened = false">✕</button>
+      </div>
+    </div>
+    <div class="border-t border-gray-200">
+      <dl>
+        <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium text-gray-500">Name</dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ files[fileCounter].name }}</dd>
+        </div>
+        <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium text-gray-500">Size</dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ files[fileCounter].size }} bytes</dd>
+        </div>
+        <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium text-gray-500">Date created</dt>
+          <dd
+            class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ files[fileCounter].creationDate.toLocaleString() }}</dd>
+        </div>
+        <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6"
+             *ngFor="let data of files[fileCounter].additional_data">
+          <dt class="text-sm font-medium text-gray-500">{{ data.name }}</dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ data.value }}</dd>
+        </div>
+        <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium text-gray-500">Type</dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ files[fileCounter].type }}</dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</ng-container>

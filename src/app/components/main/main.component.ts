@@ -3,7 +3,7 @@ import {DataService} from "../../services/data.service";
 import {Directory, DirectoryBuilder} from "../../models/directory.model";
 import {DomSanitizer} from "@angular/platform-browser";
 import {FormControl} from "@angular/forms";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Subject} from "rxjs";
 import {FileModel} from "../../models/file.model";
 
@@ -27,17 +27,18 @@ export class MainComponent {
   directoryId: string = '';
   fileCarouselCounter = 0;
   fileCarouselSubject: Subject<any> = new Subject();
+  fileDetailsSubject: Subject<any> = new Subject();
   fileUploadPanelOpened = false;
 
-  contextMenuId = "";
+  contextMenuId = 0;
   @ViewChild('contextMenu', {static: false}) contextMenu: ElementRef | undefined;
 
-  constructor(private data: DataService, public sanitizer: DomSanitizer, private route: ActivatedRoute) {
+  constructor(private data: DataService, public sanitizer: DomSanitizer, private route: ActivatedRoute, public router: Router) {
   }
 
   ngOnInit() {
     document.addEventListener("click", (e) => {
-      if ( e.button === 0 ) {
+      if (e.button === 0) {
         this.closeContextMenu();
       }
     })
@@ -56,11 +57,15 @@ export class MainComponent {
     this.fileCarouselSubject.next(true);
   }
 
+  openFileDetails(i: number) {
+    this.fileDetailsSubject.next(i);
+  }
+
   getDirectory() {
     this.data.getDirectory(this.directoryId).subscribe({
       next: (data: Directory[]) => {
         this.directory = data[0];
-        if(this.directory.name === ""){
+        if (this.directory.name === "") {
           this.directory.name = "Main folder";
         }
 
@@ -126,10 +131,9 @@ export class MainComponent {
           reader.addEventListener("load", () => {
             imgSrc = reader.result;
             let newFile = data[i];
-            if(FILES_TO_DOWNLOAD.includes(files[i].type)){
+            if (FILES_TO_DOWNLOAD.includes(files[i].type)) {
               newFile.src = imgSrc;
-            }
-            else {
+            } else {
               newFile.src = '';
             }
             newFile.type = files[i].type;
@@ -146,10 +150,11 @@ export class MainComponent {
       }
     });
   }
-  mobileFileUpload(event: any){
+
+  mobileFileUpload(event: any) {
     const files = event.target[0].files || null;
-    console.log(files);
-    if(files && files.length > 0){
+
+    if (files && files.length > 0) {
       this.uploadFiles(files);
 
       // Reset and close form
@@ -158,12 +163,12 @@ export class MainComponent {
     }
   }
 
-  openContextMenu(event: any, id: string){
+  openContextMenu(event: any, id: number) {
     event.preventDefault();
 
     this.contextMenuId = id;
 
-    if(!this.contextMenu){
+    if (!this.contextMenu) {
       return;
     }
 
@@ -172,32 +177,46 @@ export class MainComponent {
 
   }
 
-  closeContextMenu(){
-    if(!this.contextMenu){
+  closeContextMenu() {
+    if (!this.contextMenu) {
       return;
     }
 
-    this.contextMenuId = "";
+    this.contextMenuId = 0;
 
     this.contextMenu.nativeElement.classList.add("scale-0");
     this.contextMenu.nativeElement.style.transform = null;
   }
 
-  isClickedInsideElement(event: any, idName: string){
+  isClickedInsideElement(event: any, idName: string) {
     let el = event.target || event.src;
 
-    console.log(event);
 
-    if (el.id == idName){
+    if (el.id == idName) {
       return true;
     }
-    while(el = el.parentNode){
-      if (el && el.id == idName){
+    while (el = el.parentNode) {
+      if (el && el.id == idName) {
         return true;
       }
     }
 
     return false;
   }
+
+  getImgDetails(event: any, file: FileModel) {
+    const img = event.target;
+
+    if (file.additional_data == null) {
+      file.additional_data = [
+        {name: 'Resolution', value: `${img.naturalWidth}x${img.naturalHeight}`}
+      ]
+    } else {
+      file.additional_data.push(
+        {name: 'Resolution', value: `${img.naturalWidth}x${img.naturalHeight}`}
+      )
+    }
+  }
+
 }
 
