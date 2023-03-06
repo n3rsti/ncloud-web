@@ -58,6 +58,7 @@ export class DataService {
                 .setParentDirectory(file.parent_directory)
                 .setUser(file.user)
                 .setType(file.type)
+                .setSize(file.size)
                 .build()
             })
           )

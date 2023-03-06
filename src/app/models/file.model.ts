@@ -7,14 +7,16 @@ export class FileModel {
   private _user: string;
   private _type: string;
   private _src: SafeUrl = '';
+  private _size: number;
 
 
-  constructor(id: string, name: string, parent_directory: string, user: string, type: string) {
+  constructor(id: string, name: string, parent_directory: string, user: string, type: string, size: number) {
     this._id = id;
     this._name = name;
     this._parent_directory = parent_directory;
     this._user = user;
     this._type = type;
+    this._size = size;
   }
 
   get id(): string {
@@ -71,12 +73,20 @@ export class FileModel {
   set src(value: SafeUrl) {
     this._src = value;
   }
+
+  get size(): number {
+    return this._size;
+  }
+
+  set size(value: number) {
+    this._size = value;
+  }
 }
 
 export class FileBuilder extends FileModel {
 
   constructor() {
-    super('', '', '', '', '');
+    super('', '', '', '', '', 0);
   }
 
   setName(name: string){
@@ -99,8 +109,13 @@ export class FileBuilder extends FileModel {
     return this;
   }
 
+  setSize(size: number){
+    this.size = size;
+    return this;
+  }
+
   build(){
-    return new FileModel(this.id, this.name, this.parent_directory, this.user, this.type);
+    return new FileModel(this.id, this.name, this.parent_directory, this.user, this.type, this.size);
   }
 
 }
