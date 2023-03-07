@@ -22,7 +22,7 @@
         <p [title]="dir.name"
            class="text-sm text-gray-600 font-medium whitespace-nowrap overflow-hidden overflow-ellipsis text-center px-3 w-full">{{ dir.name }}</p>
       </button>
-      <label for="folder-modal"
+      <label for="folder-modal" *ngIf="directory.id"
              class="bg-white border border-gray-200 rounded-lg hover:bg-gray-100 dark:bg-gray-800
        dark:border-gray-700 dark:hover:bg-gray-700 flex flex-col justify-center items-center h-24 w-full mr-3 cursor-pointer">
         <i class="fa-solid fa-circle-plus text-indigo-700 text-4xl mb-1"></i>
@@ -93,8 +93,8 @@
 </section>
 
 <input [formControl]="modalToggle" type="checkbox" id="folder-modal" class="modal-toggle"/>
-<label for="folder-modal" class="modal cursor-pointer">
-  <label class="modal-box relative bg-white rounded-lg shadow dark:bg-gray-700" for="">
+<label for="folder-modal" class="modal transition-none">
+  <label class="modal-box relative bg-white rounded-lg shadow dark:bg-gray-700 transition-none" for="">
     <div class="flex items-end mb-3">
       <h3 class="text-lg font-bold mb-0 mr-auto">New folder</h3><label for="folder-modal"
                                                                        class="btn btn-sm btn-circle">✕</label>

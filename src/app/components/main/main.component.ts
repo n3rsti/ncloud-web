@@ -5,7 +5,7 @@ import {DomSanitizer} from "@angular/platform-browser";
 import {FormControl} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Subject} from "rxjs";
-import {FileModel} from "../../models/file.model";
+import {FileBuilder, FileModel} from "../../models/file.model";
 
 
 const FILES_TO_DOWNLOAD = [
@@ -130,7 +130,10 @@ export class MainComponent {
 
           reader.addEventListener("load", () => {
             imgSrc = reader.result;
-            let newFile = data[i];
+
+            let newFile = new FileBuilder()
+              .setId(data[i].id)
+              .setName(data[i].id)
             if (FILES_TO_DOWNLOAD.includes(files[i].type)) {
               newFile.src = imgSrc;
             } else {
@@ -139,6 +142,7 @@ export class MainComponent {
             newFile.type = files[i].type;
 
             this.directory.files.push(newFile)
+            console.log(typeof data[i])
 
           }, false)
 

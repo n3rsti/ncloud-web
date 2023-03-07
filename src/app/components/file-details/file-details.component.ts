@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, HostListener, Input} from '@angular/core';
 import {FileBuilder, FileModel} from "../../models/file.model";
 import {Subject} from "rxjs";
 
@@ -8,6 +8,13 @@ import {Subject} from "rxjs";
   styleUrls: ['./file-details.component.scss']
 })
 export class FileDetailsComponent {
+  @HostListener('window:keydown', ['$event'])
+  keyEvent(event: KeyboardEvent){
+    if(event.key === 'Escape'){
+      this.opened = false;
+    }
+  }
+
   @Input() files: FileModel[] = [];
   @Input() openedSubject: Subject<any> = new Subject<any>();
 
