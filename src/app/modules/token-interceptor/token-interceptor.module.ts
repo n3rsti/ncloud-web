@@ -35,7 +35,6 @@ export class TokenInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log(1)
     const token: string = localStorage.getItem('access_token') || '';
     const refresh_token: string = localStorage.getItem('refresh_token') || '';
 

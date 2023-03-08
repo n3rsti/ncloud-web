@@ -142,7 +142,6 @@ export class MainComponent {
             newFile.type = files[i].type;
 
             this.directory.files.push(newFile)
-            console.log(typeof data[i])
 
           }, false)
 
