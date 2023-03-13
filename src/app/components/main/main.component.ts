@@ -133,7 +133,7 @@ export class MainComponent {
 
             let newFile = new FileBuilder()
               .setId(data[i].id)
-              .setName(data[i].id)
+              .setName(data[i].name)
             if (FILES_TO_DOWNLOAD.includes(files[i].type)) {
               newFile.src = imgSrc;
             } else {
