@@ -71,7 +71,7 @@ export class MainComponent {
 
         this.directory.files.forEach(file => {
           if (FILES_TO_DOWNLOAD.includes(file.type)) {
-            this.data.getFile(file.id).subscribe({
+            this.data.getFile(file).subscribe({
               next: (data) => {
                 // Convert blob to URL
                 const urlCreator = window.URL || window.webkitURL;

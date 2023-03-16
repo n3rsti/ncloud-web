@@ -3,7 +3,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Config} from "../config";
 import {map} from "rxjs";
 import {DirectoryBuilder} from "../models/directory.model";
-import {FileBuilder} from "../models/file.model";
+import {FileBuilder, FileModel} from "../models/file.model";
 
 
 @Injectable({
@@ -59,6 +59,7 @@ export class DataService {
                 .setUser(file.user)
                 .setType(file.type)
                 .setSize(file.size)
+                .setAccessKey(file.access_key)
                 .build()
             })
           )
@@ -69,8 +70,12 @@ export class DataService {
 
   }
 
-  getFile(id: string,){
-    return this.http.get(Config.Host + `/files/${id}`, {responseType: 'blob', observe: 'body'});
+  getFile(file: FileModel){
+    let headers = new HttpHeaders({
+      'FileAccessKey': file.access_key
+    })
+
+    return this.http.get(Config.Host + `/files/${file.id}`, {responseType: 'blob', observe: 'body', headers: headers});
   }
 
   createDirectory(name: string, parentDirectory: string){
@@ -97,6 +102,7 @@ export class DataService {
         return new FileBuilder()
           .setName(file.name)
           .setId(file.id)
+          .setAccessKey(file.access_key)
           .build();
       })))
     );
