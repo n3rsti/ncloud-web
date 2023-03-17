@@ -15,7 +15,7 @@ export class FileModel {
   private _size: number;
   private _additional_data: [additionalData] | null = null;
 
-  protected _access_key: string;
+  private _access_key: string;
 
 
   constructor(id: string, name: string, parent_directory: string, user: string, type: string, size: number, access_key: string) {
@@ -108,6 +108,10 @@ export class FileModel {
   get access_key(): string {
     return this._access_key;
   }
+
+  set access_key(access_key: string){
+    this._access_key = access_key;
+  }
 }
 
 export class FileBuilder extends FileModel {
@@ -142,7 +146,7 @@ export class FileBuilder extends FileModel {
   }
 
   setAccessKey(accessKey: string){
-    this._access_key = accessKey;
+    this.access_key = accessKey;
     return this;
   }
 

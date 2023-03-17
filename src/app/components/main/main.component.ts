@@ -62,6 +62,7 @@ export class MainComponent {
   }
 
   getDirectory() {
+
     this.data.getDirectory(this.directoryId).subscribe({
       next: (data: Directory[]) => {
         this.directory = data[0];
@@ -85,8 +86,10 @@ export class MainComponent {
   }
 
   newDirectory() {
+    let newDir = new DirectoryBuilder().setName(this.newDirectoryName.value || '').setParentDirectory(this.directory.id);
+
     if (this.newDirectoryName.value) {
-      this.data.createDirectory(this.newDirectoryName.value, this.directory.id).subscribe({
+      this.data.createDirectory(newDir, this.directory.access_key).subscribe({
         next: (data: Directory) => {
           if (data) {
             this.directory.directories.push(data);
@@ -119,7 +122,7 @@ export class MainComponent {
   }
 
   uploadFiles(files: FileList) {
-    this.data.uploadFiles(files, this.directory.id).subscribe({
+    this.data.uploadFiles(files, this.directory).subscribe({
       next: (data: FileModel[]) => {
         // Combine data from API Response (id, name) with data from HTML Input (src, type)
         // to create FileModel object and push to already existing file list

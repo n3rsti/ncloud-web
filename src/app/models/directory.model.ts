@@ -8,14 +8,17 @@ export class Directory {
   private _directories: Directory[];
   private _files: FileModel[];
 
+  private _access_key: string;
 
-  constructor(id: string, name: string, parent_directory: string, user: string, directories: Directory[], files: FileModel[]) {
+
+  constructor(id: string, name: string, parent_directory: string, user: string, directories: Directory[], files: FileModel[], accessKey: string) {
     this._id = id;
     this._name = name;
     this._parent_directory = parent_directory;
     this._user = user;
     this._directories = directories;
     this._files = files;
+    this._access_key = accessKey;
   }
 
 
@@ -67,11 +70,20 @@ export class Directory {
   set directories(value: Directory[]) {
     this._directories = value;
   }
+
+
+  get access_key(): string {
+    return this._access_key;
+  }
+
+  set access_key(value: string) {
+    this._access_key = value;
+  }
 }
 
 export class DirectoryBuilder extends Directory {
   constructor() {
-    super('', '', '', '', [], []);
+    super('', '', '', '', [], [], "");
   }
 
 
@@ -105,7 +117,12 @@ export class DirectoryBuilder extends Directory {
     return this;
   }
 
+  setAccessKey(accessKey: string){
+    this.access_key = accessKey;
+    return this;
+  }
+
   build(){
-    return new Directory(this.id, this.name, this.parent_directory, this.user, this.directories, this.files);
+    return new Directory(this.id, this.name, this.parent_directory, this.user, this.directories, this.files, this.access_key);
   }
 }
