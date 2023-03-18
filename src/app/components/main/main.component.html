@@ -32,7 +32,7 @@
     <div
       class="grid grid-cols-8 max-2xl:grid-cols-6 max-xl:grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-3 max-sm:grid-cols-2 gap-2 last-of-type:mb-16">
       <button *ngFor="let file of directory.files; let i = index"
-              (dblclick)="openFileCarousel(); fileCarouselCounter = i;" (contextmenu)="openContextMenu($event, i)"
+              (dblclick)="openFileCarousel(i);" (contextmenu)="openContextMenu($event, i)"
               class="pb-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 dark:bg-gray-800
        dark:border-gray-700 dark:hover:bg-gray-700 flex flex-col justify-center items-center w-full cursor-default focus:bg-gray-200 context-menu-clickable">
         <img [src]="file.src" alt="" *ngIf="file.src !== ''" class="w-full h-32 object-cover context-menu-clickable" (load)="getImgDetails($event, file)">
@@ -115,7 +115,7 @@
     </form>
   </label>
 </label>
-<app-file-carousel *ngIf="directory.files.length > 0" [files]="directory.files" [fileCounter]="fileCarouselCounter"
+<app-file-carousel *ngIf="directory.files.length > 0" [files]="directory.files"
                    [openedSubject]="fileCarouselSubject"></app-file-carousel>
 <app-file-details [files]="directory.files" [openedSubject]="fileDetailsSubject"></app-file-details>
 <div #contextMenu id="contextMenu" class="scale-0 absolute top-0 left-0 bg-white border border-gray-200 rounded w-44 text-sm hidden md:block">

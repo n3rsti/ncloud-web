@@ -25,7 +25,6 @@ export class MainComponent {
   modalToggle = new FormControl('');
   directory: Directory = new DirectoryBuilder().build();
   directoryId: string = '';
-  fileCarouselCounter = 0;
   fileCarouselSubject: Subject<any> = new Subject();
   fileDetailsSubject: Subject<any> = new Subject();
   fileUploadPanelOpened = false;
@@ -53,8 +52,8 @@ export class MainComponent {
 
   }
 
-  openFileCarousel() {
-    this.fileCarouselSubject.next(true);
+  openFileCarousel(counter: number) {
+    this.fileCarouselSubject.next(counter);
   }
 
   openFileDetails(i: number) {

@@ -29,7 +29,7 @@ export class FileCarouselComponent {
 
 
   @Input() files: FileModel[] = [];
-  @Input() fileCounter = 0;
+  fileCounter = 0;
   @Input() openedSubject: Subject<any> = new Subject<any>();
   opened = false;
   width = 0;
@@ -41,6 +41,7 @@ export class FileCarouselComponent {
     this.openedSubject.subscribe({
       next: (data) => {
         this.opened = true;
+        this.fileCounter = data;
       }
     })
   }
