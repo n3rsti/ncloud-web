@@ -85,9 +85,8 @@ export class DataService {
       'DirectoryAccessKey': accessKey
     })
 
-    return this.http.post(Config.Host + '/api/directories', {
+    return this.http.post(Config.Host + `/api/directories/${newDirectory.parent_directory}`, {
       'name': newDirectory.name,
-      'parent_directory': newDirectory.parent_directory
     }, {headers: headers}).pipe(
       map((data: any) => (data || Array().map((directory: any) => {
         return new DirectoryBuilder()
@@ -105,9 +104,8 @@ export class DataService {
 
     let formData = new FormData();
     formData.append("file", files[0]);
-    formData.append("directory", directory.id);
 
-    return this.http.post(Config.Host + '/api/upload', formData, {headers: headers}).pipe(
+    return this.http.post(Config.Host + `/api/upload/${directory.id}`, formData, {headers: headers}).pipe(
       map((data: any) => (data || Array().map((file: any) => {
         return new FileBuilder()
           .setName(file.name)
