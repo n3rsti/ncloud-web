@@ -32,7 +32,7 @@
     <div
       class="grid grid-cols-8 max-2xl:grid-cols-6 max-xl:grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-3 max-sm:grid-cols-2 gap-2 last-of-type:mb-16">
       <button *ngFor="let file of directory.files; let i = index"
-              (dblclick)="openFileCarousel(i);" (contextmenu)="openContextMenu($event, i)"
+              (dblclick)="openFileCarousel(i);" (contextmenu)="openContextMenu($event, i)" (keydown.shift.delete)="openPermanentlyDeleteModal(file.id)"
               class="pb-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 dark:bg-gray-800
        dark:border-gray-700 dark:hover:bg-gray-700 flex flex-col justify-center items-center w-full cursor-default focus:bg-gray-200 context-menu-clickable">
         <img [src]="file.src" alt="" *ngIf="file.src !== ''" class="w-full h-32 object-cover context-menu-clickable" (load)="getImgDetails($event, file)">
@@ -124,3 +124,4 @@
     <li class="flex items-center text-red-600 cursor-pointer hover:bg-gray-100 py-2 pl-4"><i class="fa-solid fa-trash w-4 mr-2"></i>Delete</li>
   </ul>
 </div>
+<app-modal [inputSubject]="inputModalSubject" [outputSubject]="outputModalSubject"></app-modal>

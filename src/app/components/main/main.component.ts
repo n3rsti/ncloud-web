@@ -6,6 +6,40 @@ import {FormControl} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Subject} from "rxjs";
 import {FileBuilder, FileModel} from "../../models/file.model";
+import {ModalConfig, ModalOutput} from "../../interfaces";
+
+let deleteModalConfig: ModalConfig = {
+  subjectName: 'delete',
+  title: 'Delete file',
+  fields: [
+    {
+      type: 'text',
+      value: 'Do you want to move file to trash?'
+    },
+    {
+      type: 'button',
+      value: 'Delete',
+      additionalData: {"color": "red"}
+    }
+  ]
+}
+
+let permanentlyDeleteModalConfig: ModalConfig = {
+  subjectName: 'permanentlyDeleteFile',
+  title: 'Permanently delete file',
+  fields: [
+    {
+      type: 'text',
+      value: 'Do you want to permanently delete the file?'
+    },
+    {
+      type: 'button',
+      value: 'Delete',
+      additionalData: {"color": "red"}
+    }
+  ]
+}
+
 
 
 const FILES_TO_DOWNLOAD = [
@@ -29,6 +63,8 @@ export class MainComponent {
   fileDetailsSubject: Subject<any> = new Subject();
   fileUploadPanelOpened = false;
 
+
+
   contextMenuId = 0;
   @ViewChild('contextMenu', {static: false}) contextMenu: ElementRef | undefined;
 
@@ -49,6 +85,13 @@ export class MainComponent {
       this.getDirectory();
     })
 
+    this.outputModalSubject.subscribe((data: ModalOutput) => {
+      switch (data.subjectName){
+        case 'permanentlyDeleteFile':
+          this.permanentlyDeleteFile(this.directory.files.filter(x => x.id == data.value)[0]);
+      }
+    })
+
 
   }
 
@@ -58,6 +101,18 @@ export class MainComponent {
 
   openFileDetails(i: number) {
     this.fileDetailsSubject.next(i);
+  }
+
+  inputModalSubject: Subject<any> = new Subject();
+  outputModalSubject: Subject<any> = new Subject();
+  openModal(config: ModalConfig){
+    console.log(config)
+    this.inputModalSubject.next(config);
+  }
+
+  openPermanentlyDeleteModal(id: string){
+    permanentlyDeleteModalConfig.data = id;
+    this.openModal(permanentlyDeleteModalConfig);
   }
 
   getDirectory() {
@@ -221,6 +276,16 @@ export class MainComponent {
         {name: 'Resolution', value: `${img.naturalWidth}x${img.naturalHeight}`}
       )
     }
+  }
+
+  permanentlyDeleteFile(file: FileModel){
+    return this.data.deleteFile(file).subscribe({
+      next: (data) => {
+        if(data.status === 204){
+          this.directory.files = this.directory.files.filter(x => x != file);
+        }
+      }
+    })
   }
 
 }
