@@ -66,11 +66,6 @@ export class TokenInterceptor implements HttpInterceptor {
             throw error;
           }
         }
-        this.router.navigate(['/login'], {
-          queryParams: {
-            return: this.returnUrl
-          }
-        })
         throw error;
       }))
 
