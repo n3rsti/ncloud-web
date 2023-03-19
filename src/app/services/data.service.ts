@@ -116,6 +116,28 @@ export class DataService {
     );
   }
 
+  updateFile(file: FileModel, directoryAccessKey: string | null){
+    let headers = new HttpHeaders({
+
+    })
+    if(directoryAccessKey){
+      headers = new HttpHeaders({
+        'DirectoryAccessKey': directoryAccessKey
+      })
+    }
+    return this.http.patch(Config.Host + `/api/files/${file.id}`,
+      {"name": file.name, "parent_directory": file.parent_directory},
+      {observe: 'response'})
+  }
+
+  deleteFile(file: FileModel){
+    let headers = new HttpHeaders({
+      'FileAccessKey': file.access_key
+    })
+
+    return this.http.delete(Config.Host + `/api/files/${file.id}`, {headers: headers, observe: 'response'})
+  }
+
 
 }
 
