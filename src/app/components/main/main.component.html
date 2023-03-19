@@ -121,7 +121,7 @@
 <div #contextMenu id="contextMenu" class="scale-0 absolute top-0 left-0 bg-white border border-gray-200 rounded w-44 text-sm hidden md:block">
   <ul class="text-left font-medium">
     <li class="flex items-center text-gray-600 cursor-pointer hover:bg-gray-100 py-2 pl-4" (click)="openFileDetails(contextMenuId)"><i class="fa-solid fa-circle-info w-4 mr-2"></i>Details</li>
-    <li class="flex items-center text-red-600 cursor-pointer hover:bg-gray-100 py-2 pl-4"><i class="fa-solid fa-trash w-4 mr-2"></i>Delete</li>
+    <li class="flex items-center text-red-600 cursor-pointer hover:bg-gray-100 py-2 pl-4" (click)="openDeleteModal(directory.files[contextMenuId].id)"><i class="fa-solid fa-trash w-4 mr-2"></i>Delete</li>
   </ul>
 </div>
 <app-modal [inputSubject]="inputModalSubject" [outputSubject]="outputModalSubject"></app-modal>

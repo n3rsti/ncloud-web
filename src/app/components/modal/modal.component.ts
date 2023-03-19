@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, HostListener, Input} from '@angular/core';
 import {ModalConfig, ModalOutput} from "../../interfaces";
 import {Subject} from "rxjs";
 import {Modal} from "flowbite";
@@ -9,6 +9,14 @@ import {Modal} from "flowbite";
   styleUrls: ['./modal.component.scss']
 })
 export class ModalComponent {
+  @HostListener('window:keydown', ['$event'])
+  keyEvent(event: KeyboardEvent){
+    if(event.key === 'Escape'){
+      this.opened = false;
+    }
+  }
+
+
   @Input() inputSubject: Subject<any> = new Subject();
   @Input() outputSubject: Subject<any> = new Subject();
   Config: ModalConfig | null = null;

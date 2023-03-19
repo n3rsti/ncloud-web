@@ -103,6 +103,7 @@ export class MainComponent {
     this.fileDetailsSubject.next(i);
   }
 
+  // Modal functions
   inputModalSubject: Subject<any> = new Subject();
   outputModalSubject: Subject<any> = new Subject();
   openModal(config: ModalConfig){
@@ -113,6 +114,11 @@ export class MainComponent {
   openPermanentlyDeleteModal(id: string){
     permanentlyDeleteModalConfig.data = id;
     this.openModal(permanentlyDeleteModalConfig);
+  }
+
+  openDeleteModal(id: string | number){
+    deleteModalConfig.data = id;
+    this.openModal(deleteModalConfig);
   }
 
   getDirectory() {
