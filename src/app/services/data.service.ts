@@ -131,6 +131,7 @@ export class DataService {
   }
 
   deleteFile(file: FileModel){
+    console.log(file)
     let headers = new HttpHeaders({
       'FileAccessKey': file.access_key
     })

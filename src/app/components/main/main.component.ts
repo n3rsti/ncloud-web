@@ -188,9 +188,7 @@ export class MainComponent {
           reader.addEventListener("load", () => {
             imgSrc = reader.result;
 
-            let newFile = new FileBuilder()
-              .setId(data[i].id)
-              .setName(data[i].name)
+            let newFile = data[i];
             if (FILES_TO_DOWNLOAD.includes(files[i].type)) {
               newFile.src = imgSrc;
             } else {
