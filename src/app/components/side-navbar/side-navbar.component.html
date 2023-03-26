@@ -1,13 +1,13 @@
 <section class="w-56 bg-white mt-3 max-md:hidden">
-  <a class="a w-full flex flex-col items-center cursor-pointer selected">
-    <div class="flex items-center py-2  w-9/12 select-none">
-      <i class="fa-solid fa-hard-drive text-indigo-700 text-xl mr-2 w-6"></i>
+  <a class="a w-full flex flex-col items-center cursor-pointer {{ currentId != trashId ? 'selected' : ''}}" [routerLink]="['/']">
+    <div class="flex items-center py-2 w-9/12 select-none">
+      <i class="fa-solid fa-hard-drive text-xl mr-2 w-6 transition-colors duration-100 {{ currentId != trashId ? 'text-indigo-700' : 'text-gray-600'}}"></i>
       <p class="text-sm font-medium text-gray-600">Drive</p>
     </div>
   </a>
-  <a class="a w-full flex flex-col items-center cursor-pointer">
+  <a class="a a-trash w-full flex flex-col items-center cursor-pointer {{ currentId == trashId ? 'selected' : ''}}" [routerLink]="['/' + trashId]">
     <div class="flex items-center py-2  w-9/12 select-none">
-      <i class="fa-solid fa-trash text-gray-600 text-xl mr-2 w-6"></i>
+      <i class="fa-solid fa-trash text-xl mr-2 w-6 {{ currentId == trashId ? 'text-red-700' : 'text-gray-600'}} transition-colors duration-100"></i>
       <p class="text-sm font-medium text-gray-600 hover:text-gray-900">Trash</p>
     </div>
   </a>
@@ -21,7 +21,7 @@
     <i class="fa-solid fa-circle-plus text-2xl h-7"></i>
     <p class="text-xs font-semibold">New folder</p>
   </label>
-  <button class="text-red-700">
+  <button class="text-red-700" [routerLink]="['/' + trashId]">
     <i class="fa-solid fa-trash h-7 flex items-center text-xl"></i>
     <p class="text-xs font-semibold">Trash</p>
   </button>

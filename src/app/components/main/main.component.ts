@@ -7,6 +7,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {Subject} from "rxjs";
 import {FileBuilder, FileModel} from "../../models/file.model";
 import {ModalConfig, ModalOutput} from "../../interfaces";
+import {decodeJWT} from "../../utils";
 
 let deleteModalConfig: ModalConfig = {
   subjectName: 'delete',
@@ -41,7 +42,6 @@ let permanentlyDeleteModalConfig: ModalConfig = {
 }
 
 
-
 const FILES_TO_DOWNLOAD = [
   'image/jpeg',
   'image/png',
@@ -62,7 +62,7 @@ export class MainComponent {
   fileCarouselSubject: Subject<any> = new Subject();
   fileDetailsSubject: Subject<any> = new Subject();
   fileUploadPanelOpened = false;
-
+  isTrash = true;
 
 
   contextMenuId = 0;
@@ -78,15 +78,18 @@ export class MainComponent {
       }
     })
     this.route.params.subscribe(params => {
-      if (params["id"]) {
-        this.directoryId = params["id"];
-      }
+        if (params["id"]) {
+          this.directoryId = params["id"];
+        }
 
-      this.getDirectory();
-    })
+        this.getDirectory();
+        let trashId = decodeJWT(localStorage.getItem("trashAccessKey") || "")["id"];
+        this.isTrash = trashId == this.directoryId;
+      }
+    )
 
     this.outputModalSubject.subscribe((data: ModalOutput) => {
-      switch (data.subjectName){
+      switch (data.subjectName) {
         case 'permanentlyDeleteFile':
           this.permanentlyDeleteFile(this.directory.files.filter(x => x.id == data.value)[0]);
       }
@@ -106,17 +109,18 @@ export class MainComponent {
   // Modal functions
   inputModalSubject: Subject<any> = new Subject();
   outputModalSubject: Subject<any> = new Subject();
-  openModal(config: ModalConfig){
+
+  openModal(config: ModalConfig) {
     console.log(config)
     this.inputModalSubject.next(config);
   }
 
-  openPermanentlyDeleteModal(id: string){
+  openPermanentlyDeleteModal(id: string) {
     permanentlyDeleteModalConfig.data = id;
     this.openModal(permanentlyDeleteModalConfig);
   }
 
-  openDeleteModal(id: string | number){
+  openDeleteModal(id: string | number) {
     deleteModalConfig.data = id;
     this.openModal(deleteModalConfig);
   }
@@ -282,10 +286,10 @@ export class MainComponent {
     }
   }
 
-  permanentlyDeleteFile(file: FileModel){
+  permanentlyDeleteFile(file: FileModel) {
     return this.data.deleteFile(file).subscribe({
       next: (data) => {
-        if(data.status === 204){
+        if (data.status === 204) {
           this.directory.files = this.directory.files.filter(x => x != file);
         }
       }

@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import {decodeJWT} from "../../utils";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-side-navbar',
@@ -6,5 +8,19 @@ import { Component } from '@angular/core';
   styleUrls: ['./side-navbar.component.scss']
 })
 export class SideNavbarComponent {
+  trashId = "";
+  currentId = "";
 
+  constructor(private route: ActivatedRoute) {
+    this.route.params.subscribe(params => {
+      this.currentId = params["id"];
+    })
+  }
+
+
+  ngOnInit(){
+    const trashAccessKey = localStorage.getItem("trashAccessKey") || "";
+    this.trashId = decodeJWT(trashAccessKey)["id"];
+
+  }
 }
