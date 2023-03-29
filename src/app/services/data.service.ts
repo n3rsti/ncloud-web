@@ -58,6 +58,7 @@ export class DataService {
                 .setId(file._id)
                 .setName(file.name)
                 .setParentDirectory(file.parent_directory)
+                .setPreviousParentDirectory(file.previous_parent_directory)
                 .setUser(file.user)
                 .setType(file.type)
                 .setSize(file.size)
@@ -111,12 +112,13 @@ export class DataService {
           .setName(file.name)
           .setId(file.id)
           .setAccessKey(file.access_key)
+          .setParentDirectory(file.parent_directory)
           .build();
       })))
     );
   }
 
-  updateFile(file: FileModel, directoryAccessKey: string | null){
+  updateFile(file: FileModel, directoryAccessKey?: string){
     let headers = new HttpHeaders({
       'FileAccessKey': file.access_key
     })
@@ -124,7 +126,11 @@ export class DataService {
       headers = headers.set('DirectoryAccessKey', directoryAccessKey);
     }
     return this.http.patch(Config.Host + `/api/files/${file.id}`,
-      {"name": file.name, "parent_directory": file.parent_directory},
+      {
+        "name": file.name,
+        "parent_directory": file.parent_directory,
+        "previous_parent_directory": file.previous_parent_directory
+      },
       {headers: headers, observe: 'response'})
   }
 

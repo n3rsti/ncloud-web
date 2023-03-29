@@ -8,6 +8,7 @@ import {Subject} from "rxjs";
 import {FileModel} from "../../models/file.model";
 import {ModalConfig, ModalOutput} from "../../interfaces";
 import {decodeJWT} from "../../utils";
+import {Modal} from "flowbite";
 
 let deleteModalConfig: ModalConfig = {
   subjectName: 'deleteFile',
@@ -20,7 +21,7 @@ let deleteModalConfig: ModalConfig = {
     {
       type: 'button',
       value: 'Delete',
-      additionalData: {"color": "red"}
+      additionalData: {"color": "red-600", "hover": "red-700"}
     }
   ]
 }
@@ -36,7 +37,23 @@ let permanentlyDeleteModalConfig: ModalConfig = {
     {
       type: 'button',
       value: 'Delete',
-      additionalData: {"color": "red"}
+      additionalData: {"color": "red-600", "hover": "red-700"}
+    }
+  ]
+}
+
+let restoreFileModalConfig: ModalConfig = {
+  subjectName: 'restoreFile',
+  title: 'Restore file',
+  fields: [
+    {
+      type: 'text',
+      value: 'Do you want to restore the file?'
+    },
+    {
+      type: 'button',
+      value: 'Restore',
+      additionalData: {"color": "green-400", "hover": "green-500"}
     }
   ]
 }
@@ -89,16 +106,27 @@ export class MainComponent {
     )
 
     this.outputModalSubject.subscribe((data: ModalOutput) => {
+      let file = null;
       switch (data.subjectName) {
         case 'permanentlyDeleteFile':
           this.permanentlyDeleteFile(this.directory.files.filter(x => x.id == data.value)[0]);
           break;
         case 'deleteFile':
-          const file = this.directory.files.find(x => x.id == data.value);
-
+          file = this.directory.files.find(x => x.id == data.value);
           if(file)
             this.deleteFile(file);
 
+          break;
+
+        case 'restoreFile':
+          file = this.directory.files.find(x => x.id == data.value);
+          if(file)
+            this.restoreFile(file);
+
+          break;
+
+        default:
+          console.log(data);
           break;
       }
     })
@@ -131,6 +159,11 @@ export class MainComponent {
   openDeleteModal(id: string | number) {
     deleteModalConfig.data = id;
     this.openModal(deleteModalConfig);
+  }
+
+  openRestoreFileModal(id: string){
+    restoreFileModalConfig.data = id;
+    this.openModal(restoreFileModalConfig);
   }
 
   getDirectory() {
@@ -310,12 +343,25 @@ export class MainComponent {
       return
 
 
+    file.previous_parent_directory = file.parent_directory;
     file.parent_directory = decodeJWT(trashAccessKey)["id"];
 
-    return this.data.updateFile(file, trashAccessKey).subscribe({
+    this.updateFile(file, trashAccessKey);
+  }
+
+  restoreFile(file: FileModel){
+    file.parent_directory = file.previous_parent_directory;
+    file.previous_parent_directory = "";
+
+    this.updateFile(file);
+  }
+  updateFile(file: FileModel, directoryAccessKey?: string){
+    return this.data.updateFile(file, directoryAccessKey).subscribe({
       next: (data) => {
         if (data.status === 204) {
-          this.directory.files = this.directory.files.filter(x => x.id != file.id);
+          if(file.parent_directory != this.directoryId){
+            this.directory.files = this.directory.files.filter(x => x.id != file.id);
+          }
         }
       }
     })

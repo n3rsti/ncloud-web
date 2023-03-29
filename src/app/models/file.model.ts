@@ -9,6 +9,7 @@ export class FileModel {
   private _id: string;
   private _name: string;
   private _parent_directory: string;
+  private _previous_parent_directory: string;
   private _user: string;
   private _type: string;
   private _src: SafeUrl = '';
@@ -18,7 +19,7 @@ export class FileModel {
   private _access_key: string;
 
 
-  constructor(id: string, name: string, parent_directory: string, user: string, type: string, size: number, access_key: string) {
+  constructor(id: string, name: string, parent_directory: string, user: string, type: string, size: number, access_key: string, previous_parent_directory: string) {
     this._id = id;
     this._name = name;
     this._parent_directory = parent_directory;
@@ -26,6 +27,7 @@ export class FileModel {
     this._type = type;
     this._size = size;
     this._access_key = access_key;
+    this._previous_parent_directory = previous_parent_directory;
   }
 
   get id(): string {
@@ -112,12 +114,20 @@ export class FileModel {
   set access_key(access_key: string){
     this._access_key = access_key;
   }
+
+  get previous_parent_directory(): string {
+    return this._previous_parent_directory;
+  }
+
+  set previous_parent_directory(value: string) {
+    this._previous_parent_directory = value;
+  }
 }
 
 export class FileBuilder extends FileModel {
 
   constructor() {
-    super('', '', '', '', '', 0, '');
+    super('', '', '', '', '', 0, '', '');
   }
 
   setName(name: string){
@@ -150,8 +160,19 @@ export class FileBuilder extends FileModel {
     return this;
   }
 
+  setPreviousParentDirectory(directory: string){
+    if(directory === undefined){
+      this.previous_parent_directory = "";
+    }
+    else {
+      this.previous_parent_directory = directory;
+    }
+
+    return this;
+  }
+
   build(){
-    return new FileModel(this.id, this.name, this.parent_directory, this.user, this.type, this.size, this.access_key);
+    return new FileModel(this.id, this.name, this.parent_directory, this.user, this.type, this.size, this.access_key, this.previous_parent_directory);
   }
 
 }
