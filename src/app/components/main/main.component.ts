@@ -5,12 +5,12 @@ import {DomSanitizer} from "@angular/platform-browser";
 import {FormControl} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Subject} from "rxjs";
-import {FileBuilder, FileModel} from "../../models/file.model";
+import {FileModel} from "../../models/file.model";
 import {ModalConfig, ModalOutput} from "../../interfaces";
 import {decodeJWT} from "../../utils";
 
 let deleteModalConfig: ModalConfig = {
-  subjectName: 'delete',
+  subjectName: 'deleteFile',
   title: 'Delete file',
   fields: [
     {
@@ -92,6 +92,14 @@ export class MainComponent {
       switch (data.subjectName) {
         case 'permanentlyDeleteFile':
           this.permanentlyDeleteFile(this.directory.files.filter(x => x.id == data.value)[0]);
+          break;
+        case 'deleteFile':
+          const file = this.directory.files.find(x => x.id == data.value);
+
+          if(file)
+            this.deleteFile(file);
+
+          break;
       }
     })
 
@@ -291,6 +299,23 @@ export class MainComponent {
       next: (data) => {
         if (data.status === 204) {
           this.directory.files = this.directory.files.filter(x => x != file);
+        }
+      }
+    })
+  }
+
+  deleteFile(file: FileModel){
+    const trashAccessKey = localStorage.getItem("trashAccessKey");
+    if(!trashAccessKey)
+      return
+
+
+    file.parent_directory = decodeJWT(trashAccessKey)["id"];
+
+    return this.data.updateFile(file, trashAccessKey).subscribe({
+      next: (data) => {
+        if (data.status === 204) {
+          this.directory.files = this.directory.files.filter(x => x.id != file.id);
         }
       }
     })

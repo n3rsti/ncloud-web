@@ -118,16 +118,14 @@ export class DataService {
 
   updateFile(file: FileModel, directoryAccessKey: string | null){
     let headers = new HttpHeaders({
-
+      'FileAccessKey': file.access_key
     })
     if(directoryAccessKey){
-      headers = new HttpHeaders({
-        'DirectoryAccessKey': directoryAccessKey
-      })
+      headers = headers.set('DirectoryAccessKey', directoryAccessKey);
     }
     return this.http.patch(Config.Host + `/api/files/${file.id}`,
       {"name": file.name, "parent_directory": file.parent_directory},
-      {observe: 'response'})
+      {headers: headers, observe: 'response'})
   }
 
   deleteFile(file: FileModel){
