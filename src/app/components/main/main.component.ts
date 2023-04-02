@@ -1,14 +1,13 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import {Component, ElementRef, HostListener, ViewChild} from '@angular/core';
 import {DataService} from "../../services/data.service";
 import {Directory, DirectoryBuilder} from "../../models/directory.model";
 import {DomSanitizer} from "@angular/platform-browser";
 import {FormControl} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Subject} from "rxjs";
-import {FileModel} from "../../models/file.model";
+import {FileBuilder, FileModel} from "../../models/file.model";
 import {ModalConfig, ModalOutput} from "../../interfaces";
 import {decodeJWT} from "../../utils";
-import {Modal} from "flowbite";
 
 let deleteModalConfig: ModalConfig = {
   subjectName: 'deleteFile',
@@ -58,6 +57,27 @@ let restoreFileModalConfig: ModalConfig = {
   ]
 }
 
+let renameFileModalConfig: ModalConfig = {
+  subjectName: 'renameFile',
+  title: 'Rename file',
+  fields: [
+    {
+      type: 'text',
+      value: 'Do you want to rename the file?'
+    },
+    {
+      type: 'input-text',
+      value: '',
+      name: 'name'
+    },
+    {
+      type: 'button',
+      value: 'Rename',
+      additionalData: {"color": "green-400", "hover": "green-500"}
+    }
+  ]
+}
+
 
 const FILES_TO_DOWNLOAD = [
   'image/jpeg',
@@ -72,12 +92,14 @@ const FILES_TO_DOWNLOAD = [
 })
 export class MainComponent {
 
+  // Used in input to create a new directory
   newDirectoryName = new FormControl('');
+  // Toggle for new folder modal
+  // TODO: replace with new app-modal component
   modalToggle = new FormControl('');
+  // Current directory object and ID
   directory: Directory = new DirectoryBuilder().build();
   directoryId: string = '';
-  fileCarouselSubject: Subject<any> = new Subject();
-  fileDetailsSubject: Subject<any> = new Subject();
   fileUploadPanelOpened = false;
   isTrash = true;
 
@@ -113,15 +135,26 @@ export class MainComponent {
           break;
         case 'deleteFile':
           file = this.directory.files.find(x => x.id == data.value);
-          if(file)
+          if (file)
             this.deleteFile(file);
 
           break;
 
         case 'restoreFile':
           file = this.directory.files.find(x => x.id == data.value);
-          if(file)
+          if (file)
             this.restoreFile(file);
+
+          break;
+        case 'renameFile':
+          if (data.formValues) {
+            file = this.directory.files.find(x => x.id == data.value);
+            if (file) {
+              file = new FileBuilder().setAccessKey(file.access_key).setId(file.id).setName(data.formValues['name']).build();
+              this.updateFile(file);
+            }
+
+          }
 
           break;
 
@@ -134,6 +167,9 @@ export class MainComponent {
 
   }
 
+  // Subjects for opening file carousel and file details
+  fileCarouselSubject: Subject<any> = new Subject();
+  fileDetailsSubject: Subject<any> = new Subject();
   openFileCarousel(counter: number) {
     this.fileCarouselSubject.next(counter);
   }
@@ -161,9 +197,15 @@ export class MainComponent {
     this.openModal(deleteModalConfig);
   }
 
-  openRestoreFileModal(id: string){
+  openRestoreFileModal(id: string) {
     restoreFileModalConfig.data = id;
     this.openModal(restoreFileModalConfig);
+  }
+
+  openRenameFileModal(id: string) {
+    renameFileModalConfig.data = id;
+    renameFileModalConfig.fields[1].value = this.directory.files.find(x => x.id == id)?.name || '';
+    this.openModal(renameFileModalConfig);
   }
 
   getDirectory() {
@@ -337,9 +379,9 @@ export class MainComponent {
     })
   }
 
-  deleteFile(file: FileModel){
+  deleteFile(file: FileModel) {
     const trashAccessKey = localStorage.getItem("trashAccessKey");
-    if(!trashAccessKey)
+    if (!trashAccessKey)
       return
 
 
@@ -349,23 +391,41 @@ export class MainComponent {
     this.updateFile(file, trashAccessKey);
   }
 
-  restoreFile(file: FileModel){
+  restoreFile(file: FileModel) {
     file.parent_directory = file.previous_parent_directory;
     file.previous_parent_directory = "";
 
     this.updateFile(file);
   }
-  updateFile(file: FileModel, directoryAccessKey?: string){
+
+  updateFile(file: FileModel, directoryAccessKey?: string) {
     return this.data.updateFile(file, directoryAccessKey).subscribe({
       next: (data) => {
         if (data.status === 204) {
-          if(file.parent_directory != this.directoryId){
+          // Check if parent_directory is changed (file moved).
+          // If it is, file must be removed from current directory
+          if (file.parent_directory != "" && file.parent_directory != this.directoryId) {
             this.directory.files = this.directory.files.filter(x => x.id != file.id);
+          }
+
+          // Check if file name was changed and update it in template
+          let changedDirectory = this.directory.files.find(x => x.id == file.id);
+          if (changedDirectory && changedDirectory.name != file.name) {
+            changedDirectory.name = file.name;
           }
         }
       }
     })
   }
-
+  // Event when user uses keyboard key on file
+  onFileKeydown(event: KeyboardEvent, index: number) {
+    if (event.key === "F1") {
+      this.openFileDetails(index);
+    } else if (event.key === "F2") {
+      this.openRenameFileModal(this.directory.files[index].id);
+    } else if (event.key === "F4") {
+      this.openDeleteModal(this.directory.files[index].id);
+    }
+  }
 }
 

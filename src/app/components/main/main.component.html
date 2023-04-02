@@ -31,7 +31,7 @@
     </div>
     <div
       class="grid grid-cols-8 max-2xl:grid-cols-6 max-xl:grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-3 max-sm:grid-cols-2 gap-2 last-of-type:mb-16">
-      <button *ngFor="let file of directory.files; let i = index"
+      <button *ngFor="let file of directory.files; let i = index" (keydown)="onFileKeydown($event, i)"
               (dblclick)="openFileCarousel(i);" (contextmenu)="openContextMenu($event, i)"
               (keydown.shift.delete)="openPermanentlyDeleteModal(file.id)"
               class="pb-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 dark:bg-gray-800
@@ -126,11 +126,15 @@
     <li class="flex items-center text-gray-600 cursor-pointer hover:bg-gray-100 py-2 pl-4"
         (click)="openFileDetails(contextMenuId)"><i class="fa-solid fa-circle-info w-4 mr-2"></i>Details
     </li>
+    <li class="flex items-center text-gray-600 cursor-pointer hover:bg-gray-100 py-2 pl-4"
+        (click)="openRenameFileModal(directory.files[contextMenuId].id)"><i class="fa-solid fa-pen w-4 mr-2"></i>Rename
+    </li>
     <li class="flex items-center bg-red-600 text-white cursor-pointer hover:bg-red-700 py-2 pl-4" *ngIf="!isTrash"
         (click)="openDeleteModal(directory.files[contextMenuId].id)"><i class="fa-solid fa-trash w-4 mr-2"></i>Delete
     </li>
     <li class="flex items-center bg-green-400 text-white cursor-pointer hover:bg-green-500 py-2 pl-4" *ngIf="isTrash"
-        (click)="openRestoreFileModal(directory.files[contextMenuId].id)"><i class="fa-solid fa-rotate-right w-4 mr-2"></i>Restore
+        (click)="openRestoreFileModal(directory.files[contextMenuId].id)"><i
+      class="fa-solid fa-rotate-right w-4 mr-2"></i>Restore
     </li>
   </ul>
 </div>

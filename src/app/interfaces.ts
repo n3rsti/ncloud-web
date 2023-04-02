@@ -8,6 +8,7 @@ export interface ModalConfig {
 export interface ModalField {
   type: string
   value: string | number
+  name?: string;
 
   additionalData?: Record<string, string>
 }
@@ -15,4 +16,5 @@ export interface ModalField {
 export interface ModalOutput {
   subjectName?: string
   value?: string | number
+  formValues?: Record<string, any>;
 }

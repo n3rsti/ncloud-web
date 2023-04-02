@@ -1,4 +1,4 @@
-import {Component, HostListener, Input} from '@angular/core';
+import {Component, ElementRef, HostListener, Input, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {ModalConfig, ModalOutput} from "../../interfaces";
 import {Subject} from "rxjs";
 import {Modal} from "flowbite";
@@ -18,7 +18,7 @@ export class ModalComponent {
       this.onSubmit();
     }
   }
-
+  @ViewChildren("modalInput") modalInput: QueryList<ElementRef<HTMLInputElement>> | undefined;
 
   @Input() inputSubject: Subject<any> = new Subject();
   @Input() outputSubject: Subject<any> = new Subject();
@@ -37,7 +37,24 @@ export class ModalComponent {
       subjectName: this.Config?.subjectName,
       value: this.Config?.data
     }
+
+    let formValues: Record<string, any> = {};
+    if(this.modalInput){
+      this.modalInput.forEach(element => {
+        formValues[element.nativeElement.name] = element.nativeElement.value;
+      })
+
+      output.formValues = formValues;
+    }
+
+
+
+
+
     this.outputSubject.next(output);
     this.opened = false;
+
+
+
   }
 }

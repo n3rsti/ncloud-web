@@ -9,6 +9,9 @@
     <form class="space-y-6 flex flex-col" action="#">
       <ng-container *ngFor="let field of Config.fields">
         <p *ngIf="field.type === 'text'">{{ field.value }}</p>
+        <input #modalInput *ngIf="field.type === 'input-text'" type="text" [name]="field.name" [id]="field.name"
+               [value]="field.value"
+               class="md:min-w-[600px] bg-gray-50 border font-medium border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
         <button type="submit" *ngIf="field.type === 'button'" (click)="onSubmit()"
                 class="w-full self-end text-white bg-{{ field.additionalData?.['color'] || 'indigo-700' }} hover:bg-{{ field.additionalData?.['hover'] || 'indigo-800' }} focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">
           {{ field.value }}
