@@ -14,6 +14,9 @@ export class ModalComponent {
     if(event.key === 'Escape'){
       this.opened = false;
     }
+    if(event.key === 'Enter'){
+      this.onSubmit();
+    }
   }
 
 
