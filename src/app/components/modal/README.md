@@ -59,3 +59,7 @@ Example of output from modal to rename file (id: 123)
 
 On modal submit, all `{name: value}` records from fields marked as `#modalInput` are collected and put into
 output dictionary. If there are no inputs, `formValues` field isn't sent in output subject.
+
+After sending data to subject, modal is closed. Parent component receives data and does whatever it needs to do.
+Modal component is completely separated from taking any actions (http requests, changing data). It is only
+used to transfer data between modal and its parent component.
