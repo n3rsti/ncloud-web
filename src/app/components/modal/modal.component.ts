@@ -34,7 +34,7 @@ export class ModalComponent {
 
   onSubmit(){
     let output: ModalOutput = {
-      subjectName: this.Config?.subjectName,
+      subjectName: this.Config?.subjectName || '',
       value: this.Config?.data
     }
 

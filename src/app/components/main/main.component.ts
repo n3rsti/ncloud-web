@@ -127,6 +127,7 @@ export class MainComponent {
       }
     )
 
+    // Subject for receiving data from modal. See app-modal for more informations
     this.outputModalSubject.subscribe((data: ModalOutput) => {
       let file = null;
       switch (data.subjectName) {
@@ -314,6 +315,7 @@ export class MainComponent {
     }
   }
 
+  // openContextMenu function opens context menu and sets contextMenuId value to INDEX of file in file list
   openContextMenu(event: any, id: number) {
     event.preventDefault();
 
@@ -337,22 +339,6 @@ export class MainComponent {
 
     this.contextMenu.nativeElement.classList.add("scale-0");
     this.contextMenu.nativeElement.style.transform = null;
-  }
-
-  isClickedInsideElement(event: any, idName: string) {
-    let el = event.target || event.src;
-
-
-    if (el.id == idName) {
-      return true;
-    }
-    while (el = el.parentNode) {
-      if (el && el.id == idName) {
-        return true;
-      }
-    }
-
-    return false;
   }
 
   getImgDetails(event: any, file: FileModel) {
