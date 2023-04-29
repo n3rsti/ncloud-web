@@ -16,6 +16,7 @@ import { FileCarouselComponent } from './components/file-carousel/file-carousel.
 import { SideNavbarComponent } from './components/side-navbar/side-navbar.component';
 import { FileDetailsComponent } from './components/file-details/file-details.component';
 import { ModalComponent } from './components/modal/modal.component';
+import { FileComponent } from './components/file/file.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { ModalComponent } from './components/modal/modal.component';
     SideNavbarComponent,
     FileDetailsComponent,
     ModalComponent,
+    FileComponent,
   ],
   imports: [
     BrowserModule,

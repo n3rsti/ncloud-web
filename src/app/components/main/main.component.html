@@ -15,7 +15,8 @@
   <main class="p-3 w-full">
     <div
       class="grid grid-cols-8 max-2xl:grid-cols-6 max-xl:grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-3 max-sm:grid-cols-2 gap-2 mb-5">
-      <button *ngFor="let dir of directory.directories; let i = index" (dblclick)="this.router.navigate(['/' + dir.id])" (contextmenu)="openContextMenu($event, i, contextMenuConstants.DIRECTORY)"
+      <button *ngFor="let dir of directory.directories; let i = index" (dblclick)="this.router.navigate(['/' + dir.id])"
+              (contextmenu)="openContextMenu($event, i, contextMenuConstants.DIRECTORY)"
               class="bg-white border border-gray-200 rounded-lg hover:bg-gray-100 dark:bg-gray-800
        dark:border-gray-700 dark:hover:bg-gray-700 flex flex-col justify-center items-center h-24 w-full cursor-pointer mr-3 cursor-default focus:bg-gray-200">
         <i class="fa-solid fa-folder text-indigo-700 text-4xl mb-1"></i>
@@ -29,22 +30,13 @@
         <h3 class="text-sm text-gray-600 font-semibold">Create new folder</h3>
       </label>
     </div>
+
     <div
       class="grid grid-cols-8 max-2xl:grid-cols-6 max-xl:grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-3 max-sm:grid-cols-2 gap-2 last-of-type:mb-16">
-      <button *ngFor="let file of directory.files; let i = index" (keydown)="onFileKeydown($event, i)"
-              (dblclick)="openFileCarousel(i);" (contextmenu)="openContextMenu($event, i, contextMenuConstants.FILE)"
-              (keydown.shift.delete)="openPermanentlyDeleteModal(file.id)"
-              class="pb-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 dark:bg-gray-800
-       dark:border-gray-700 dark:hover:bg-gray-700 flex flex-col justify-center items-center w-full cursor-default focus:bg-gray-200 context-menu-clickable">
-        <img [src]="file.src" alt="" *ngIf="file.src !== ''" class="w-full h-32 object-cover context-menu-clickable"
-             (load)="getImgDetails($event, file)">
-        <div *ngIf="file.src === ''" class="flex h-32 items-center context-menu-clickable">
-          <i class="fa-solid fa-file text-indigo-700 text-6xl mb-1"></i>
-        </div>
-
-        <p [title]="file.name"
-           class="text-sm text-gray-600 font-medium w-full whitespace-nowrap overflow-hidden overflow-ellipsis text-center mt-2 px-3 cursor-default context-menu-clickable">{{ file.name }}</p>
-      </button>
+      <app-file *ngFor="let file of directory.files; let i = index" [file]="file"
+                (keydown)="onFileKeydown($event, i)" (dblclick)="openFileCarousel(i);"
+                (contextmenu)="openContextMenu($event, i, contextMenuConstants.FILE)"
+                (keydown.shift.delete)="openPermanentlyDeleteModal(file.id)"></app-file>
     </div>
     <section [ngClass]="{'scale-0': !fileUploadPanelOpened, 'opacity-30': !fileUploadPanelOpened}"
              class="max-sm:hidden fixed right-6 border border-indigo-700 bottom-24 bg-white p-3 rounded rounded-lg w-96 h-80 transition-opacity"
@@ -155,8 +147,9 @@
       <li class="flex items-center bg-red-600 text-white cursor-pointer hover:bg-red-700 py-2 pl-4" *ngIf="isTrash"><i
         class="fa-solid fa-trash w-4 mr-2"></i>Delete
       </li>
-      <li class="flex items-center bg-green-400 text-white cursor-pointer hover:bg-green-500 py-2 pl-4" *ngIf="isTrash"><i
-        class="fa-solid fa-rotate-right w-4 mr-2"></i>Restore
+      <li class="flex items-center bg-green-400 text-white cursor-pointer hover:bg-green-500 py-2 pl-4" *ngIf="isTrash">
+        <i
+          class="fa-solid fa-rotate-right w-4 mr-2"></i>Restore
       </li>
     </ng-container>
 

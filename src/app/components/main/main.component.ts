@@ -318,6 +318,7 @@ export class MainComponent {
 
   // openContextMenu function opens context menu and sets contextMenuId value to INDEX of file in file list
   openContextMenu(event: any, id: number, type: string) {
+    console.log(id, type)
     event.preventDefault();
 
     this.contextMenuId = id;
@@ -329,7 +330,10 @@ export class MainComponent {
     }
 
     this.contextMenu.nativeElement.classList.remove("scale-0");
-    this.contextMenu.nativeElement.style.transform = `translate(${event.x}px, ${event.y}px)`;
+    this.contextMenu.nativeElement.style.transform = `translate(${event.pageX}px, ${event.pageY}px)`;
+
+    console.log(event.x, event.y)
+    console.log(event)
 
   }
 
@@ -342,20 +346,6 @@ export class MainComponent {
 
     this.contextMenu.nativeElement.classList.add("scale-0");
     this.contextMenu.nativeElement.style.transform = null;
-  }
-
-  getImgDetails(event: any, file: FileModel) {
-    const img = event.target;
-
-    if (file.additional_data == null) {
-      file.additional_data = [
-        {name: 'Resolution', value: `${img.naturalWidth}x${img.naturalHeight}`}
-      ]
-    } else {
-      file.additional_data.push(
-        {name: 'Resolution', value: `${img.naturalWidth}x${img.naturalHeight}`}
-      )
-    }
   }
 
   permanentlyDeleteFile(file: FileModel) {
