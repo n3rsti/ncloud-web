@@ -29,10 +29,10 @@
 
     <div
       class="grid grid-cols-8 max-2xl:grid-cols-6 max-xl:grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-3 max-sm:grid-cols-2 gap-2 last-of-type:mb-16">
-      <app-file *ngFor="let file of directory.files; let i = index" [file]="file"
+      <app-file-tile *ngFor="let file of directory.files; let i = index" [file]="file"
                 (keydown)="onFileKeydown($event, i)" (dblclick)="openFileCarousel(i);"
                 (contextmenu)="openContextMenu($event, i, contextMenuConstants.FILE)"
-                (keydown.shift.delete)="openPermanentlyDeleteModal(file.id)"></app-file>
+                (keydown.shift.delete)="openPermanentlyDeleteModal(file.id)"></app-file-tile>
     </div>
     <section [ngClass]="{'scale-0': !fileUploadPanelOpened, 'opacity-30': !fileUploadPanelOpened}"
              class="max-sm:hidden fixed right-6 border border-indigo-700 bottom-24 bg-white p-3 rounded rounded-lg w-96 h-80 transition-opacity"

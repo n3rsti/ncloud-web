@@ -1,5 +1,5 @@
 <button
-        class="pb-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 dark:bg-gray-800
+  class="pb-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 dark:bg-gray-800
        dark:border-gray-700 dark:hover:bg-gray-700 flex flex-col justify-center items-center w-full cursor-default focus:bg-gray-200 context-menu-clickable">
   <img [src]="file.src" alt="" *ngIf="file.src !== ''" class="w-full h-32 object-cover context-menu-clickable"
        (load)="getImgDetails($event, file)">
