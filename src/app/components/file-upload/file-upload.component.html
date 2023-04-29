@@ -1,0 +1,45 @@
+<section [ngClass]="{'scale-0': !fileUploadPanelOpened, 'opacity-30': !fileUploadPanelOpened}"
+         class="max-sm:hidden fixed right-6 border border-indigo-700 bottom-24 bg-white p-3 rounded rounded-lg w-96 h-80 transition-opacity"
+         (drop)="fileInputDrop($event)" (dragover)="preventEvent($event)" (dragenter)="preventEvent($event)">
+  <form class="h-full">
+    <label class="block text-sm font-medium text-gray-700 sr-only">Upload file</label>
+    <div class="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6 h-full">
+      <div class="space-y-1 text-center flex flex-col justify-center">
+        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48"
+             aria-hidden="true">
+          <path
+            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="flex text-sm text-gray-600">
+          <label for="file-upload"
+                 class="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500">
+            <span>Choose files</span>
+            <input id="file-upload" name="file-upload" type="file" class="sr-only"
+                   (change)="fileUploadChange($event)">
+          </label>
+          <p class="pl-1">or drag and drop</p>
+        </div>
+        <p class="text-xs text-gray-500">Files up to 8MB</p>
+      </div>
+    </div>
+  </form>
+</section>
+<section [ngClass]="{'translate-y-full': !fileUploadPanelOpened}"
+         class="z-10 fixed bottom-0 left-0 w-full bg-white rounded-t rounded-xl p-5 border-t border-indigo-700 transition-all hidden max-sm:block">
+  <div class="flex items-end mb-3">
+    <label for="file-upload" class="text-lg font-bold mb-0 mr-auto">Select files</label>
+    <button (click)="fileUploadPanelOpened = false" class="btn btn-sm btn-circle">✕</button>
+  </div>
+  <form action="" (ngSubmit)="mobileFileUpload($event)">
+    <input type="file" name="file-upload" id="file-upload" multiple>
+    <button type="submit"
+            class="mt-3 w-full text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">
+      Upload
+    </button>
+  </form>
+</section>
+<button (click)="fileUploadPanelOpened = !fileUploadPanelOpened"
+        class="fixed bottom-6 right-6 w-14 h-14 bg-indigo-700 hover:bg-indigo-800 rounded rounded-xl text-white max-md:bottom-20">
+  <i
+    class="fa-solid fa-upload"></i></button>

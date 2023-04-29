@@ -18,6 +18,7 @@ import { FileDetailsComponent } from './components/file-details/file-details.com
 import { ModalComponent } from './components/modal/modal.component';
 import { DirectoryTileComponent } from './components/directory-tile/directory-tile.component';
 import { FileTileComponent } from './components/file-tile/file-tile.component';
+import { FileUploadComponent } from './components/file-upload/file-upload.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { FileTileComponent } from './components/file-tile/file-tile.component';
     ModalComponent,
     DirectoryTileComponent,
     FileTileComponent,
+    FileUploadComponent,
   ],
   imports: [
     BrowserModule,
