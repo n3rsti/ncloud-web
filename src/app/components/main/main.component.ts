@@ -8,6 +8,7 @@ import {Subject} from "rxjs";
 import {FileBuilder, FileModel} from "../../models/file.model";
 import {ModalConfig, ModalOutput} from "../../interfaces";
 import {decodeJWT} from "../../utils";
+import {ContextMenuConstants} from "../../constants";
 
 let deleteModalConfig: ModalConfig = {
   subjectName: 'deleteFile',
@@ -91,6 +92,7 @@ const FILES_TO_DOWNLOAD = [
   styleUrls: ['./main.component.scss']
 })
 export class MainComponent {
+  contextMenuConstants = ContextMenuConstants
 
   // Used in input to create a new directory
   newDirectoryName = new FormControl('');
@@ -105,6 +107,7 @@ export class MainComponent {
 
 
   contextMenuId = 0;
+  contextMenuType = "";
   @ViewChild('contextMenu', {static: false}) contextMenu: ElementRef | undefined;
 
   constructor(private data: DataService, public sanitizer: DomSanitizer, private route: ActivatedRoute, public router: Router) {
@@ -314,10 +317,12 @@ export class MainComponent {
   }
 
   // openContextMenu function opens context menu and sets contextMenuId value to INDEX of file in file list
-  openContextMenu(event: any, id: number) {
+  openContextMenu(event: any, id: number, type: string) {
     event.preventDefault();
 
     this.contextMenuId = id;
+    this.contextMenuType = type;
+
 
     if (!this.contextMenu) {
       return;
