@@ -17,6 +17,7 @@ import { SideNavbarComponent } from './components/side-navbar/side-navbar.compon
 import { FileDetailsComponent } from './components/file-details/file-details.component';
 import { ModalComponent } from './components/modal/modal.component';
 import { FileComponent } from './components/file/file.component';
+import { DirectoryTileComponent } from './components/directory-tile/directory-tile.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { FileComponent } from './components/file/file.component';
     FileDetailsComponent,
     ModalComponent,
     FileComponent,
+    DirectoryTileComponent,
   ],
   imports: [
     BrowserModule,
