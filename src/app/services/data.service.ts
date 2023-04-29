@@ -113,6 +113,8 @@ export class DataService {
           .setId(file.id)
           .setAccessKey(file.access_key)
           .setParentDirectory(file.parent_directory)
+          .setSize(file.size)
+          .setType(file.type)
           .build();
       })))
     );

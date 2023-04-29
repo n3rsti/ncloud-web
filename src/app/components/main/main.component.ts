@@ -288,8 +288,6 @@ export class MainComponent {
             } else {
               newFile.src = '';
             }
-            newFile.type = files[i].type;
-
             this.directory.files.push(newFile)
 
           }, false)
