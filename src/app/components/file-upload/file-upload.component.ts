@@ -34,7 +34,6 @@ export class FileUploadComponent {
   }
 
   uploadFiles(files: FileList) {
-    console.log(1)
     this.data.uploadFiles(files, this.directory).subscribe({
       next: (data: FileModel[]) => {
         // Combine data from API Response (id, name) with data from HTML Input (src, type)

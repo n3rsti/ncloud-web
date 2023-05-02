@@ -79,6 +79,11 @@ let renameFileModalConfig: ModalConfig = {
   ]
 }
 
+let renameDirectoryModalConfig: ModalConfig = Object.create(renameFileModalConfig)
+renameDirectoryModalConfig.subjectName = 'renameDirectory';
+renameDirectoryModalConfig.title = 'Rename Directory'
+renameDirectoryModalConfig.fields[0].value = 'Do you want to rename the directory?';
+
 
 const FILES_TO_DOWNLOAD = [
   'image/jpeg',
@@ -161,6 +166,24 @@ export class MainComponent {
           }
 
           break;
+        case 'renameDirectory':
+          if (!data.formValues) {
+            return
+          }
+          let dir = this.directory.directories.find(x => x.id == data.value);
+
+          if(!dir){
+            return;
+          }
+
+          const dirToUpdate = new DirectoryBuilder()
+            .setAccessKey(dir.access_key)
+            .setName(data.formValues['name'])
+            .setId(dir.id)
+            .build();
+          this.updateDirectory(dirToUpdate);
+
+          break;
 
         default:
           console.log(data);
@@ -174,6 +197,7 @@ export class MainComponent {
   // Subjects for opening file carousel and file details
   fileCarouselSubject: Subject<any> = new Subject();
   fileDetailsSubject: Subject<any> = new Subject();
+
   openFileCarousel(counter: number) {
     this.fileCarouselSubject.next(counter);
   }
@@ -206,9 +230,15 @@ export class MainComponent {
     this.openModal(restoreFileModalConfig);
   }
 
+  openRenameDirectoryModal() {
+    renameDirectoryModalConfig.data = this.directory.directories[this.contextMenuId].id;
+    renameDirectoryModalConfig.fields[1].value = this.directory.directories[this.contextMenuId].name;
+    this.openModal(renameDirectoryModalConfig);
+  }
+
   openRenameFileModal(id: string) {
     renameFileModalConfig.data = id;
-    renameFileModalConfig.fields[1].value = this.directory.files.find(x => x.id == id)?.name || '';
+    renameFileModalConfig.fields[1].value = this.directory.files[this.contextMenuId].name;
     this.openModal(renameFileModalConfig);
   }
 
@@ -252,6 +282,7 @@ export class MainComponent {
       })
     }
   }
+
   // openContextMenu function opens context menu and sets contextMenuId value to INDEX of file in file list
   openContextMenu(event: any, id: number, type: string) {
     console.log(id, type)
@@ -324,14 +355,28 @@ export class MainComponent {
           }
 
           // Check if file name was changed and update it in template
-          let changedDirectory = this.directory.files.find(x => x.id == file.id);
-          if (changedDirectory && changedDirectory.name != file.name) {
-            changedDirectory.name = file.name;
+          let changedFile = this.directory.files.find(x => x.id == file.id);
+          if (changedFile && changedFile.name != file.name) {
+            changedFile.name = file.name;
           }
         }
       }
     })
   }
+
+  updateDirectory(directory: Directory){
+    return this.data.updateDirectory(directory).subscribe({
+      next: (data) => {
+        if(data.status === 204){
+          let directoryBeforeUpdate = this.directory.directories.find(x => x.id === directory.id);
+          if(directoryBeforeUpdate && directoryBeforeUpdate.name !== directory.name){
+            directoryBeforeUpdate.name = directory.name;
+          }
+        }
+      }
+    })
+  }
+
   // Event when user uses keyboard key on file
   onFileKeydown(event: KeyboardEvent, index: number) {
     if (event.key === "F1") {

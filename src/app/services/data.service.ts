@@ -23,13 +23,13 @@ export class DataService {
     )
   }
 
-  refreshToken(){
+  refreshToken() {
     return this.http.get(`${Config.Host}/api/token/refresh`, {observe: 'response'});
   }
 
-  getDirectory(directoryId: string){
+  getDirectory(directoryId: string) {
     let reqUrl = `${Config.Host}/api/directories`;
-    if(directoryId){
+    if (directoryId) {
       reqUrl += '/' + directoryId;
     }
 
@@ -73,7 +73,7 @@ export class DataService {
 
   }
 
-  getFile(file: FileModel){
+  getFile(file: FileModel) {
     let headers = new HttpHeaders({
       'FileAccessKey': file.access_key
     })
@@ -81,7 +81,7 @@ export class DataService {
     return this.http.get(Config.Host + `/files/${file.id}`, {responseType: 'blob', observe: 'body', headers: headers});
   }
 
-  createDirectory(newDirectory: Directory, accessKey: string){
+  createDirectory(newDirectory: Directory, accessKey: string) {
     let headers = new HttpHeaders({
       'DirectoryAccessKey': accessKey
     })
@@ -98,7 +98,7 @@ export class DataService {
     )
   }
 
-  uploadFiles(files: FileList, directory: Directory){
+  uploadFiles(files: FileList, directory: Directory) {
     let headers = new HttpHeaders({
       'DirectoryAccessKey': directory.access_key
     })
@@ -120,11 +120,11 @@ export class DataService {
     );
   }
 
-  updateFile(file: FileModel, directoryAccessKey?: string){
+  updateFile(file: FileModel, directoryAccessKey?: string) {
     let headers = new HttpHeaders({
       'FileAccessKey': file.access_key
     })
-    if(directoryAccessKey){
+    if (directoryAccessKey) {
       headers = headers.set('DirectoryAccessKey', directoryAccessKey);
     }
     return this.http.patch(Config.Host + `/api/files/${file.id}`,
@@ -136,13 +136,30 @@ export class DataService {
       {headers: headers, observe: 'response'})
   }
 
-  deleteFile(file: FileModel){
-    console.log(file)
+  deleteFile(file: FileModel) {
     let headers = new HttpHeaders({
       'FileAccessKey': file.access_key
     })
 
     return this.http.delete(Config.Host + `/api/files/${file.id}`, {headers: headers, observe: 'response'})
+  }
+
+  updateDirectory(directory: Directory) {
+    let headers = new HttpHeaders({
+      'DirectoryAccessKey': directory.access_key
+    })
+
+    return this.http.patch(Config.Host + `/api/directories/${directory.id}`,
+      {
+        "name": directory.name,
+        "parent_directory": directory.parent_directory
+      },
+      {
+        headers: headers,
+        observe: 'response'
+      }
+    )
+
   }
 
 
