@@ -14,12 +14,12 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { MainWrapperComponent } from './components/main-wrapper/main-wrapper.component';
 import { FileCarouselComponent } from './components/file-carousel/file-carousel.component';
 import { SideNavbarComponent } from './components/side-navbar/side-navbar.component';
-import { FileDetailsComponent } from './components/file-details/file-details.component';
 import { ModalComponent } from './components/modal/modal.component';
 import { DirectoryTileComponent } from './components/directory-tile/directory-tile.component';
 import { FileTileComponent } from './components/file-tile/file-tile.component';
 import { FileUploadComponent } from './components/file-upload/file-upload.component';
-import { FileDetailsRowComponent } from './components/file-details/file-details-row/file-details-row.component';
+import { ItemDetailsComponent } from './components/item-details/item-details.component';
+import { ItemDetailsRowComponent } from './components/item-details/item-details-row/item-details-row.component';
 
 @NgModule({
   declarations: [
@@ -30,12 +30,12 @@ import { FileDetailsRowComponent } from './components/file-details/file-details-
     MainWrapperComponent,
     FileCarouselComponent,
     SideNavbarComponent,
-    FileDetailsComponent,
     ModalComponent,
     DirectoryTileComponent,
     FileTileComponent,
     FileUploadComponent,
-    FileDetailsRowComponent,
+    ItemDetailsComponent,
+    ItemDetailsRowComponent,
   ],
   imports: [
     BrowserModule,

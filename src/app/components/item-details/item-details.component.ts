@@ -1,16 +1,17 @@
 import {Component, HostListener, Input} from '@angular/core';
-import {FileBuilder, FileModel} from "../../models/file.model";
+import {FileModel} from "../../models/file.model";
+import {Directory} from "../../models/directory.model";
 import {Subject} from "rxjs";
 import {ConstNames} from "../../constants";
-import {Directory} from "../../models/directory.model";
 
 @Component({
-  selector: 'app-file-details',
-  templateUrl: './file-details.component.html',
-  styleUrls: ['./file-details.component.scss']
+  selector: 'app-item-details',
+  templateUrl: './item-details.component.html',
+  styleUrls: ['./item-details.component.scss']
 })
-export class FileDetailsComponent {
+export class ItemDetailsComponent {
   ConstNames = ConstNames
+
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
     if (event.key === 'Escape') {
