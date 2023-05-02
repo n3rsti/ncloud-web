@@ -1,4 +1,4 @@
-export const ContextMenuConstants = {
+export const ConstNames = {
   FILE: "file",
   DIRECTORY: "directory"
 }

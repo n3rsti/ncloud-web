@@ -6,34 +6,22 @@
        class="fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 bg-white w-1/2 shadow sm:rounded-lg overflow-hidden">
     <div class="px-4 py-5 sm:px-6">
       <div class="flex items-center">
-        <h3 class="text-base font-semibold leading-6 text-gray-900">File details</h3>
+        <h3 class="text-base font-semibold leading-6 text-gray-900">{{ title }}</h3>
         <button class="ml-auto btn btn-sm btn-circle" (click)="opened = false">✕</button>
       </div>
     </div>
     <div class="border-t border-gray-200">
-      <dl>
-        <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-          <dt class="text-sm font-medium text-gray-500">Name</dt>
-          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ files[fileCounter].name }}</dd>
-        </div>
-        <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-          <dt class="text-sm font-medium text-gray-500">Size</dt>
-          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ files[fileCounter].humanReadableSize }}</dd>
-        </div>
-        <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-          <dt class="text-sm font-medium text-gray-500">Date created</dt>
-          <dd
-            class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ files[fileCounter].creationDate.toLocaleString() }}</dd>
-        </div>
-        <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6"
-             *ngFor="let data of files[fileCounter].additional_data">
-          <dt class="text-sm font-medium text-gray-500">{{ data.name }}</dt>
-          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ data.value }}</dd>
-        </div>
-        <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-          <dt class="text-sm font-medium text-gray-500">Type</dt>
-          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ files[fileCounter].type }}</dd>
-        </div>
+      <dl *ngIf="type === ConstNames.FILE">
+        <app-file-details-row [name]="'Name'" [value]="files[itemIndex].name"></app-file-details-row>
+        <app-file-details-row [name]="'Size'" [value]="files[itemIndex].humanReadableSize"></app-file-details-row>
+        <app-file-details-row [name]="'Date created'"
+                              [value]="files[itemIndex].creationDate.toLocaleString()"></app-file-details-row>
+        <app-file-details-row *ngFor="let data of files[itemIndex].additional_data" [name]="data.name"
+                              [value]="data.value"></app-file-details-row>
+        <app-file-details-row [name]="'Type'" [value]="files[itemIndex].type"></app-file-details-row>
+      </dl>
+      <dl *ngIf="type === ConstNames.DIRECTORY">
+        <app-file-details-row [name]="'Name'" [value]="directories[itemIndex].name"></app-file-details-row>
       </dl>
     </div>
   </div>

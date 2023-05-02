@@ -8,7 +8,7 @@ import {Subject} from "rxjs";
 import {FileBuilder, FileModel} from "../../models/file.model";
 import {ModalConfig, ModalOutput} from "../../interfaces";
 import {decodeJWT} from "../../utils";
-import {ContextMenuConstants} from "../../constants";
+import {ConstNames} from "../../constants";
 
 let deleteModalConfig: ModalConfig = {
   subjectName: 'deleteFile',
@@ -97,7 +97,7 @@ const FILES_TO_DOWNLOAD = [
   styleUrls: ['./main.component.scss']
 })
 export class MainComponent {
-  contextMenuConstants = ContextMenuConstants
+  contextMenuConstants = ConstNames
 
   // Used in input to create a new directory
   newDirectoryName = new FormControl('');
@@ -202,8 +202,19 @@ export class MainComponent {
     this.fileCarouselSubject.next(counter);
   }
 
-  openFileDetails(i: number) {
-    this.fileDetailsSubject.next(i);
+  openFileDetails(i: number, type: string) {
+    let title = '';
+    if(type === ConstNames.FILE){
+      title = 'File details';
+    }
+    else if(type === ConstNames.DIRECTORY){
+      title = 'Directory details'
+    }
+    this.fileDetailsSubject.next({
+      index: i,
+      type: type,
+      title: title
+    });
   }
 
   // Modal functions
@@ -378,9 +389,9 @@ export class MainComponent {
   }
 
   // Event when user uses keyboard key on file
-  onFileKeydown(event: KeyboardEvent, index: number) {
+  onFileKeydown(event: KeyboardEvent, index: number, type: string) {
     if (event.key === "F1") {
-      this.openFileDetails(index);
+      this.openFileDetails(index, type);
     } else if (event.key === "F2") {
       this.openRenameFileModal(this.directory.files[index].id);
     } else if (event.key === "F4") {

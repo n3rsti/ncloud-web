@@ -30,7 +30,7 @@
     <div
       class="grid grid-cols-8 max-2xl:grid-cols-6 max-xl:grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-3 max-sm:grid-cols-2 gap-2 last-of-type:mb-16">
       <app-file-tile *ngFor="let file of directory.files; let i = index" [file]="file"
-                     (keydown)="onFileKeydown($event, i)" (dblclick)="openFileCarousel(i);"
+                     (keydown)="onFileKeydown($event, i, contextMenuConstants.FILE)" (dblclick)="openFileCarousel(i);"
                      (contextmenu)="openContextMenu($event, i, contextMenuConstants.FILE)"
                      (keydown.shift.delete)="openPermanentlyDeleteModal(file.id)"></app-file-tile>
     </div>
@@ -63,13 +63,13 @@
 </label>
 <app-file-carousel *ngIf="directory.files.length > 0" [files]="directory.files"
                    [openedSubject]="fileCarouselSubject"></app-file-carousel>
-<app-file-details [files]="directory.files" [openedSubject]="fileDetailsSubject"></app-file-details>
+<app-file-details [files]="directory.files" [directories]="directory.directories" [openedSubject]="fileDetailsSubject"></app-file-details>
 <div #contextMenu id="contextMenu"
      class="scale-0 absolute top-0 left-0 bg-white rounded overflow-hidden w-44 text-sm hidden md:block">
   <ul class="text-left font-medium">
     <ng-container *ngIf="contextMenuType === contextMenuConstants.FILE">
       <li class="flex items-center text-gray-600 cursor-pointer hover:bg-gray-100 py-2 pl-4"
-          (click)="openFileDetails(contextMenuId)"><i class="fa-solid fa-circle-info w-4 mr-2"></i>Details
+          (click)="openFileDetails(contextMenuId, contextMenuConstants.FILE)"><i class="fa-solid fa-circle-info w-4 mr-2"></i>Details
       </li>
       <li class="flex items-center text-gray-600 cursor-pointer hover:bg-gray-100 py-2 pl-4"
           (click)="openRenameFileModal(directory.files[contextMenuId].id)"><i class="fa-solid fa-pen w-4 mr-2"></i>Rename
@@ -87,7 +87,7 @@
       </li>
     </ng-container>
     <ng-container *ngIf="contextMenuType === contextMenuConstants.DIRECTORY">
-      <li class="flex items-center text-gray-600 cursor-pointer hover:bg-gray-100 py-2 pl-4">
+      <li class="flex items-center text-gray-600 cursor-pointer hover:bg-gray-100 py-2 pl-4" (click)="openFileDetails(contextMenuId, contextMenuConstants.DIRECTORY)">
         <i class="fa-solid fa-circle-info w-4 mr-2"></i>Details
       </li>
       <li class="flex items-center text-gray-600 cursor-pointer hover:bg-gray-100 py-2 pl-4" (click)="openRenameDirectoryModal()">
