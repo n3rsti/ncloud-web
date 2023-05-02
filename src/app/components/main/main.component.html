@@ -16,6 +16,7 @@
     <div
       class="grid grid-cols-8 max-2xl:grid-cols-6 max-xl:grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-3 max-sm:grid-cols-2 gap-2 mb-5">
       <app-directory-tile *ngFor="let dir of directory.directories; let i = index" [directory]="dir"
+                          (keydown)="onFileKeydown($event, i, contextMenuConstants.DIRECTORY)"
                           (dblclick)="this.router.navigate(['/' + dir.id])"
                           (contextmenu)="openContextMenu($event, i, contextMenuConstants.DIRECTORY)">
       </app-directory-tile>
@@ -72,7 +73,7 @@
           (click)="openFileDetails(contextMenuId, contextMenuConstants.FILE)"><i class="fa-solid fa-circle-info w-4 mr-2"></i>Details
       </li>
       <li class="flex items-center text-gray-600 cursor-pointer hover:bg-gray-100 py-2 pl-4"
-          (click)="openRenameFileModal(directory.files[contextMenuId].id)"><i class="fa-solid fa-pen w-4 mr-2"></i>Rename
+          (click)="openRenameFileModal(contextMenuId)"><i class="fa-solid fa-pen w-4 mr-2"></i>Rename
       </li>
       <li class="flex items-center bg-red-600 text-white cursor-pointer hover:bg-red-700 py-2 pl-4" *ngIf="!isTrash"
           (click)="openDeleteModal(directory.files[contextMenuId].id)"><i class="fa-solid fa-trash w-4 mr-2"></i>Delete
@@ -90,7 +91,7 @@
       <li class="flex items-center text-gray-600 cursor-pointer hover:bg-gray-100 py-2 pl-4" (click)="openFileDetails(contextMenuId, contextMenuConstants.DIRECTORY)">
         <i class="fa-solid fa-circle-info w-4 mr-2"></i>Details
       </li>
-      <li class="flex items-center text-gray-600 cursor-pointer hover:bg-gray-100 py-2 pl-4" (click)="openRenameDirectoryModal()">
+      <li class="flex items-center text-gray-600 cursor-pointer hover:bg-gray-100 py-2 pl-4" (click)="openRenameDirectoryModal(contextMenuId)">
         <i class="fa-solid fa-pen w-4 mr-2"></i>Rename
       </li>
       <li class="flex items-center bg-red-600 text-white cursor-pointer hover:bg-red-700 py-2 pl-4" *ngIf="!isTrash">

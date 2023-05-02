@@ -172,7 +172,7 @@ export class MainComponent {
           }
           let dir = this.directory.directories.find(x => x.id == data.value);
 
-          if(!dir){
+          if (!dir) {
             return;
           }
 
@@ -204,10 +204,9 @@ export class MainComponent {
 
   openFileDetails(i: number, type: string) {
     let title = '';
-    if(type === ConstNames.FILE){
+    if (type === ConstNames.FILE) {
       title = 'File details';
-    }
-    else if(type === ConstNames.DIRECTORY){
+    } else if (type === ConstNames.DIRECTORY) {
       title = 'Directory details'
     }
     this.fileDetailsSubject.next({
@@ -241,15 +240,15 @@ export class MainComponent {
     this.openModal(restoreFileModalConfig);
   }
 
-  openRenameDirectoryModal() {
-    renameDirectoryModalConfig.data = this.directory.directories[this.contextMenuId].id;
-    renameDirectoryModalConfig.fields[1].value = this.directory.directories[this.contextMenuId].name;
+  openRenameDirectoryModal(id: number) {
+    renameDirectoryModalConfig.data = this.directory.directories[id].id;
+    renameDirectoryModalConfig.fields[1].value = this.directory.directories[id].name;
     this.openModal(renameDirectoryModalConfig);
   }
 
-  openRenameFileModal(id: string) {
-    renameFileModalConfig.data = id;
-    renameFileModalConfig.fields[1].value = this.directory.files[this.contextMenuId].name;
+  openRenameFileModal(id: number) {
+    renameFileModalConfig.data = this.directory.files[id].id;
+    renameFileModalConfig.fields[1].value = this.directory.files[id].name;
     this.openModal(renameFileModalConfig);
   }
 
@@ -375,12 +374,12 @@ export class MainComponent {
     })
   }
 
-  updateDirectory(directory: Directory){
+  updateDirectory(directory: Directory) {
     return this.data.updateDirectory(directory).subscribe({
       next: (data) => {
-        if(data.status === 204){
+        if (data.status === 204) {
           let directoryBeforeUpdate = this.directory.directories.find(x => x.id === directory.id);
-          if(directoryBeforeUpdate && directoryBeforeUpdate.name !== directory.name){
+          if (directoryBeforeUpdate && directoryBeforeUpdate.name !== directory.name) {
             directoryBeforeUpdate.name = directory.name;
           }
         }
@@ -390,12 +389,20 @@ export class MainComponent {
 
   // Event when user uses keyboard key on file
   onFileKeydown(event: KeyboardEvent, index: number, type: string) {
-    if (event.key === "F1") {
+    // File hotkeys
+    if (event.key === "F1" && type === ConstNames.FILE) {
       this.openFileDetails(index, type);
-    } else if (event.key === "F2") {
-      this.openRenameFileModal(this.directory.files[index].id);
-    } else if (event.key === "F4") {
+    } else if (event.key === "F2" && type === ConstNames.FILE) {
+      this.openRenameFileModal(index);
+    } else if (event.key === "F4" && type === ConstNames.FILE) {
       this.openDeleteModal(this.directory.files[index].id);
+    }
+    // Directory hotkeys
+    else if (event.key === "F1" && type === ConstNames.DIRECTORY) {
+      this.openFileDetails(index, type);
+    }
+    else if (event.key === "F2" && type === ConstNames.DIRECTORY) {
+      this.openRenameDirectoryModal(index);
     }
   }
 }
