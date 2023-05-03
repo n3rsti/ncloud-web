@@ -1,4 +1,4 @@
-import {Component, ElementRef, HostListener, ViewChild} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {DataService} from "../../services/data.service";
 import {Directory, DirectoryBuilder} from "../../models/directory.model";
 import {DomSanitizer} from "@angular/platform-browser";
@@ -107,7 +107,6 @@ export class MainComponent {
   // Current directory object and ID
   directory: Directory = new DirectoryBuilder().build();
   directoryId: string = '';
-  fileUploadPanelOpened = false;
   isTrash = true;
 
 
@@ -135,7 +134,7 @@ export class MainComponent {
       }
     )
 
-    // Subject for receiving data from modal. See app-modal for more informations
+    // Subject for receiving data from modal. See app-modal for more information
     this.outputModalSubject.subscribe((data: ModalOutput) => {
       let file = null;
       switch (data.subjectName) {
@@ -400,10 +399,24 @@ export class MainComponent {
     // Directory hotkeys
     else if (event.key === "F1" && type === ConstNames.DIRECTORY) {
       this.openFileDetails(index, type);
-    }
-    else if (event.key === "F2" && type === ConstNames.DIRECTORY) {
+    } else if (event.key === "F2" && type === ConstNames.DIRECTORY) {
       this.openRenameDirectoryModal(index);
     }
+  }
+
+  downloadFile(file: FileModel) {
+    this.data.getFile(file).subscribe({
+      next: (data) => {
+        // Convert blob to URL
+        const urlCreator = window.URL || window.webkitURL;
+
+        let link = document.createElement("a");
+        link.href = urlCreator.createObjectURL(data);
+        link.download = file.name;
+        link.click();
+        link.remove();
+      },
+    })
   }
 }
 
