@@ -84,6 +84,25 @@ renameDirectoryModalConfig.subjectName = 'renameDirectory';
 renameDirectoryModalConfig.title = 'Rename Directory'
 renameDirectoryModalConfig.fields[0].value = 'Do you want to rename the directory?';
 
+let createDirectoryModalConfig: ModalConfig = {
+  subjectName: 'createDirectory',
+  title: 'New folder',
+  fields: [
+    {
+      type: 'input-text',
+      value: '',
+      name: 'name',
+      additionalData: {"placeholder": "Example folder name..."}
+    },
+    {
+      type: 'button',
+      value: 'Create new folder',
+      additionalData: {"color": "indigo-700", "hover": "indigo-800"}
+    }
+  ]
+}
+
+
 
 const FILES_TO_DOWNLOAD = [
   'image/jpeg',
@@ -98,11 +117,6 @@ const FILES_TO_DOWNLOAD = [
 })
 export class MainComponent {
   contextMenuConstants = ConstNames
-
-  // Used in input to create a new directory
-  newDirectoryName = new FormControl('');
-  // Toggle for new folder modal
-  // TODO: replace with new app-modal component
   modalToggle = new FormControl('');
   // Current directory object and ID
   directory: Directory = new DirectoryBuilder().build();
@@ -183,6 +197,12 @@ export class MainComponent {
           this.updateDirectory(dirToUpdate);
 
           break;
+        case 'createDirectory':
+          let newFolderName = data.formValues?.["name"];
+          if(newFolderName){
+            this.createDirectory(newFolderName);
+          }
+          break;
 
         default:
           console.log(data);
@@ -220,7 +240,6 @@ export class MainComponent {
   outputModalSubject: Subject<any> = new Subject();
 
   openModal(config: ModalConfig) {
-    console.log(config)
     this.inputModalSubject.next(config);
   }
 
@@ -251,6 +270,10 @@ export class MainComponent {
     this.openModal(renameFileModalConfig);
   }
 
+  openCreateDirectoryModal(){
+    this.openModal(createDirectoryModalConfig);
+  }
+
   getDirectory() {
 
     this.data.getDirectory(this.directoryId).subscribe({
@@ -275,10 +298,9 @@ export class MainComponent {
     })
   }
 
-  newDirectory() {
-    let newDir = new DirectoryBuilder().setName(this.newDirectoryName.value || '').setParentDirectory(this.directory.id);
-
-    if (this.newDirectoryName.value) {
+  createDirectory(name: string) {
+    let newDir = new DirectoryBuilder().setName(name).setParentDirectory(this.directory.id);
+    if (name) {
       this.data.createDirectory(newDir, this.directory.access_key).subscribe({
         next: (data: Directory) => {
           if (data) {
@@ -294,7 +316,6 @@ export class MainComponent {
 
   // openContextMenu function opens context menu and sets contextMenuId value to INDEX of file in file list
   openContextMenu(event: any, id: number, type: string) {
-    console.log(id, type)
     event.preventDefault();
 
     this.contextMenuId = id;
@@ -307,10 +328,6 @@ export class MainComponent {
 
     this.contextMenu.nativeElement.classList.remove("scale-0");
     this.contextMenu.nativeElement.style.transform = `translate(${event.pageX}px, ${event.pageY}px)`;
-
-    console.log(event.x, event.y)
-    console.log(event)
-
   }
 
   closeContextMenu() {

@@ -1,9 +1,9 @@
 <div class="flex mt-5">
   <div class="w-56 flex justify-center max-md:hidden">
-    <label for="folder-modal"
+    <button (click)="openCreateDirectoryModal()"
            class="w-9/12 text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800 cursor-pointer">
       New folder
-    </label>
+    </button>
   </div>
   <div class="flex items-center">
     <h1
@@ -20,12 +20,12 @@
                           (dblclick)="this.router.navigate(['/' + dir.id])"
                           (contextmenu)="openContextMenu($event, i, contextMenuConstants.DIRECTORY)">
       </app-directory-tile>
-      <label for="folder-modal" *ngIf="directory.id && isTrash == false"
+      <button *ngIf="directory.id && isTrash == false" (click)="openCreateDirectoryModal()"
              class="bg-white border border-gray-200 rounded-lg hover:bg-gray-100 dark:bg-gray-800
        dark:border-gray-700 dark:hover:bg-gray-700 flex flex-col justify-center items-center h-24 w-full mr-3 cursor-pointer">
         <i class="fa-solid fa-circle-plus text-indigo-700 text-4xl mb-1"></i>
         <h3 class="text-sm text-gray-600 font-semibold">Create new folder</h3>
-      </label>
+      </button>
     </div>
 
     <div
@@ -38,30 +38,6 @@
     <app-file-upload [directory]="this.directory"></app-file-upload>
   </main>
 </section>
-
-<input [formControl]="modalToggle" type="checkbox" id="folder-modal" class="modal-toggle"/>
-<label for="folder-modal" class="modal transition-none">
-  <label class="modal-box relative bg-white rounded-lg shadow dark:bg-gray-700 transition-none" for="">
-    <div class="flex items-end mb-3">
-      <h3 class="text-lg font-bold mb-0 mr-auto">New folder</h3><label for="folder-modal"
-                                                                       class="btn btn-sm btn-circle">✕</label>
-    </div>
-
-    <form class="space-y-6" action="#" (ngSubmit)="newDirectory()">
-      <div>
-        <label for="directory_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white hidden">Folder
-          name</label>
-        <input [formControl]="newDirectoryName" type="text" name="directory_name" id="directory_name"
-               class="bg-gray-50 border font-medium border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-               placeholder="Example folder name..." required>
-      </div>
-      <button type="submit"
-              class="w-full text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">
-        Create new folder
-      </button>
-    </form>
-  </label>
-</label>
 <app-file-carousel *ngIf="directory.files.length > 0" [files]="directory.files"
                    [openedSubject]="fileCarouselSubject"></app-file-carousel>
 <app-item-details [files]="directory.files" [directories]="directory.directories" [openedSubject]="fileDetailsSubject"></app-item-details>
