@@ -162,6 +162,14 @@ export class DataService {
 
   }
 
+  deleteDirectory(directory: Directory) {
+    let headers = new HttpHeaders({
+      'DirectoryAccessKey': directory.access_key
+    })
+
+    return this.http.delete(Config.Host + `/api/directories/${directory.id}`, {headers: headers, observe: 'response'})
+  }
+
 
 }
 
