@@ -220,6 +220,14 @@ export class MainComponent {
           }
           break;
 
+        case 'permanentlyDeleteDirectory':
+          let directory = this.directory.directories.find(x => x.id == data.value);
+          if(directory){
+            this.deleteDirectory(directory);
+          }
+          
+          break;
+
         default:
           console.log(data);
           break;
@@ -419,6 +427,16 @@ export class MainComponent {
           if (directoryBeforeUpdate && directoryBeforeUpdate.name !== directory.name) {
             directoryBeforeUpdate.name = directory.name;
           }
+        }
+      }
+    })
+  }
+
+  deleteDirectory(directory: Directory){
+    return this.data.deleteDirectory(directory).subscribe({
+      next: (data) => {
+        if(data.status === 204){
+          this.directory.directories = this.directory.directories.filter(x => x.id != directory.id);
         }
       }
     })

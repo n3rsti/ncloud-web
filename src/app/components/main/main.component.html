@@ -22,8 +22,8 @@
                           (keydown.shift.delete)="openPermanentlyDeleteDirectoryModal(dir.id)"
       >
       </app-directory-tile>
-      <button *ngIf="directory.id && isTrash == false" (click)="openCreateDirectoryModal()"
-             class="bg-white border border-gray-200 rounded-lg hover:bg-gray-100 dark:bg-gray-800
+      <button *ngIf="directory.id && !isTrash" (click)="openCreateDirectoryModal()"
+              class="bg-white border border-gray-200 rounded-lg hover:bg-gray-100 dark:bg-gray-800
        dark:border-gray-700 dark:hover:bg-gray-700 flex flex-col justify-center items-center h-24 w-full mr-3 cursor-pointer">
         <i class="fa-solid fa-circle-plus text-indigo-700 text-4xl mb-1"></i>
         <h3 class="text-sm text-gray-600 font-semibold">Create new folder</h3>
