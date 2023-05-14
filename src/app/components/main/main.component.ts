@@ -102,6 +102,22 @@ let createDirectoryModalConfig: ModalConfig = {
   ]
 }
 
+let permanentlyDeleteDirectoryModalConfig: ModalConfig = {
+  subjectName: 'permanentlyDeleteDirectory',
+  title: 'Permanently delete directory',
+  fields: [
+    {
+      type: 'text',
+      value: 'Do you want to permanently delete the folder?'
+    },
+    {
+      type: 'button',
+      value: 'Delete',
+      additionalData: {"color": "red-600", "hover": "red-700"}
+    }
+  ]
+}
+
 
 
 const FILES_TO_DOWNLOAD = [
@@ -274,6 +290,11 @@ export class MainComponent {
     this.openModal(createDirectoryModalConfig);
   }
 
+  openPermanentlyDeleteDirectoryModal(id: string){
+    permanentlyDeleteDirectoryModalConfig.data = id;
+    this.openModal(permanentlyDeleteDirectoryModalConfig);
+  }
+
   getDirectory() {
 
     this.data.getDirectory(this.directoryId).subscribe({
@@ -406,19 +427,31 @@ export class MainComponent {
   // Event when user uses keyboard key on file
   onFileKeydown(event: KeyboardEvent, index: number, type: string) {
     // File hotkeys
-    if (event.key === "F1" && type === ConstNames.FILE) {
-      this.openFileDetails(index, type);
-    } else if (event.key === "F2" && type === ConstNames.FILE) {
-      this.openRenameFileModal(index);
-    } else if (event.key === "F4" && type === ConstNames.FILE) {
-      this.openDeleteModal(this.directory.files[index].id);
+    if(type === ConstNames.FILE){
+      switch(event.key){
+        case "F1":
+          this.openFileDetails(index, type);
+          break;
+        case "F2":
+          this.openRenameFileModal(index);
+          break;
+        case "F4":
+          this.openDeleteModal(this.directory.files[index].id);
+          break;
+      }
     }
     // Directory hotkeys
-    else if (event.key === "F1" && type === ConstNames.DIRECTORY) {
-      this.openFileDetails(index, type);
-    } else if (event.key === "F2" && type === ConstNames.DIRECTORY) {
-      this.openRenameDirectoryModal(index);
+    else if(type === ConstNames.DIRECTORY){
+      switch (event.key){
+        case "F1":
+          this.openFileDetails(index, type);
+          break;
+        case "F2":
+          this.openRenameDirectoryModal(index);
+          break;
+      }
     }
+
   }
 
   downloadFile(file: FileModel) {

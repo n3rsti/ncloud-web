@@ -18,7 +18,9 @@
       <app-directory-tile *ngFor="let dir of directory.directories; let i = index" [directory]="dir"
                           (keydown)="onFileKeydown($event, i, contextMenuConstants.DIRECTORY)"
                           (dblclick)="this.router.navigate(['/' + dir.id])"
-                          (contextmenu)="openContextMenu($event, i, contextMenuConstants.DIRECTORY)">
+                          (contextmenu)="openContextMenu($event, i, contextMenuConstants.DIRECTORY)"
+                          (keydown.shift.delete)="openPermanentlyDeleteDirectoryModal(dir.id)"
+      >
       </app-directory-tile>
       <button *ngIf="directory.id && isTrash == false" (click)="openCreateDirectoryModal()"
              class="bg-white border border-gray-200 rounded-lg hover:bg-gray-100 dark:bg-gray-800
