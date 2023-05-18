@@ -118,6 +118,22 @@ let permanentlyDeleteDirectoryModalConfig: ModalConfig = {
   ]
 }
 
+let deleteDirectoryModalConfig: ModalConfig = {
+  subjectName: 'deleteDirectory',
+  title: 'Delete directory',
+  fields: [
+    {
+      type: 'text',
+      value: 'Do you want to move directory to trash?'
+    },
+    {
+      type: 'button',
+      value: 'Delete',
+      additionalData: {"color": "red-600", "hover": "red-700"}
+    }
+  ]
+}
+
 
 
 const FILES_TO_DOWNLOAD = [
@@ -167,6 +183,7 @@ export class MainComponent {
     // Subject for receiving data from modal. See app-modal for more information
     this.outputModalSubject.subscribe((data: ModalOutput) => {
       let file = null;
+      let directory = null;
       switch (data.subjectName) {
         case 'permanentlyDeleteFile':
           this.permanentlyDeleteFile(this.directory.files.filter(x => x.id == data.value)[0]);
@@ -221,9 +238,16 @@ export class MainComponent {
           break;
 
         case 'permanentlyDeleteDirectory':
-          let directory = this.directory.directories.find(x => x.id == data.value);
+          directory = this.directory.directories.find(x => x.id == data.value);
           if(directory){
             this.permanentlyDeleteDirectory(directory);
+          }
+
+          break;
+        case 'deleteDirectory':
+          directory = this.directory.directories.find(x => x.id == data.value);
+          if(directory){
+            this.deleteDirectory(directory);
           }
 
           break;
@@ -301,6 +325,11 @@ export class MainComponent {
   openPermanentlyDeleteDirectoryModal(id: string){
     permanentlyDeleteDirectoryModalConfig.data = id;
     this.openModal(permanentlyDeleteDirectoryModalConfig);
+  }
+
+  openDeleteDirectoryModal(id: string){
+    deleteDirectoryModalConfig.data = id;
+    this.openModal(deleteDirectoryModalConfig);
   }
 
   getDirectory() {
