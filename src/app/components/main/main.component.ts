@@ -223,9 +223,9 @@ export class MainComponent {
         case 'permanentlyDeleteDirectory':
           let directory = this.directory.directories.find(x => x.id == data.value);
           if(directory){
-            this.deleteDirectory(directory);
+            this.permanentlyDeleteDirectory(directory);
           }
-          
+
           break;
 
         default:
@@ -419,20 +419,42 @@ export class MainComponent {
     })
   }
 
-  updateDirectory(directory: Directory) {
-    return this.data.updateDirectory(directory).subscribe({
+  restoreDirectory(directory: Directory){
+    directory.parent_directory = directory.previous_parent_directory;
+    directory.previous_parent_directory = "";
+
+    this.updateDirectory(directory);
+  }
+
+  deleteDirectory(directory: Directory){
+    const trashAccessKey = localStorage.getItem("trashAccessKey");
+    if (!trashAccessKey)
+      return
+
+
+    directory.previous_parent_directory = directory.parent_directory;
+    directory.parent_directory = decodeJWT(trashAccessKey)["id"];
+
+    this.updateDirectory(directory, trashAccessKey);
+  }
+
+  updateDirectory(directory: Directory, newDirectoryAccessKey?: string) {
+    return this.data.updateDirectory(directory, newDirectoryAccessKey).subscribe({
       next: (data) => {
         if (data.status === 204) {
           let directoryBeforeUpdate = this.directory.directories.find(x => x.id === directory.id);
           if (directoryBeforeUpdate && directoryBeforeUpdate.name !== directory.name) {
             directoryBeforeUpdate.name = directory.name;
           }
+          if(directory.parent_directory != "" && directory.parent_directory != this.directoryId){
+            this.directory.directories = this.directory.directories.filter(x => x.id != directory.id);
+          }
         }
       }
     })
   }
 
-  deleteDirectory(directory: Directory){
+  permanentlyDeleteDirectory(directory: Directory){
     return this.data.deleteDirectory(directory).subscribe({
       next: (data) => {
         if(data.status === 204){

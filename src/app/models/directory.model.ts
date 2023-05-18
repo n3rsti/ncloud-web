@@ -4,6 +4,7 @@ export class Directory {
   private _id: string;
   private _name: string;
   private _parent_directory: string;
+  private _previous_parent_directory: string;
   private _user: string;
   private _directories: Directory[];
   private _files: FileModel[];
@@ -11,7 +12,7 @@ export class Directory {
   private _access_key: string;
 
 
-  constructor(id: string, name: string, parent_directory: string, user: string, directories: Directory[], files: FileModel[], accessKey: string) {
+  constructor(id: string, name: string, parent_directory: string, user: string, directories: Directory[], files: FileModel[], accessKey: string, previousParentDirectory: string) {
     this._id = id;
     this._name = name;
     this._parent_directory = parent_directory;
@@ -19,6 +20,7 @@ export class Directory {
     this._directories = directories;
     this._files = files;
     this._access_key = accessKey;
+    this._previous_parent_directory = previousParentDirectory;
   }
 
 
@@ -79,50 +81,64 @@ export class Directory {
   set access_key(value: string) {
     this._access_key = value;
   }
+
+
+  get previous_parent_directory(): string {
+    return this._previous_parent_directory;
+  }
+
+  set previous_parent_directory(value: string) {
+    this._previous_parent_directory = value;
+  }
 }
 
 export class DirectoryBuilder extends Directory {
   constructor() {
-    super('', '', '', '', [], [], "");
+    super('', '', '', '', [], [], '', '');
   }
 
 
-  setId(id: string){
+  setId(id: string) {
     this.id = id;
     return this;
   }
 
-  setName(name: string){
+  setName(name: string) {
     this.name = name;
     return this;
   }
 
-  setParentDirectory(id: string){
+  setParentDirectory(id: string) {
     this.parent_directory = id;
     return this;
   }
 
-  setUser(id: string){
+  setUser(id: string) {
     this.user = id;
     return this;
   }
 
-  setDirectories(directories: Directory[]){
+  setDirectories(directories: Directory[]) {
     this.directories = directories;
     return this;
   }
 
-  setFiles(files: FileModel[]){
+  setFiles(files: FileModel[]) {
     this.files = files;
     return this;
   }
 
-  setAccessKey(accessKey: string){
+  setAccessKey(accessKey: string) {
     this.access_key = accessKey;
     return this;
   }
 
-  build(){
-    return new Directory(this.id, this.name, this.parent_directory, this.user, this.directories, this.files, this.access_key);
+  setPreviousParentDirectory(previousParentDirectory: string) {
+    this.previous_parent_directory = previousParentDirectory;
+    return this;
+  }
+
+  build() {
+    return new Directory(this.id, this.name, this.parent_directory, this.user, this.directories, this.files, this.access_key, this.previous_parent_directory);
   }
 }

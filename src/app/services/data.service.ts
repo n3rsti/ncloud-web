@@ -144,10 +144,13 @@ export class DataService {
     return this.http.delete(Config.Host + `/api/files/${file.id}`, {headers: headers, observe: 'response'})
   }
 
-  updateDirectory(directory: Directory) {
+  updateDirectory(directory: Directory, newDirectoryAccessKey?: string) {
     let headers = new HttpHeaders({
       'DirectoryAccessKey': directory.access_key
     })
+    if(newDirectoryAccessKey){
+      headers = headers.set('NewDirectoryAccessKey', newDirectoryAccessKey);
+    }
 
     return this.http.patch(Config.Host + `/api/directories/${directory.id}`,
       {
