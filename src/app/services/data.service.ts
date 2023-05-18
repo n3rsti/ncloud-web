@@ -157,7 +157,8 @@ export class DataService {
     return this.http.patch(Config.Host + `/api/directories/${directory.id}`,
       {
         "name": directory.name,
-        "parent_directory": directory.parent_directory
+        "parent_directory": directory.parent_directory,
+        "previous_parent_directory": directory.previous_parent_directory
       },
       {
         headers: headers,

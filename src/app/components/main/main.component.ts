@@ -134,6 +134,22 @@ let deleteDirectoryModalConfig: ModalConfig = {
   ]
 }
 
+let restoreDirectoryModalConfig: ModalConfig = {
+  subjectName: 'restoreDirectory',
+  title: 'Restore directory',
+  fields: [
+    {
+      type: 'text',
+      value: 'Do you want to restore this directory?'
+    },
+    {
+      type: 'button',
+      value: 'Restore',
+      additionalData: {"color": "green-400", "hover": "green-500"}
+    }
+  ]
+}
+
 
 
 const FILES_TO_DOWNLOAD = [
@@ -216,16 +232,16 @@ export class MainComponent {
           if (!data.formValues) {
             return
           }
-          let dir = this.directory.directories.find(x => x.id == data.value);
+          directory = this.directory.directories.find(x => x.id == data.value);
 
-          if (!dir) {
+          if (!directory) {
             return;
           }
 
           const dirToUpdate = new DirectoryBuilder()
-            .setAccessKey(dir.access_key)
+            .setAccessKey(directory.access_key)
             .setName(data.formValues['name'])
-            .setId(dir.id)
+            .setId(directory.id)
             .build();
           this.updateDirectory(dirToUpdate);
 
@@ -250,6 +266,13 @@ export class MainComponent {
             this.deleteDirectory(directory);
           }
 
+          break;
+
+        case 'restoreDirectory':
+          directory = this.directory.directories.find(x => x.id == data.value);
+          if(directory){
+            this.restoreDirectory(directory);
+          }
           break;
 
         default:
@@ -332,10 +355,16 @@ export class MainComponent {
     this.openModal(deleteDirectoryModalConfig);
   }
 
+  openRestoreDirectoryModal(id: string){
+    restoreDirectoryModalConfig.data = id;
+    this.openModal(restoreDirectoryModalConfig);
+  }
+
   getDirectory() {
 
     this.data.getDirectory(this.directoryId).subscribe({
       next: (data: Directory[]) => {
+        console.log(data)
         this.directory = data[0];
         if (this.directory.name === "") {
           this.directory.name = "Main folder";

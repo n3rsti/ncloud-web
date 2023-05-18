@@ -88,7 +88,8 @@
           (click)="openPermanentlyDeleteDirectoryModal(directory.directories[contextMenuId].id)"><i
         class="fa-solid fa-trash w-4 mr-2"></i>Delete
       </li>
-      <li class="flex items-center bg-green-400 text-white cursor-pointer hover:bg-green-500 py-2 pl-4" *ngIf="isTrash">
+      <li class="flex items-center bg-green-400 text-white cursor-pointer hover:bg-green-500 py-2 pl-4" *ngIf="isTrash"
+          (click)="openRestoreDirectoryModal(directory.directories[contextMenuId].id)">
         <i
           class="fa-solid fa-rotate-right w-4 mr-2"></i>Restore
       </li>
