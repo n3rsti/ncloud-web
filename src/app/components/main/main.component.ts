@@ -576,7 +576,13 @@ export class MainComponent {
         file.parent_directory = directoryId;
         this.updateFile(file);
       }
-
+    }
+    else if(this.dragElementType === this.contextMenuConstants.DIRECTORY){
+      let directory = this.directory.directories.find(x => x.id === this.dragElementId);
+      if(directory){
+        directory.parent_directory = directoryId;
+        this.updateDirectory(directory);
+      }
     }
   }
 }

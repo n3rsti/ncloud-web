@@ -21,6 +21,7 @@
                           (contextmenu)="openContextMenu($event, i, contextMenuConstants.DIRECTORY)"
                           (keydown.shift.delete)="openPermanentlyDeleteDirectoryModal(dir.id)"
                           (dropEventEmitter)="moveToDirectory($event)"
+                          (dragstart)="dragElementId = dir.id; dragElementType=contextMenuConstants.DIRECTORY"
       >
       </app-directory-tile>
       <button *ngIf="directory.id && !isTrash" (click)="openCreateDirectoryModal()"
