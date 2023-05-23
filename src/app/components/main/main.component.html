@@ -20,6 +20,7 @@
                           (dblclick)="this.router.navigate(['/' + dir.id])"
                           (contextmenu)="openContextMenu($event, i, contextMenuConstants.DIRECTORY)"
                           (keydown.shift.delete)="openPermanentlyDeleteDirectoryModal(dir.id)"
+                          (dropEventEmitter)="moveToDirectory($event)"
       >
       </app-directory-tile>
       <button *ngIf="directory.id && !isTrash" (click)="openCreateDirectoryModal()"
@@ -35,7 +36,10 @@
       <app-file-tile *ngFor="let file of directory.files; let i = index" [file]="file"
                      (keydown)="onFileKeydown($event, i, contextMenuConstants.FILE)" (dblclick)="openFileCarousel(i);"
                      (contextmenu)="openContextMenu($event, i, contextMenuConstants.FILE)"
-                     (keydown.shift.delete)="openPermanentlyDeleteModal(file.id)"></app-file-tile>
+                     (keydown.shift.delete)="openPermanentlyDeleteModal(file.id)"
+                     (dragstart)="dragElementId = file.id; dragElementType=contextMenuConstants.FILE"
+              draggable="true"
+      ></app-file-tile>
     </div>
     <app-file-upload [directory]="this.directory"></app-file-upload>
   </main>
@@ -45,7 +49,7 @@
 <app-item-details [files]="directory.files" [directories]="directory.directories"
                   [openedSubject]="fileDetailsSubject"></app-item-details>
 <div #contextMenu id="contextMenu"
-     class="scale-0 absolute top-0 left-0 bg-white rounded overflow-hidden w-44 text-sm hidden md:block">
+     class="scale-0 absolute top-0 left-0 bg-white rounded overflow-hidden w-44 text-sm hidden md:block z-20">
   <ul class="text-left font-medium">
     <ng-container *ngIf="contextMenuType === contextMenuConstants.FILE">
       <li class="flex items-center text-gray-600 cursor-pointer hover:bg-gray-100 py-2 pl-4"

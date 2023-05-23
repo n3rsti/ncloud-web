@@ -171,10 +171,12 @@ export class MainComponent {
   directoryId: string = '';
   isTrash = true;
 
-
   contextMenuId = 0;
   contextMenuType = "";
   @ViewChild('contextMenu', {static: false}) contextMenu: ElementRef | undefined;
+
+  dragElementId = "";
+  dragElementType = "";
 
   constructor(private data: DataService, public sanitizer: DomSanitizer, private route: ActivatedRoute, public router: Router) {
   }
@@ -565,6 +567,17 @@ export class MainComponent {
         link.remove();
       },
     })
+  }
+
+  moveToDirectory(directoryId: string) {
+    if(this.dragElementType === this.contextMenuConstants.FILE){
+      let file = this.directory.files.find(x => x.id === this.dragElementId);
+      if(file){
+        file.parent_directory = directoryId;
+        this.updateFile(file);
+      }
+
+    }
   }
 }
 

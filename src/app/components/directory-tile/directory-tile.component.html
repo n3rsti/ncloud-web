@@ -1,6 +1,9 @@
-<button class="bg-white border border-gray-200 rounded-lg hover:bg-gray-100 dark:bg-gray-800
+<button #directoryTile
+  class="drop-target relative bg-white border border-gray-200 rounded-lg hover:bg-gray-100 dark:bg-gray-800
        dark:border-gray-700 dark:hover:bg-gray-700 flex flex-col justify-center items-center h-24 w-full cursor-pointer mr-3 cursor-default focus:bg-gray-200">
-  <i class="fa-solid fa-folder text-indigo-700 text-4xl mb-1"></i>
+  <i class="drop-target fa-solid fa-folder text-indigo-700 text-4xl mb-1"></i>
   <p [title]="directory.name"
-     class="text-sm text-gray-600 font-medium whitespace-nowrap overflow-hidden overflow-ellipsis text-center px-3 w-full">{{ directory.name }}</p>
+     class="drop-target text-sm text-gray-600 font-medium whitespace-nowrap overflow-hidden overflow-ellipsis text-center px-3 w-full">{{ directory.name }}</p>
+
+  <div class="w-full h-24 absolute z-10" (dragenter)="addHoverClass()" (dragleave)="removeHoverClass()" (drop)="dropEvent($event)" (dragover)="$event.preventDefault()"></div>
 </button>

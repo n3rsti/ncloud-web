@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {Directory, DirectoryBuilder} from "../../models/directory.model";
 
 @Component({
@@ -8,4 +8,22 @@ import {Directory, DirectoryBuilder} from "../../models/directory.model";
 })
 export class DirectoryTileComponent {
   @Input() directory: Directory = new DirectoryBuilder().build();
+  @ViewChild('directoryTile', {static: false}) directoryTile: ElementRef | undefined;
+
+  @Output() dropEventEmitter = new EventEmitter<string>();
+
+  addHoverClass() {
+    this.directoryTile?.nativeElement.classList.add("bg-gray-100");
+  }
+
+  removeHoverClass() {
+    this.directoryTile?.nativeElement.classList.remove("bg-gray-100");
+  }
+
+  dropEvent(event: any){
+    event.preventDefault();
+    if(event.dataTransfer.types.length == 0){
+      this.dropEventEmitter.emit(this.directory.id);
+    }
+  }
 }
