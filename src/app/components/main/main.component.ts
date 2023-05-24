@@ -190,9 +190,17 @@ export class MainComponent {
     this.route.params.subscribe(params => {
         if (params["id"]) {
           this.directoryId = params["id"];
+          this.getDirectory();
+        }
+        else if(localStorage.getItem("mainDirectoryId")){
+          this.directoryId = localStorage.getItem("mainDirectoryId") || "";
+          this.router.navigate(['/' + this.directoryId]);
+        }
+        else {
+          this.getDirectory();
         }
 
-        this.getDirectory();
+
         let trashId = decodeJWT(localStorage.getItem("trashAccessKey") || "")["id"];
         this.isTrash = trashId == this.directoryId;
       }
@@ -367,7 +375,12 @@ export class MainComponent {
     this.data.getDirectory(this.directoryId).subscribe({
       next: (data: Directory[]) => {
         console.log(data)
+
         this.directory = data[0];
+        if(this.directoryId == ""){
+          localStorage.setItem("mainDirectoryId", this.directory.id);
+          this.router.navigate(['/' + this.directory.id]);
+        }
         if (this.directory.name === "") {
           this.directory.name = "Main folder";
         }

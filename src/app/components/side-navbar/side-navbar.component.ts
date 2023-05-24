@@ -10,6 +10,7 @@ import {ActivatedRoute} from "@angular/router";
 export class SideNavbarComponent {
   trashId = "";
   currentId = "";
+  mainDirectoryId = "";
 
   constructor(private route: ActivatedRoute) {
     this.route.params.subscribe(params => {
@@ -22,5 +23,6 @@ export class SideNavbarComponent {
     const trashAccessKey = localStorage.getItem("trashAccessKey") || "";
     this.trashId = decodeJWT(trashAccessKey)["id"];
 
+    this.mainDirectoryId = localStorage.getItem("mainDirectoryId") || '';
   }
 }

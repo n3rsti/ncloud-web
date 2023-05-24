@@ -39,7 +39,6 @@ export class LoginComponent {
           localStorage.setItem("refresh_token", data["refresh_token"]);
           localStorage.setItem("username", data["username"]);
           localStorage.setItem("trashAccessKey", data["trash_access_key"]);
-          localStorage.setItem("mainDirAccessKey", data["main_dir_access_key"]);
 
           this.router.navigate([this.returnUrl]);
         }
