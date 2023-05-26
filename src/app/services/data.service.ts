@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Config} from "../config";
 import {map} from "rxjs";
 import {Directory, DirectoryBuilder} from "../models/directory.model";
@@ -174,6 +174,18 @@ export class DataService {
     })
 
     return this.http.delete(Config.Host + `/api/directories/${directory.id}`, {headers: headers, observe: 'response'})
+  }
+
+  searchDirectories(name?: string, parent_directory?: string){
+    let params = new HttpParams();
+    if(name){
+      params = params.set('name', name);
+    }
+    if(parent_directory){
+      params = params.set('parent_directory', parent_directory)
+    }
+
+    return this.http.get(Config.Host + '/api/directories/search/', {params: params})
   }
 
 
