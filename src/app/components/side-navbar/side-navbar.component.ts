@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {decodeJWT} from "../../utils";
 import {ActivatedRoute} from "@angular/router";
+import {Directory, DirectoryBuilder} from "../../models/directory.model";
 
 @Component({
   selector: 'app-side-navbar',
@@ -11,6 +12,7 @@ export class SideNavbarComponent {
   trashId = "";
   currentId = "";
   mainDirectoryId = "";
+  @Input() directory: Directory = new DirectoryBuilder().build();
 
   constructor(private route: ActivatedRoute) {
     this.route.params.subscribe(params => {
