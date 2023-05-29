@@ -74,38 +74,20 @@
     </div>
     <div class="w-full mt-3">
       <ul>
-        <li *ngIf="searchInput.value"
-            class="w-full hover:bg-gray-100 cursor-pointer p-1 py-2 rounded-lg flex items-center list">
-          <i class="fas fa-search w-4 mx-2 text-center"></i>
-          <span class="p-1 text-sm break-words">{{ searchInput.value }}</span>
-          <span class="text-sm ml-auto">Search in this directory</span>
-        </li>
-        <li *ngIf="searchInput.value"
-            class="w-full hover:bg-gray-100 cursor-pointer p-1 py-2 rounded-lg flex items-center list">
-          <i class="fas fa-search w-4 mx-2 text-center"></i>
-          <span class="p-1 text-sm break-words">{{ searchInput.value }}</span>
-          <span class="text-sm ml-auto">Search in all directories</span>
-        </li>
+        <app-search-result *ngIf="searchInput.value" [value]="searchInput.value || ''" [sideText]="'Search in this directory'"></app-search-result>
+        <app-search-result *ngIf="searchInput.value" [value]="searchInput.value || ''" [sideText]="'Search in all directories'"></app-search-result>
 
         <ng-container *ngIf="searchFileResults.length > 0">
           <hr class="m-2">
           <p class="text-sm font-semibold ml-2 my-1">Files</p>
-          <li *ngFor="let file of searchFileResults"
-              class="w-full hover:bg-gray-100 cursor-pointer p-1 py-2 rounded-lg flex items-center list">
-            <i class="fas fa-file w-4 mx-2 text-center"></i>
-            <span class="p-1 text-sm break-words">{{ file.name }}</span>
-          </li>
+          <app-search-result *ngFor="let file of searchFileResults" [value]="file.name" [icon]="'file'"></app-search-result>
         </ng-container>
+
         <ng-container *ngIf="searchFileResults.length > 0 && searchDirectoryResults.length > 0">
           <hr class="m-2">
           <p class="text-sm font-semibold ml-2 my-1">Directories</p>
-          <li *ngFor="let directory of searchDirectoryResults"
-              class="w-full hover:bg-gray-100 cursor-pointer p-1 py-2 rounded-lg flex items-center list">
-            <i class="fas fa-folder w-4 mx-2 text-center"></i>
-            <span class="p-1 text-sm break-words">{{ directory.name }}</span>
-          </li>
+          <app-search-result *ngFor="let directory of searchDirectoryResults" [value]="directory.name" [icon]="'folder'"></app-search-result>
         </ng-container>
-
       </ul>
     </div>
   </div>

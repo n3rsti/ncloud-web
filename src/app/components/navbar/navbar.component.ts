@@ -13,9 +13,11 @@ export class NavbarComponent {
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent){
     if(event.key === '/'){
-      event.preventDefault();
-      this.searchOpened = true;
-      this.search?.nativeElement.querySelector("input").focus();
+      if(!this.searchOpened){
+        event.preventDefault();
+        this.searchOpened = true;
+        this.search?.nativeElement.querySelector("input").focus();
+      }
     }
     else if(event.key === 'Escape'){
       this.searchOpened = false;
