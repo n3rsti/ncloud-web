@@ -5,6 +5,10 @@ import {map} from "rxjs";
 import {Directory, DirectoryBuilder} from "../models/directory.model";
 import {FileBuilder, FileModel} from "../models/file.model";
 
+interface SearchResponse {
+  files: FileModel[];
+  directories: Directory[];
+}
 
 @Injectable({
   providedIn: 'root'
@@ -167,7 +171,9 @@ export class DataService {
     )
 
   }
+  a(){
 
+  }
   deleteDirectory(directory: Directory) {
     let headers = new HttpHeaders({
       'DirectoryAccessKey': directory.access_key
@@ -185,7 +191,26 @@ export class DataService {
       params = params.set('parent_directory', parent_directory)
     }
 
-    return this.http.get(Config.Host + '/api/directories/search/', {params: params})
+    return this.http.get(Config.Host + '/api/directories/search/', {params: params}).pipe(
+      map((data: any) => {
+        return {
+          "Files": data["Files"].map((x: any) => new FileBuilder()
+            .setName(x.name)
+            .setId(x._id)
+            .setParentDirectory(x.parent_directory)
+            .setUser(x.user)
+            .build()
+          ),
+          "Directories": data["Directories"].map((x: any) => new DirectoryBuilder()
+            .setName(x.name)
+            .setId(x._id)
+            .setParentDirectory(x.parent_directory)
+            .setUser(x.user)
+            .build()
+          )
+        }
+      })
+    )
   }
 
 
