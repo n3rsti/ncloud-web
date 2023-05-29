@@ -9,4 +9,5 @@ export class SearchResultComponent {
   @Input() value: string = '';
   @Input() sideText: string = '';
   @Input() icon: string = 'search';
+  @Input() url: string = '';
 }

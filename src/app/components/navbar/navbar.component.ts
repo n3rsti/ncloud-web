@@ -68,4 +68,10 @@ export class NavbarComponent {
     this.searchOpened = true;
     this.search?.nativeElement.querySelector("input").focus();
   }
+
+  resetSearch(){
+    this.searchOpened = false;
+    this.searchFileResults = this.searchDirectoryResults = [];
+    this.searchInput.reset();
+  }
 }

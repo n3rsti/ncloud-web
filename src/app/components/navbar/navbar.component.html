@@ -83,10 +83,11 @@
           <app-search-result *ngFor="let file of searchFileResults" [value]="file.name" [icon]="'file'"></app-search-result>
         </ng-container>
 
-        <ng-container *ngIf="searchFileResults.length > 0 && searchDirectoryResults.length > 0">
+        <ng-container *ngIf="searchDirectoryResults.length > 0">
           <hr class="m-2">
           <p class="text-sm font-semibold ml-2 my-1">Directories</p>
-          <app-search-result *ngFor="let directory of searchDirectoryResults" [value]="directory.name" [icon]="'folder'"></app-search-result>
+          <app-search-result *ngFor="let directory of searchDirectoryResults"
+                             [value]="directory.name" [icon]="'folder'" [url]="directory.id" (click)="resetSearch()"></app-search-result>
         </ng-container>
       </ul>
     </div>
