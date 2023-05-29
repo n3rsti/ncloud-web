@@ -1,6 +1,8 @@
 import {Component, ElementRef, HostListener, ViewChild} from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {DataService} from "../../services/data.service";
+import {FileModel} from "../../models/file.model";
+import {Directory} from "../../models/directory.model";
 
 @Component({
   selector: 'app-navbar',
@@ -25,7 +27,8 @@ export class NavbarComponent {
   searchInput = new FormControl('');
   @ViewChild('search', {static: false}) search: ElementRef | undefined;
 
-  searchResults: object[] = [];
+  searchFileResults: FileModel[] = [];
+  searchDirectoryResults: Directory[] = [];
   searchOpened = false;
 
   constructor(private data: DataService) {
@@ -40,9 +43,13 @@ export class NavbarComponent {
     if(value){
       this.data.searchDirectories(value).subscribe({
         next: (data) => {
-          console.log(data);
+          this.searchFileResults = data.Files
+          this.searchDirectoryResults = data.Directories
         }
       });
+    }
+    else {
+      this.searchFileResults = this.searchDirectoryResults = [];
     }
 
   }

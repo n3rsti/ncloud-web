@@ -64,7 +64,7 @@
   </div>
 </nav>
 <div [class.scale-0]="!searchOpened">
-  <div class="absolute w-full h-full backdrop-blur z-30 left-0 top-0" (click)="searchOpened = false"></div>
+  <div class="absolute w-full h-full bg-black opacity-30 z-30 left-0 top-0" (click)="searchOpened = false"></div>
   <div class="absolute z-40 top-4 w-3/5 left-1/2 -translate-x-1/2 bg-white p-3 rounded-lg border border-gray-100">
     <div #search class="w-full bg-white p-1 border-2 rounded-lg focus:border-indigo-600 flex items-center cursor-text">
       <i class="fas fa-search w-10 text-center"></i>
@@ -76,16 +76,36 @@
       <ul>
         <li *ngIf="searchInput.value"
             class="w-full hover:bg-gray-100 cursor-pointer p-1 py-2 rounded-lg flex items-center list">
-          <i class="fas fa-search w-10 text-center"></i>
+          <i class="fas fa-search w-4 mx-2 text-center"></i>
           <span class="p-1 text-sm break-words">{{ searchInput.value }}</span>
           <span class="text-sm ml-auto">Search in this directory</span>
         </li>
         <li *ngIf="searchInput.value"
             class="w-full hover:bg-gray-100 cursor-pointer p-1 py-2 rounded-lg flex items-center list">
-          <i class="fas fa-search w-10 text-center"></i>
+          <i class="fas fa-search w-4 mx-2 text-center"></i>
           <span class="p-1 text-sm break-words">{{ searchInput.value }}</span>
           <span class="text-sm ml-auto">Search in all directories</span>
         </li>
+
+        <ng-container *ngIf="searchFileResults.length > 0">
+          <hr class="m-2">
+          <p class="text-sm font-semibold ml-2 my-1">Files</p>
+          <li *ngFor="let file of searchFileResults"
+              class="w-full hover:bg-gray-100 cursor-pointer p-1 py-2 rounded-lg flex items-center list">
+            <i class="fas fa-file w-4 mx-2 text-center"></i>
+            <span class="p-1 text-sm break-words">{{ file.name }}</span>
+          </li>
+        </ng-container>
+        <ng-container *ngIf="searchFileResults.length > 0 && searchDirectoryResults.length > 0">
+          <hr class="m-2">
+          <p class="text-sm font-semibold ml-2 my-1">Directories</p>
+          <li *ngFor="let directory of searchDirectoryResults"
+              class="w-full hover:bg-gray-100 cursor-pointer p-1 py-2 rounded-lg flex items-center list">
+            <i class="fas fa-folder w-4 mx-2 text-center"></i>
+            <span class="p-1 text-sm break-words">{{ directory.name }}</span>
+          </li>
+        </ng-container>
+
       </ul>
     </div>
   </div>
