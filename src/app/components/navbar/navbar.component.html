@@ -74,20 +74,25 @@
     </div>
     <div class="w-full mt-3">
       <ul>
-        <app-search-result *ngIf="searchInput.value" [value]="searchInput.value || ''" [sideText]="'Search in this directory'"></app-search-result>
-        <app-search-result *ngIf="searchInput.value" [value]="searchInput.value || ''" [sideText]="'Search in all directories'"></app-search-result>
+        <app-search-result *ngIf="searchInput.value" [value]="searchInput.value || ''"
+                           [sideText]="'Search in this directory'"></app-search-result>
+        <app-search-result *ngIf="searchInput.value" [value]="searchInput.value || ''"
+                           [sideText]="'Search in all directories'"></app-search-result>
 
         <ng-container *ngIf="searchFileResults.length > 0">
           <hr class="m-2">
           <p class="text-sm font-semibold ml-2 my-1">Files</p>
-          <app-search-result *ngFor="let file of searchFileResults" [value]="file.name" [icon]="'file'"></app-search-result>
+          <app-search-result *ngFor="let file of searchFileResults"
+                             [value]="file.name" [icon]="'file'"
+                             (click)="resetSearch()" [routerLink]="file.parent_directory" [queryParams]="{ file: file.id}"></app-search-result>
         </ng-container>
 
         <ng-container *ngIf="searchDirectoryResults.length > 0">
           <hr class="m-2">
           <p class="text-sm font-semibold ml-2 my-1">Directories</p>
           <app-search-result *ngFor="let directory of searchDirectoryResults"
-                             [value]="directory.name" [icon]="'folder'" [url]="directory.id" (click)="resetSearch()"></app-search-result>
+                             [value]="directory.name" [icon]="'folder'" [routerLink]="directory.id"
+                             (click)="resetSearch()"></app-search-result>
         </ng-container>
       </ul>
     </div>

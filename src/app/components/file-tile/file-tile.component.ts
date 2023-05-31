@@ -1,5 +1,6 @@
-import {Component, Input} from '@angular/core';
+import {Component, ElementRef, Input, ViewChild} from '@angular/core';
 import {FileBuilder, FileModel} from "../../models/file.model";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-file-tile',
@@ -8,6 +9,19 @@ import {FileBuilder, FileModel} from "../../models/file.model";
 })
 export class FileTileComponent {
   @Input() file: FileModel = new FileBuilder().build();
+  highlightedFile: string = '';
+
+  @ViewChild('btn', {static: false}) btn: ElementRef | undefined;
+
+
+  constructor(private route: ActivatedRoute) {
+    this.route.queryParams.subscribe(params => {
+      this.highlightedFile = params["file"];
+      if(this.highlightedFile === this.file.id){
+        this.btn?.nativeElement.focus();
+      }
+    })
+  }
 
   getImgDetails(event: any, file: FileModel) {
     const img = event.target;
@@ -20,6 +34,12 @@ export class FileTileComponent {
       file.additional_data.push(
         {name: 'Resolution', value: `${img.naturalWidth}x${img.naturalHeight}`}
       )
+    }
+  }
+
+  ngAfterViewInit(){
+    if(this.highlightedFile === this.file.id){
+      this.btn?.nativeElement.focus();
     }
   }
 }

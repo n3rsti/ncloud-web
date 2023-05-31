@@ -374,9 +374,8 @@ export class MainComponent {
 
     this.data.getDirectory(this.directoryId).subscribe({
       next: (data: Directory[]) => {
-        console.log(data)
-
         this.directory = data[0];
+        console.log(this.directory)
         if(this.directoryId == ""){
           localStorage.setItem("mainDirectoryId", this.directory.id);
           this.router.navigate(['/' + this.directory.id]);

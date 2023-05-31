@@ -1,8 +1,8 @@
-<button draggable="true"
+<button draggable="true" #btn
   class="pb-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 dark:bg-gray-800
        dark:border-gray-700 dark:hover:bg-gray-700 flex flex-col justify-center items-center w-full cursor-default focus:bg-gray-200 context-menu-clickable">
   <img [src]="file.src" alt="" *ngIf="file.src !== ''" class="w-full h-32 object-cover context-menu-clickable"
-       (load)="getImgDetails($event, file)">
+       (load)="getImgDetails($event, file);">
   <div *ngIf="file.src === ''" class="flex h-32 w-full justify-center items-center context-menu-clickable">
     <i class="fa-solid fa-file text-indigo-700 text-6xl mb-1"></i>
   </div>
