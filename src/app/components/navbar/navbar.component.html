@@ -91,7 +91,7 @@
           <hr class="m-2">
           <p class="text-sm font-semibold ml-2 my-1">Directories</p>
           <app-search-result *ngFor="let directory of searchDirectoryResults"
-                             [value]="directory.name" [icon]="'folder'" [routerLink]="directory.id"
+                             [value]="directory.name" [icon]="directory.id === trashId ? 'trash' : directory.id === homeId ? 'inbox' : 'folder'" [routerLink]="directory.id"
                              (click)="resetSearch()"></app-search-result>
         </ng-container>
       </ul>

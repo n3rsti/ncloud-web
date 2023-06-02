@@ -3,6 +3,7 @@ import {FormControl} from "@angular/forms";
 import {DataService} from "../../services/data.service";
 import {FileModel} from "../../models/file.model";
 import {Directory} from "../../models/directory.model";
+import {decodeJWT} from "../../utils";
 
 @Component({
   selector: 'app-navbar',
@@ -68,6 +69,9 @@ export class NavbarComponent {
   searchInput = new FormControl('');
   @ViewChild('search', {static: false}) search: ElementRef | undefined;
 
+
+  homeId = '';
+  trashId = '';
   searchFileResults: FileModel[] = [];
   searchDirectoryResults: Directory[] = [];
   searchOpened = false;
@@ -77,6 +81,8 @@ export class NavbarComponent {
   }
 
   ngOnInit(){
+    this.homeId = localStorage.getItem("mainDirectoryId") || "";
+    this.trashId = decodeJWT(localStorage.getItem("trashAccessKey") || "")["id"];
     this.username = localStorage.getItem("username") || "";
   }
 

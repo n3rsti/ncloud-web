@@ -9,4 +9,12 @@ export class SearchResultComponent {
   @Input() value: string = '';
   @Input() sideText: string = '';
   @Input() icon: string = 'search';
+
+  iconBackground: string = 'text-indigo-600'
+
+  ngOnInit(){
+    if(this.icon === 'trash'){
+      this.iconBackground = 'text-red-600';
+    }
+  }
 }
