@@ -191,7 +191,7 @@ export class DataService {
       params = params.set('parent_directory', parent_directory)
     }
 
-    return this.http.get(Config.Host + '/api/directories/search/', {params: params}).pipe(
+    return this.http.get(Config.Host + '/api/directories/search', {params: params}).pipe(
       map((data: any) => {
         return {
           "Files": data["Files"].map((x: any) => new FileBuilder()
