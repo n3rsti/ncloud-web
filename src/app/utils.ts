@@ -16,6 +16,7 @@ export class FileFormats {
   ];
 
   public static REGEX_TO_ICON: Record<string, string> = {
+    "text/csv": "file-csv",
     "^audio/*": "file-audio",
     "^text/*": "file-lines",
     "application/pdf": "file-pdf",
@@ -33,6 +34,18 @@ export class FileFormats {
   }
 
   public static ICON_TO_COLOR: Record<string, string> = {
-    "file-pdf": "red-500"
+    "file-pdf": "red-500",
+    "file-word": "blue-500"
+  }
+
+  public static getIcon(fileType: string){
+    const keys =  Object.keys(this.REGEX_TO_ICON);
+
+    for(let i = 0; i < keys.length; i++){
+      if(fileType.match(keys[i])){
+        return this.REGEX_TO_ICON[keys[i]];
+      }
+    }
+    return "file"
   }
 }

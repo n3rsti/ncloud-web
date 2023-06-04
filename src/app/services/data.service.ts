@@ -194,18 +194,19 @@ export class DataService {
     return this.http.get(Config.Host + '/api/directories/search', {params: params}).pipe(
       map((data: any) => {
         return {
-          "Files": data["Files"].map((x: any) => new FileBuilder()
-            .setName(x.name)
-            .setId(x._id)
-            .setParentDirectory(x.parent_directory)
-            .setUser(x.user)
+          "Files": data["Files"].map((file: any) => new FileBuilder()
+            .setName(file.name)
+            .setId(file._id)
+            .setParentDirectory(file.parent_directory)
+            .setUser(file.user)
+            .setType(file.type)
             .build()
           ),
-          "Directories": data["Directories"].map((x: any) => new DirectoryBuilder()
-            .setName(x.name)
-            .setId(x._id)
-            .setParentDirectory(x.parent_directory)
-            .setUser(x.user)
+          "Directories": data["Directories"].map((directory: any) => new DirectoryBuilder()
+            .setName(directory.name)
+            .setId(directory._id)
+            .setParentDirectory(directory.parent_directory)
+            .setUser(directory.user)
             .build()
           )
         }

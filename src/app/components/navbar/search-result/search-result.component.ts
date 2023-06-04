@@ -16,5 +16,8 @@ export class SearchResultComponent {
     if(this.icon === 'trash'){
       this.iconBackground = 'text-red-600';
     }
+    else if(this.icon === 'file-pdf'){
+      this.iconBackground = 'text-red-500';
+    }
   }
 }

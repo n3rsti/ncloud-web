@@ -48,18 +48,7 @@ export class FileTileComponent {
   }
 
   ngOnInit() {
-    this.icon = this.getIcon();
+    this.icon = FileFormats.getIcon(this.file.type);
     this.color = FileFormats.ICON_TO_COLOR[this.icon] || "indigo-700";
-  }
-
-  getIcon(){
-    const keys =  Object.keys(FileFormats.REGEX_TO_ICON);
-
-    for(let i = 0; i < keys.length; i++){
-      if(this.file.type.match(keys[i])){
-        return FileFormats.REGEX_TO_ICON[keys[i]];
-      }
-    }
-    return "file"
   }
 }

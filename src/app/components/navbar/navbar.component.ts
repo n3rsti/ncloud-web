@@ -3,7 +3,7 @@ import {FormControl} from "@angular/forms";
 import {DataService} from "../../services/data.service";
 import {FileModel} from "../../models/file.model";
 import {Directory} from "../../models/directory.model";
-import {decodeJWT} from "../../utils";
+import {decodeJWT, FileFormats} from "../../utils";
 
 @Component({
   selector: 'app-navbar',
@@ -47,7 +47,7 @@ export class NavbarComponent {
     else if(event.key === 'ArrowUp'){
       // Prevent text indicator from going back and forth
       event.preventDefault();
-      
+
       if(this.searchOpened && this.searchInput.value){
         let listLength = this.searchFileResults.length + this.searchDirectoryResults.length + 2;
         if(this.searchElementSelected === -1){
@@ -146,4 +146,6 @@ export class NavbarComponent {
   removeSelectedElementClass(){
     document.querySelectorAll("#search_list li")[this.searchElementSelected].classList.remove("bg-gray-200");
   }
+
+  protected readonly FileFormats = FileFormats;
 }
