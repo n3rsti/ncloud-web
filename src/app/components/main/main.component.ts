@@ -7,7 +7,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {Subject} from "rxjs";
 import {FileBuilder, FileModel} from "../../models/file.model";
 import {ModalConfig, ModalOutput} from "../../interfaces";
-import {decodeJWT} from "../../utils";
+import {decodeJWT, FileFormats} from "../../utils";
 import {ConstNames} from "../../constants";
 
 let deleteModalConfig: ModalConfig = {
@@ -150,13 +150,6 @@ let restoreDirectoryModalConfig: ModalConfig = {
   ]
 }
 
-
-
-const FILES_TO_DOWNLOAD = [
-  'image/jpeg',
-  'image/png',
-  'image/bmp'
-]
 
 @Component({
   selector: 'app-main',
@@ -382,7 +375,7 @@ export class MainComponent {
         }
 
         this.directory.files.forEach(file => {
-          if (FILES_TO_DOWNLOAD.includes(file.type)) {
+          if (FileFormats.FILES_TO_DISPLAY.includes(file.type)) {
             this.data.getFile(file).subscribe({
               next: (data) => {
                 // Convert blob to URL
@@ -595,4 +588,3 @@ export class MainComponent {
     }
   }
 }
-
