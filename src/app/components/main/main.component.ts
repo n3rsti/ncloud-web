@@ -380,9 +380,6 @@ export class MainComponent {
           localStorage.setItem("mainDirectoryId", this.directory.id);
           this.router.navigate(['/' + this.directory.id]);
         }
-        if (this.directory.name === "") {
-          this.directory.name = "Main folder";
-        }
 
         this.directory.files.forEach(file => {
           if (FILES_TO_DOWNLOAD.includes(file.type)) {

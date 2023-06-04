@@ -26,6 +26,9 @@ export class NavbarComponent {
     }
     else if(event.key === 'ArrowDown'){
       if(this.searchOpened && this.searchInput.value){
+        // Prevent text indicator from going back and forth
+        event.preventDefault();
+
         if(this.searchElementSelected === -1){
           this.searchElementSelected = 0;
         }
@@ -42,6 +45,9 @@ export class NavbarComponent {
       }
     }
     else if(event.key === 'ArrowUp'){
+      // Prevent text indicator from going back and forth
+      event.preventDefault();
+      
       if(this.searchOpened && this.searchInput.value){
         let listLength = this.searchFileResults.length + this.searchDirectoryResults.length + 2;
         if(this.searchElementSelected === -1){
