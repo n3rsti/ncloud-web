@@ -110,8 +110,10 @@ export class DataService {
     })
 
     let formData = new FormData();
-    formData.append("file", files[0]);
 
+    for(let i = 0; i < files.length; i++){
+      formData.append("upload[]", files[i]);
+    }
     return this.http.post(Config.Host + `/api/upload/${directory.id}`, formData, {headers: headers}).pipe(
       map((data: any) => (data || Array().map((file: any) => {
         return new FileBuilder()
@@ -169,9 +171,6 @@ export class DataService {
         observe: 'response'
       }
     )
-
-  }
-  a(){
 
   }
   deleteDirectory(directory: Directory) {
