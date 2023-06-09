@@ -1,14 +1,14 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
-import {DataService} from "../../services/data.service";
-import {Directory, DirectoryBuilder} from "../../models/directory.model";
-import {DomSanitizer} from "@angular/platform-browser";
-import {FormControl} from "@angular/forms";
-import {ActivatedRoute, Router} from "@angular/router";
-import {Subject} from "rxjs";
-import {FileBuilder, FileModel} from "../../models/file.model";
-import {ModalConfig, ModalOutput} from "../../interfaces";
-import {decodeJWT, FileFormats} from "../../utils";
-import {ConstNames} from "../../constants";
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { DataService } from "../../services/data.service";
+import { Directory, DirectoryBuilder } from "../../models/directory.model";
+import { DomSanitizer } from "@angular/platform-browser";
+import { FormControl } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
+import { Subject } from "rxjs";
+import { FileBuilder, FileModel } from "../../models/file.model";
+import { ModalConfig, ModalOutput } from "../../interfaces";
+import { decodeJWT, FileFormats } from "../../utils";
+import { ConstNames } from "../../constants";
 
 let deleteModalConfig: ModalConfig = {
   subjectName: 'deleteFile',
@@ -21,7 +21,7 @@ let deleteModalConfig: ModalConfig = {
     {
       type: 'button',
       value: 'Delete',
-      additionalData: {"color": "red-600", "hover": "red-700"}
+      additionalData: { "color": "red-600", "hover": "red-700" }
     }
   ]
 }
@@ -37,7 +37,7 @@ let permanentlyDeleteModalConfig: ModalConfig = {
     {
       type: 'button',
       value: 'Delete',
-      additionalData: {"color": "red-600", "hover": "red-700"}
+      additionalData: { "color": "red-600", "hover": "red-700" }
     }
   ]
 }
@@ -53,7 +53,7 @@ let restoreFileModalConfig: ModalConfig = {
     {
       type: 'button',
       value: 'Restore',
-      additionalData: {"color": "green-400", "hover": "green-500"}
+      additionalData: { "color": "green-400", "hover": "green-500" }
     }
   ]
 }
@@ -74,7 +74,7 @@ let renameFileModalConfig: ModalConfig = {
     {
       type: 'button',
       value: 'Rename',
-      additionalData: {"color": "green-400", "hover": "green-500"}
+      additionalData: { "color": "green-400", "hover": "green-500" }
     }
   ]
 }
@@ -92,12 +92,12 @@ let createDirectoryModalConfig: ModalConfig = {
       type: 'input-text',
       value: '',
       name: 'name',
-      additionalData: {"placeholder": "Example folder name..."}
+      additionalData: { "placeholder": "Example folder name..." }
     },
     {
       type: 'button',
       value: 'Create new folder',
-      additionalData: {"color": "indigo-700", "hover": "indigo-800"}
+      additionalData: { "color": "indigo-700", "hover": "indigo-800" }
     }
   ]
 }
@@ -113,7 +113,7 @@ let permanentlyDeleteDirectoryModalConfig: ModalConfig = {
     {
       type: 'button',
       value: 'Delete',
-      additionalData: {"color": "red-600", "hover": "red-700"}
+      additionalData: { "color": "red-600", "hover": "red-700" }
     }
   ]
 }
@@ -129,7 +129,7 @@ let deleteDirectoryModalConfig: ModalConfig = {
     {
       type: 'button',
       value: 'Delete',
-      additionalData: {"color": "red-600", "hover": "red-700"}
+      additionalData: { "color": "red-600", "hover": "red-700" }
     }
   ]
 }
@@ -145,7 +145,7 @@ let restoreDirectoryModalConfig: ModalConfig = {
     {
       type: 'button',
       value: 'Restore',
-      additionalData: {"color": "green-400", "hover": "green-500"}
+      additionalData: { "color": "green-400", "hover": "green-500" }
     }
   ]
 }
@@ -166,7 +166,7 @@ export class MainComponent {
 
   contextMenuId = 0;
   contextMenuType = "";
-  @ViewChild('contextMenu', {static: false}) contextMenu: ElementRef | undefined;
+  @ViewChild('contextMenu', { static: false }) contextMenu: ElementRef | undefined;
 
   dragElementId = "";
   dragElementType = "";
@@ -184,33 +184,33 @@ export class MainComponent {
         this.closeContextMenu();
       }
       let target = e.target as HTMLElement;
-      while(target.parentElement){
-        if(target.classList.contains("utility:keep-selected")){
+      while (target.parentElement) {
+        if (target.classList.contains("utility:keep-selected")) {
           return;
         }
         target = target.parentElement;
       }
       this.selectedFiles.clear();
-      
-    
+
+
     })
     this.route.params.subscribe(params => {
-        if (params["id"]) {
-          this.directoryId = params["id"];
-          this.getDirectory();
-        }
-        else if(localStorage.getItem("mainDirectoryId")){
-          this.directoryId = localStorage.getItem("mainDirectoryId") || "";
-          this.router.navigate(['/' + this.directoryId]);
-        }
-        else {
-          this.getDirectory();
-        }
-
-
-        let trashId = decodeJWT(localStorage.getItem("trashAccessKey") || "")["id"];
-        this.isTrash = trashId == this.directoryId;
+      if (params["id"]) {
+        this.directoryId = params["id"];
+        this.getDirectory();
       }
+      else if (localStorage.getItem("mainDirectoryId")) {
+        this.directoryId = localStorage.getItem("mainDirectoryId") || "";
+        this.router.navigate(['/' + this.directoryId]);
+      }
+      else {
+        this.getDirectory();
+      }
+
+
+      let trashId = decodeJWT(localStorage.getItem("trashAccessKey") || "")["id"];
+      this.isTrash = trashId == this.directoryId;
+    }
     )
 
     // Subject for receiving data from modal. See app-modal for more information
@@ -267,21 +267,21 @@ export class MainComponent {
           break;
         case 'createDirectory':
           let newFolderName = data.formValues?.["name"];
-          if(newFolderName){
+          if (newFolderName) {
             this.createDirectory(newFolderName);
           }
           break;
 
         case 'permanentlyDeleteDirectory':
           directory = this.directory.directories.find(x => x.id == data.value);
-          if(directory){
+          if (directory) {
             this.permanentlyDeleteDirectory(directory);
           }
 
           break;
         case 'deleteDirectory':
           directory = this.directory.directories.find(x => x.id == data.value);
-          if(directory){
+          if (directory) {
             this.deleteDirectory(directory);
           }
 
@@ -289,7 +289,7 @@ export class MainComponent {
 
         case 'restoreDirectory':
           directory = this.directory.directories.find(x => x.id == data.value);
-          if(directory){
+          if (directory) {
             this.restoreDirectory(directory);
           }
           break;
@@ -334,13 +334,13 @@ export class MainComponent {
   }
 
   openPermanentlyDeleteModal() {
-    if(this.selectedFiles.size > 1){
+    if (this.selectedFiles.size > 1) {
       permanentlyDeleteModalConfig.fields[0].value = `Do you want to permanently delete ${this.selectedFiles.size} files?`
     }
     else {
       permanentlyDeleteModalConfig.fields[0].value = 'Do you want to permanently delete the file?'
     }
-    
+
     this.openModal(permanentlyDeleteModalConfig);
   }
 
@@ -366,21 +366,21 @@ export class MainComponent {
     this.openModal(renameFileModalConfig);
   }
 
-  openCreateDirectoryModal(){
+  openCreateDirectoryModal() {
     this.openModal(createDirectoryModalConfig);
   }
 
-  openPermanentlyDeleteDirectoryModal(id: string){
+  openPermanentlyDeleteDirectoryModal(id: string) {
     permanentlyDeleteDirectoryModalConfig.data = id;
     this.openModal(permanentlyDeleteDirectoryModalConfig);
   }
 
-  openDeleteDirectoryModal(id: string){
+  openDeleteDirectoryModal(id: string) {
     deleteDirectoryModalConfig.data = id;
     this.openModal(deleteDirectoryModalConfig);
   }
 
-  openRestoreDirectoryModal(id: string){
+  openRestoreDirectoryModal(id: string) {
     restoreDirectoryModalConfig.data = id;
     this.openModal(restoreDirectoryModalConfig);
   }
@@ -390,7 +390,7 @@ export class MainComponent {
     this.data.getDirectory(this.directoryId).subscribe({
       next: (data: Directory[]) => {
         this.directory = data[0];
-        if(this.directoryId == ""){
+        if (this.directoryId == "") {
           localStorage.setItem("mainDirectoryId", this.directory.id);
           this.router.navigate(['/' + this.directory.id]);
         }
@@ -503,14 +503,14 @@ export class MainComponent {
     })
   }
 
-  restoreDirectory(directory: Directory){
+  restoreDirectory(directory: Directory) {
     directory.parent_directory = directory.previous_parent_directory;
     directory.previous_parent_directory = "";
 
     this.updateDirectory(directory);
   }
 
-  deleteDirectory(directory: Directory){
+  deleteDirectory(directory: Directory) {
     const trashAccessKey = localStorage.getItem("trashAccessKey");
     if (!trashAccessKey)
       return
@@ -530,7 +530,7 @@ export class MainComponent {
           if (directoryBeforeUpdate && directoryBeforeUpdate.name !== directory.name) {
             directoryBeforeUpdate.name = directory.name;
           }
-          if(directory.parent_directory != "" && directory.parent_directory != this.directoryId){
+          if (directory.parent_directory != "" && directory.parent_directory != this.directoryId) {
             this.directory.directories = this.directory.directories.filter(x => x.id != directory.id);
           }
         }
@@ -538,10 +538,10 @@ export class MainComponent {
     })
   }
 
-  permanentlyDeleteDirectory(directory: Directory){
+  permanentlyDeleteDirectory(directory: Directory) {
     return this.data.deleteDirectory(directory).subscribe({
       next: (data) => {
-        if(data.status === 204){
+        if (data.status === 204) {
           this.directory.directories = this.directory.directories.filter(x => x.id != directory.id);
         }
       }
@@ -551,8 +551,8 @@ export class MainComponent {
   // Event when user uses keyboard key on file
   onFileKeydown(event: KeyboardEvent, index: number, type: string) {
     // File hotkeys
-    if(type === ConstNames.FILE){
-      switch(event.key){
+    if (type === ConstNames.FILE) {
+      switch (event.key) {
         case "F1":
           this.openFileDetails(index, type);
           break;
@@ -562,11 +562,14 @@ export class MainComponent {
         case "F4":
           this.openDeleteModal(this.directory.files[index].id);
           break;
+        case "Delete":
+          this.openDeleteModal(this.directory.files[index].id);
+          break;
       }
     }
     // Directory hotkeys
-    else if(type === ConstNames.DIRECTORY){
-      switch (event.key){
+    else if (type === ConstNames.DIRECTORY) {
+      switch (event.key) {
         case "F1":
           this.openFileDetails(index, type);
           break;
@@ -594,65 +597,65 @@ export class MainComponent {
   }
 
   moveToDirectory(directoryId: string) {
-    if(this.dragElementType === this.contextMenuConstants.FILE){
+    if (this.dragElementType === this.contextMenuConstants.FILE) {
       let file = this.directory.files.find(x => x.id === this.dragElementId);
-      if(file){
+      if (file) {
         file.parent_directory = directoryId;
         this.updateFile(file);
       }
     }
-    else if(this.dragElementType === this.contextMenuConstants.DIRECTORY){
+    else if (this.dragElementType === this.contextMenuConstants.DIRECTORY) {
       let directory = this.directory.directories.find(x => x.id === this.dragElementId);
-      if(directory){
+      if (directory) {
         directory.parent_directory = directoryId;
         this.updateDirectory(directory);
       }
     }
   }
 
-  addSelected(event: MouseEvent, id: string, type: string){
-    if(event.ctrlKey && !this.selectedFiles.has(id)){
+  addSelected(event: MouseEvent, id: string, type: string) {
+    if (event.ctrlKey && !this.selectedFiles.has(id)) {
       this.selectedFiles.add(id);
     }
-    else if(event.ctrlKey && this.selectedFiles.has(id)){
+    else if (event.ctrlKey && this.selectedFiles.has(id)) {
       this.selectedFiles.delete(id);
     }
-    else if(event.shiftKey){
+    else if (event.shiftKey) {
       let lastSelectedElementId = Array.from(this.selectedFiles).pop();
 
       let lastSelectedElementIndex = 0;
       let selectedItemIndex = 0;
       this.directory.files.forEach((directory, index) => {
-        if(directory.id === lastSelectedElementId){
+        if (directory.id === lastSelectedElementId) {
           lastSelectedElementIndex = index;
         }
-        else if(directory.id === id){
+        else if (directory.id === id) {
           selectedItemIndex = index;
         }
       })
 
-      
+
 
       let [startIndex, endIndex] = [lastSelectedElementIndex, selectedItemIndex].sort();
       this.directory.files.slice(startIndex, endIndex + 1).forEach(element => {
         this.selectedFiles.add(element.id);
       })
-      
+
     }
-    else if(event.button === 2 && this.selectedFiles.has(id)){
+    else if (event.button === 2 && this.selectedFiles.has(id)) {
       return
     }
-    else if(!event.ctrlKey) {
+    else if (!event.ctrlKey) {
       this.selectedFiles.clear();
       this.selectedFiles.add(id);
     }
   }
 
-  permanentlyDeleteMultipleFiles(files: Set<String>){
-    this.data.permanentlyDeleteMultipleFiles(this.directoryId, files, this.directory.access_key).subscribe({
+  permanentlyDeleteMultipleFiles(files: Set<String>) {
+    this.data.permanentlyDeleteMultipleFiles(this.directory.id, files, this.directory.access_key).subscribe({
       next: (data) => {
-        if(data.status === 200){
-          this.directory.files = this.directory.files.filter(x => ![...files].includes(x.id));
+        if (data.status === 200) {
+          this.directory.files = this.directory.files.filter(x => !files.has(x.id));
         }
       }
     })
