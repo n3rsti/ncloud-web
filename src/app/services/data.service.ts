@@ -213,7 +213,13 @@ export class DataService {
     )
   }
 
+  permanentlyDeleteMultipleFiles(directoryId: string, files: Set<String>, directoryAccessKey: string){
+    let headers = new HttpHeaders({
+      'DirectoryAccessKey': directoryAccessKey,
+    })
 
+    return this.http.delete(Config.Host + `/api/directories/${directoryId}/files`, {headers: headers, observe: 'response', body: [...files]})
+  }
 }
 
 

@@ -185,7 +185,7 @@ export class MainComponent {
       }
       let target = e.target as HTMLElement;
       while(target.parentElement){
-        if(target.classList.contains("file-tile")){
+        if(target.classList.contains("utility:keep-selected")){
           return;
         }
         target = target.parentElement;
@@ -219,7 +219,9 @@ export class MainComponent {
       let directory = null;
       switch (data.subjectName) {
         case 'permanentlyDeleteFile':
-          this.permanentlyDeleteFile(this.directory.files.filter(x => x.id == data.value)[0]);
+          // Argument must be passed as value because otherwise it will be overwritten while doing delete request
+          this.permanentlyDeleteMultipleFiles(new Set(this.selectedFiles))
+
           break;
         case 'deleteFile':
           file = this.directory.files.find(x => x.id == data.value);
@@ -331,8 +333,14 @@ export class MainComponent {
     this.inputModalSubject.next(config);
   }
 
-  openPermanentlyDeleteModal(id: string) {
-    permanentlyDeleteModalConfig.data = id;
+  openPermanentlyDeleteModal() {
+    if(this.selectedFiles.size > 1){
+      permanentlyDeleteModalConfig.fields[0].value = `Do you want to permanently delete ${this.selectedFiles.size} files?`
+    }
+    else {
+      permanentlyDeleteModalConfig.fields[0].value = 'Do you want to permanently delete the file?'
+    }
+    
     this.openModal(permanentlyDeleteModalConfig);
   }
 
@@ -623,15 +631,30 @@ export class MainComponent {
         }
       })
 
+      
+
       let [startIndex, endIndex] = [lastSelectedElementIndex, selectedItemIndex].sort();
       this.directory.files.slice(startIndex, endIndex + 1).forEach(element => {
         this.selectedFiles.add(element.id);
       })
       
     }
+    else if(event.button === 2 && this.selectedFiles.has(id)){
+      return
+    }
     else if(!event.ctrlKey) {
       this.selectedFiles.clear();
       this.selectedFiles.add(id);
     }
+  }
+
+  permanentlyDeleteMultipleFiles(files: Set<String>){
+    this.data.permanentlyDeleteMultipleFiles(this.directoryId, files, this.directory.access_key).subscribe({
+      next: (data) => {
+        if(data.status === 200){
+          this.directory.files = this.directory.files.filter(x => ![...files].includes(x.id));
+        }
+      }
+    })
   }
 }

@@ -1,5 +1,5 @@
 <button draggable="true" #btn
-  class="file-tile pb-2 bg-white border border-gray-200 rounded-lg dark:bg-gray-800
+  class="utility:keep-selected pb-2 bg-white border border-gray-200 rounded-lg dark:bg-gray-800
        dark:border-gray-700 dark:hover:bg-gray-700 {{ !selectedList.has(file.id) ? 'hover:bg-gray-100' : '' }} flex flex-col justify-center items-center w-full cursor-default context-menu-clickable" [class.bg-gray-200]="selectedList.has(file.id)">
   <img [src]="file.src" alt="{{ file.name }} image" *ngIf="file.src !== ''" class="w-full h-32 object-cover context-menu-clickable"
        (load)="getImgDetails($event, file);">
