@@ -80,8 +80,6 @@ export class FileUploadComponent {
   fileInputDrop(event: any) {
     event.preventDefault();
 
-    console.log(event)
-
     const files: FileList = event.dataTransfer.files;
     if(files.length > 0){
       this.uploadFiles(files);

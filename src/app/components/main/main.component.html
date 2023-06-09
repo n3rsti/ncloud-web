@@ -61,7 +61,7 @@
 </section>
 <app-file-carousel *ngIf="directory.files.length > 0" [files]="directory.files"
                    [openedSubject]="fileCarouselSubject"></app-file-carousel>
-<app-item-details [files]="directory.files" [directories]="directory.directories"
+<app-item-details [directory]="directory"
                   [openedSubject]="fileDetailsSubject"></app-item-details>
 <div #contextMenu id="contextMenu"
      class="scale-0 absolute top-0 left-0 bg-white rounded overflow-hidden w-44 text-sm hidden md:block z-20">
