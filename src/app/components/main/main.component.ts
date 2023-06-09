@@ -172,6 +172,8 @@ export class MainComponent {
   dragElementType = "";
 
   isLoaded = false;
+  selectedFiles: Set<string> = new Set();
+
 
   constructor(private data: DataService, public sanitizer: DomSanitizer, private route: ActivatedRoute, public router: Router) {
   }
@@ -181,6 +183,16 @@ export class MainComponent {
       if (e.button === 0) {
         this.closeContextMenu();
       }
+      let target = e.target as HTMLElement;
+      while(target.parentElement){
+        if(target.classList.contains("file-tile")){
+          return;
+        }
+        target = target.parentElement;
+      }
+      this.selectedFiles.clear();
+      
+    
     })
     this.route.params.subscribe(params => {
         if (params["id"]) {
@@ -587,6 +599,39 @@ export class MainComponent {
         directory.parent_directory = directoryId;
         this.updateDirectory(directory);
       }
+    }
+  }
+
+  addSelected(event: MouseEvent, id: string, type: string){
+    if(event.ctrlKey && !this.selectedFiles.has(id)){
+      this.selectedFiles.add(id);
+    }
+    else if(event.ctrlKey && this.selectedFiles.has(id)){
+      this.selectedFiles.delete(id);
+    }
+    else if(event.shiftKey){
+      let lastSelectedElementId = Array.from(this.selectedFiles).pop();
+
+      let lastSelectedElementIndex = 0;
+      let selectedItemIndex = 0;
+      this.directory.files.forEach((directory, index) => {
+        if(directory.id === lastSelectedElementId){
+          lastSelectedElementIndex = index;
+        }
+        else if(directory.id === id){
+          selectedItemIndex = index;
+        }
+      })
+
+      let [startIndex, endIndex] = [lastSelectedElementIndex, selectedItemIndex].sort();
+      this.directory.files.slice(startIndex, endIndex + 1).forEach(element => {
+        this.selectedFiles.add(element.id);
+      })
+      
+    }
+    else if(!event.ctrlKey) {
+      this.selectedFiles.clear();
+      this.selectedFiles.add(id);
     }
   }
 }
