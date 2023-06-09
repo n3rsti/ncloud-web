@@ -42,6 +42,19 @@
               draggable="true"
       ></app-file-tile>
     </div>
+    <div *ngIf="isLoaded && (directory.files.length + directory.directories.length === 0)" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+      <ng-container *ngIf="isTrash">
+        <i class="fa-solid fa-trash text-5xl text-gray-400 mb-5"></i>
+        <h3 class="text-gray-600">Recycle bin is empty</h3>
+      </ng-container>
+      <ng-container *ngIf="!isTrash">
+        <i class="fa-regular fa-face-surprise text-6xl text-gray-400 mb-5"></i>
+        <h3 class="text-gray-600">Folder is empty</h3>
+        <p class="text-sm text-indigo-600 cursor-pointer hover:underline" (click)="openCreateDirectoryModal()">Create a new folder</p>
+      </ng-container>
+     
+      
+    </div>
     <app-file-upload [directory]="this.directory"></app-file-upload>
   </main>
 </section>

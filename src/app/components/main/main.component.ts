@@ -171,6 +171,8 @@ export class MainComponent {
   dragElementId = "";
   dragElementType = "";
 
+  isLoaded = false;
+
   constructor(private data: DataService, public sanitizer: DomSanitizer, private route: ActivatedRoute, public router: Router) {
   }
 
@@ -368,7 +370,6 @@ export class MainComponent {
     this.data.getDirectory(this.directoryId).subscribe({
       next: (data: Directory[]) => {
         this.directory = data[0];
-        console.log(this.directory)
         if(this.directoryId == ""){
           localStorage.setItem("mainDirectoryId", this.directory.id);
           this.router.navigate(['/' + this.directory.id]);
@@ -385,7 +386,8 @@ export class MainComponent {
             })
           }
         })
-      }
+        this.isLoaded = true;
+      },
     })
   }
 
