@@ -15,13 +15,14 @@
   <main class="p-3 w-full">
     <div
       class="grid grid-cols-8 max-2xl:grid-cols-6 max-xl:grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-3 max-sm:grid-cols-2 gap-2 mb-5">
-      <app-directory-tile *ngFor="let dir of directory.directories; let i = index" [directory]="dir"
+      <app-directory-tile *ngFor="let dir of directory.directories; let i = index" [directory]="dir" [selectedList]="selectedDirectories"
                           (keydown)="onFileKeydown($event, i, contextMenuConstants.DIRECTORY)"
                           (dblclick)="this.router.navigate(['/' + dir.id])"
-                          (contextmenu)="openContextMenu($event, i, contextMenuConstants.DIRECTORY)"
+                          (contextmenu)="openContextMenu($event, i, contextMenuConstants.DIRECTORY); addSelected($event, dir.id, contextMenuConstants.DIRECTORY)"
                           (keydown.shift.delete)="openPermanentlyDeleteDirectoryModal(dir.id)"
                           (dropEventEmitter)="moveToDirectory($event)"
                           (dragstart)="dragElementId = dir.id; dragElementType=contextMenuConstants.DIRECTORY"
+                          (click)="addSelected($event, dir.id, contextMenuConstants.DIRECTORY)"
       >
       </app-directory-tile>
       <button *ngIf="directory.id && !isTrash" (click)="openCreateDirectoryModal()"
@@ -53,8 +54,8 @@
         <h3 class="text-gray-600">Folder is empty</h3>
         <p class="text-sm text-indigo-600 cursor-pointer hover:underline" (click)="openCreateDirectoryModal()">Create a new folder</p>
       </ng-container>
-     
-      
+
+
     </div>
     <app-file-upload [directory]="this.directory"></app-file-upload>
   </main>

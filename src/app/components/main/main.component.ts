@@ -173,6 +173,7 @@ export class MainComponent {
 
   isLoaded = false;
   selectedFiles: Set<string> = new Set();
+  selectedDirectories: Set<string> = new Set();
 
 
   constructor(private data: DataService, public sanitizer: DomSanitizer, private route: ActivatedRoute, public router: Router) {
@@ -191,6 +192,7 @@ export class MainComponent {
         target = target.parentElement;
       }
       this.selectedFiles.clear();
+      this.selectedDirectories.clear();
 
 
     })
@@ -613,16 +615,58 @@ export class MainComponent {
     }
   }
 
-  addSelected(event: MouseEvent, id: string, type: string) {
+  handleFileSelection(event: MouseEvent, id: string) {
+    // CTRL key: Add file to selected with ctrl key if it's not already selected
     if (event.ctrlKey && !this.selectedFiles.has(id)) {
       this.selectedFiles.add(id);
     }
+    // CTRL key: Remove file from selected with ctrl key if it's already selected
     else if (event.ctrlKey && this.selectedFiles.has(id)) {
       this.selectedFiles.delete(id);
     }
-    else if (event.shiftKey) {
+    // Right click without CTRL: Don't unselect other files
+    else if (event.button === 2 && this.selectedFiles.has(id)) {
+      return
+    }
+    // Left click without CTRL: Unselect all files and select only clicked
+    else if (!event.ctrlKey) {
+      this.selectedFiles.clear();
+      this.selectedFiles.add(id);
+    }
+  }
+
+  handleDirectorySelection(event: MouseEvent, id: string) {
+    // CTRL key: Add directory to selected with ctrl key if it's not already selected
+    if (event.ctrlKey && !this.selectedDirectories.has(id)) {
+      this.selectedDirectories.add(id);
+    }
+    // CTRL key: Remove directory from selected with ctrl key if it's already selected
+    else if (event.ctrlKey && this.selectedDirectories.has(id)) {
+      this.selectedDirectories.delete(id);
+    }
+    // Right click without CTRL: Don't unselect other files
+    else if (event.button === 2 && this.selectedDirectories.has(id)) {
+      return
+    }
+    // Left click without CTRL: Unselect all files and select only clicked
+    else if (!event.ctrlKey) {
+      this.selectedDirectories.clear();
+      this.selectedDirectories.add(id);
+    }
+  }
+
+  addSelected(event: MouseEvent, id: string, type: string) {
+    // Shift click: Add all files between last selected file and selected (now) file
+    // Example
+    // Files: [1, 2, 3, 4, 5]
+    // Selected: [1]
+    // Selected in this event: 4
+    // Result selected: [1, 2, 3, 4]
+    if (event.shiftKey) {
+      // Find last selected file
       let lastSelectedElementId = Array.from(this.selectedFiles).pop();
 
+      // Find position of last selected and now selected files in order to find files in between
       let lastSelectedElementIndex = 0;
       let selectedItemIndex = 0;
       this.directory.files.forEach((directory, index) => {
@@ -642,13 +686,13 @@ export class MainComponent {
       })
 
     }
-    else if (event.button === 2 && this.selectedFiles.has(id)) {
-      return
+    else if (type === this.contextMenuConstants.FILE) {
+      this.handleFileSelection(event, id);
     }
-    else if (!event.ctrlKey) {
-      this.selectedFiles.clear();
-      this.selectedFiles.add(id);
+    else if (type === this.contextMenuConstants.DIRECTORY) {
+      this.handleDirectorySelection(event, id);
     }
+
   }
 
   permanentlyDeleteMultipleFiles(files: Set<String>) {
