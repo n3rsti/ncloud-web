@@ -174,6 +174,7 @@ export class MainComponent {
   isLoaded = false;
   selectedFiles: Set<string> = new Set();
   selectedDirectories: Set<string> = new Set();
+  lastSelectedElement: string = this.contextMenuConstants.DIRECTORY;
 
 
   constructor(private data: DataService, public sanitizer: DomSanitizer, private route: ActivatedRoute, public router: Router) {
@@ -193,6 +194,7 @@ export class MainComponent {
       }
       this.selectedFiles.clear();
       this.selectedDirectories.clear();
+      this.lastSelectedElement = this.contextMenuConstants.DIRECTORY;
 
 
     })
@@ -630,12 +632,14 @@ export class MainComponent {
     }
     // Left click without CTRL: Unselect all files and select only clicked
     else if (!event.ctrlKey) {
+      this.selectedDirectories.clear();
       this.selectedFiles.clear();
       this.selectedFiles.add(id);
     }
   }
 
   handleDirectorySelection(event: MouseEvent, id: string) {
+
     // CTRL key: Add directory to selected with ctrl key if it's not already selected
     if (event.ctrlKey && !this.selectedDirectories.has(id)) {
       this.selectedDirectories.add(id);
@@ -650,21 +654,100 @@ export class MainComponent {
     }
     // Left click without CTRL: Unselect all files and select only clicked
     else if (!event.ctrlKey) {
+      this.selectedFiles.clear();
       this.selectedDirectories.clear();
       this.selectedDirectories.add(id);
     }
   }
 
-  addSelected(event: MouseEvent, id: string, type: string) {
-    // Shift click: Add all files between last selected file and selected (now) file
-    // Example
-    // Files: [1, 2, 3, 4, 5]
-    // Selected: [1]
-    // Selected in this event: 4
-    // Result selected: [1, 2, 3, 4]
-    if (event.shiftKey) {
+
+  /*
+  Add to selected all elements between last selected element and now selected element
+
+  The problem with this code is that it has to handle 4 possibilites:
+  1. Last selected item was directory, now selected item is file
+  2. Last selected item was file, now selected item is directory
+
+  3. Last selected and now selected items are files
+  4. Last selected and now selected items are directories
+
+  Technically there are 2 more cases:
+  - No selected element before and now selected is file
+  - No selected element before and now selected is directory
+
+  Luckily they can be solved by setting this.lastSelectedElement to DIRECTORY and functions from groups 1-4 will solve them
+
+  These 2 groups (1,2 and 3,4) are so similar yet so different in functionality that I couldn't find a solution how to wrap them into 2 functions (1 for each group)
+
+  The positive thing about this function is that it works
+  I would really recommend not to touch this thing
+
+  If it works, don't change it
+
+  */
+  handleMultipleSelection(id: string, type: string) {
+    if (this.lastSelectedElement === this.contextMenuConstants.DIRECTORY && type === this.contextMenuConstants.FILE) {
+      let lastSelectedElementId = Array.from(this.selectedDirectories).at(-1);
+      let lastSelectedElementIndex = 0;
+
+      // Find index of last selected directory
+      this.directory.directories.forEach((directory, index) => {
+        if (directory.id === lastSelectedElementId) {
+          lastSelectedElementIndex = index;
+        }
+      })
+
+      // Add to selected all directories after the last selected one
+      this.directory.directories.slice(lastSelectedElementIndex).forEach(directory => {
+        this.selectedDirectories.add(directory.id);
+      })
+
+
+      let selectedFileIndex = 0;
+      // Find index of selected file
+      this.directory.files.forEach((file, index) => {
+        if (file.id === id) {
+          selectedFileIndex = index;
+        }
+      })
+
+      this.directory.files.slice(0, selectedFileIndex + 1).forEach(file => {
+        this.selectedFiles.add(file.id);
+      })
+    }
+    else if (this.lastSelectedElement === this.contextMenuConstants.FILE && type === this.contextMenuConstants.DIRECTORY) {
+      let lastSelectedElementId = Array.from(this.selectedFiles).at(-1);
+      let lastSelectedElementIndex = 0;
+
+      // Find index of last selected file
+      this.directory.files.forEach((file, index) => {
+        if (file.id === lastSelectedElementId) {
+          lastSelectedElementIndex = index;
+        }
+      })
+
+      // Add to selected all files before the last selected one
+      this.directory.files.slice(0, lastSelectedElementIndex + 1).forEach(file => {
+        this.selectedFiles.add(file.id);
+      })
+
+      let selectedDirectoryIndex = 0;
+      // Find index of selected directory
+      this.directory.directories.forEach((directory, index) => {
+        if (directory.id === id) {
+          selectedDirectoryIndex = index;
+        }
+      })
+
+      this.directory.directories.slice(selectedDirectoryIndex).forEach(directory => {
+        this.selectedDirectories.add(directory.id);
+      })
+
+    }
+    else if (this.lastSelectedElement === this.contextMenuConstants.FILE && type === this.contextMenuConstants.FILE) {
       // Find last selected file
-      let lastSelectedElementId = Array.from(this.selectedFiles).pop();
+      let lastSelectedElementId = Array.from(this.selectedFiles).at(-1);
+
 
       // Find position of last selected and now selected files in order to find files in between
       let lastSelectedElementIndex = 0;
@@ -686,6 +769,41 @@ export class MainComponent {
       })
 
     }
+    else if (this.lastSelectedElement === this.contextMenuConstants.DIRECTORY && type === this.contextMenuConstants.DIRECTORY) {
+      // Find last selected directory
+      let lastSelectedElementId = Array.from(this.selectedDirectories).at(-1);
+
+
+      // Find position of last selected and now selected files in order to find files in between
+      let lastSelectedElementIndex = 0;
+      let selectedItemIndex = 0;
+      this.directory.directories.forEach((directory, index) => {
+        if (directory.id === lastSelectedElementId) {
+          lastSelectedElementIndex = index;
+        }
+        else if (directory.id === id) {
+          selectedItemIndex = index;
+        }
+      })
+
+
+
+      let [startIndex, endIndex] = [lastSelectedElementIndex, selectedItemIndex].sort();
+      this.directory.directories.slice(startIndex, endIndex + 1).forEach(element => {
+        this.selectedDirectories.add(element.id);
+      })
+    }
+  }
+
+
+  addSelected(event: MouseEvent, id: string, type: string) {
+    if (this.lastSelectedElement === '') {
+      this.lastSelectedElement = type;
+    }
+    if (event.shiftKey) {
+      this.handleMultipleSelection(id, type);
+
+    }
     else if (type === this.contextMenuConstants.FILE) {
       this.handleFileSelection(event, id);
     }
@@ -693,6 +811,7 @@ export class MainComponent {
       this.handleDirectorySelection(event, id);
     }
 
+    this.lastSelectedElement = type;
   }
 
   permanentlyDeleteMultipleFiles(files: Set<String>) {
