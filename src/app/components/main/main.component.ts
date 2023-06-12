@@ -27,12 +27,12 @@ let deleteModalConfig: ModalConfig = {
 }
 
 let permanentlyDeleteModalConfig: ModalConfig = {
-  subjectName: 'permanentlyDeleteFile',
-  title: 'Permanently delete file',
+  subjectName: 'permanentlyDeleteItems',
+  title: 'Permanently delete items',
   fields: [
     {
       type: 'text',
-      value: 'Do you want to permanently delete the file?'
+      value: 'Do you want to permanently delete x items?'
     },
     {
       type: 'button',
@@ -222,8 +222,9 @@ export class MainComponent {
       let file = null;
       let directory = null;
       switch (data.subjectName) {
-        case 'permanentlyDeleteFile':
+        case 'permanentlyDeleteItems':
           // Argument must be passed as value because otherwise it will be overwritten while doing delete request
+          this.permanentlyDeleteDirectories(new Set(this.selectedDirectories))
           this.permanentlyDeleteMultipleFiles(new Set(this.selectedFiles))
 
           break;
@@ -338,11 +339,11 @@ export class MainComponent {
   }
 
   openPermanentlyDeleteModal() {
-    if (this.selectedFiles.size > 1) {
-      permanentlyDeleteModalConfig.fields[0].value = `Do you want to permanently delete ${this.selectedFiles.size} files?`
+    if (this.selectedFiles.size + this.selectedDirectories.size > 1) {
+      permanentlyDeleteModalConfig.fields[0].value = `Do you want to permanently delete these ${this.selectedFiles.size + this.selectedDirectories.size} items?`
     }
     else {
-      permanentlyDeleteModalConfig.fields[0].value = 'Do you want to permanently delete the file?'
+      permanentlyDeleteModalConfig.fields[0].value = 'Do you want to permanently delete the item?'
     }
 
     this.openModal(permanentlyDeleteModalConfig);
@@ -819,6 +820,16 @@ export class MainComponent {
       next: (data) => {
         if (data.status === 200) {
           this.directory.files = this.directory.files.filter(x => !files.has(x.id));
+        }
+      }
+    })
+  }
+
+  permanentlyDeleteDirectories(directories: Set<String>) {
+    this.data.deleteDirectories(directories).subscribe({
+      next: (data) => {
+        if(data.status === 204) {
+          this.directory.directories = this.directory.directories.filter(x => !directories.has(x.id))
         }
       }
     })

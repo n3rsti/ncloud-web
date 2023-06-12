@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {Config} from "../config";
-import {map} from "rxjs";
-import {Directory, DirectoryBuilder} from "../models/directory.model";
-import {FileBuilder, FileModel} from "../models/file.model";
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { Config } from "../config";
+import { map } from "rxjs";
+import { Directory, DirectoryBuilder } from "../models/directory.model";
+import { FileBuilder, FileModel } from "../models/file.model";
 
 interface SearchResponse {
   files: FileModel[];
@@ -28,7 +28,7 @@ export class DataService {
   }
 
   refreshToken() {
-    return this.http.get(`${Config.Host}/api/token/refresh`, {observe: 'response'});
+    return this.http.get(`${Config.Host}/api/token/refresh`, { observe: 'response' });
   }
 
   getDirectory(directoryId: string) {
@@ -84,7 +84,7 @@ export class DataService {
       'FileAccessKey': file.access_key
     })
 
-    return this.http.get(Config.Host + `/files/${file.id}`, {responseType: 'blob', observe: 'body', headers: headers});
+    return this.http.get(Config.Host + `/files/${file.id}`, { responseType: 'blob', observe: 'body', headers: headers });
   }
 
   createDirectory(newDirectory: Directory, accessKey: string) {
@@ -94,7 +94,7 @@ export class DataService {
 
     return this.http.post(Config.Host + `/api/directories/${newDirectory.parent_directory}`, {
       'name': newDirectory.name,
-    }, {headers: headers}).pipe(
+    }, { headers: headers }).pipe(
       map((data: any) => (data || Array().map((directory: any) => {
         return new DirectoryBuilder()
           .setId(directory.id)
@@ -111,10 +111,10 @@ export class DataService {
 
     let formData = new FormData();
 
-    for(let i = 0; i < files.length; i++){
+    for (let i = 0; i < files.length; i++) {
       formData.append("upload[]", files[i]);
     }
-    return this.http.post(Config.Host + `/api/upload/${directory.id}`, formData, {headers: headers}).pipe(
+    return this.http.post(Config.Host + `/api/upload/${directory.id}`, formData, { headers: headers }).pipe(
       map((data: any) => (data || Array().map((file: any) => {
         return new FileBuilder()
           .setName(file.name)
@@ -141,7 +141,7 @@ export class DataService {
         "parent_directory": file.parent_directory,
         "previous_parent_directory": file.previous_parent_directory
       },
-      {headers: headers, observe: 'response'})
+      { headers: headers, observe: 'response' })
   }
 
   deleteFile(file: FileModel) {
@@ -149,14 +149,14 @@ export class DataService {
       'FileAccessKey': file.access_key
     })
 
-    return this.http.delete(Config.Host + `/api/files/${file.id}`, {headers: headers, observe: 'response'})
+    return this.http.delete(Config.Host + `/api/files/${file.id}`, { headers: headers, observe: 'response' })
   }
 
   updateDirectory(directory: Directory, newDirectoryAccessKey?: string) {
     let headers = new HttpHeaders({
       'DirectoryAccessKey': directory.access_key
     })
-    if(newDirectoryAccessKey){
+    if (newDirectoryAccessKey) {
       headers = headers.set('NewDirectoryAccessKey', newDirectoryAccessKey);
     }
 
@@ -178,19 +178,29 @@ export class DataService {
       'DirectoryAccessKey': directory.access_key
     })
 
-    return this.http.delete(Config.Host + `/api/directories/${directory.id}`, {headers: headers, observe: 'response'})
+    return this.http.delete(Config.Host + `/api/directories/${directory.id}`, { headers: headers, observe: 'response' })
   }
 
-  searchDirectories(name?: string, parent_directory?: string){
+  deleteDirectories(directories: Set<String>) {
+    return this.http.patch(Config.Host + `/api/directories`,
+      {
+        "operation": "delete",
+        "items": [...directories]
+      }, {
+      observe: 'response'
+    })
+  }
+
+  searchDirectories(name?: string, parent_directory?: string) {
     let params = new HttpParams();
-    if(name){
+    if (name) {
       params = params.set('name', name);
     }
-    if(parent_directory){
+    if (parent_directory) {
       params = params.set('parent_directory', parent_directory)
     }
 
-    return this.http.get(Config.Host + '/api/directories/search', {params: params}).pipe(
+    return this.http.get(Config.Host + '/api/directories/search', { params: params }).pipe(
       map((data: any) => {
         return {
           "Files": data["Files"].map((file: any) => new FileBuilder()
@@ -213,12 +223,12 @@ export class DataService {
     )
   }
 
-  permanentlyDeleteMultipleFiles(directoryId: string, files: Set<String>, directoryAccessKey: string){
+  permanentlyDeleteMultipleFiles(directoryId: string, files: Set<String>, directoryAccessKey: string) {
     let headers = new HttpHeaders({
       'DirectoryAccessKey': directoryAccessKey,
     })
 
-    return this.http.delete(Config.Host + `/api/directories/${directoryId}/files`, {headers: headers, observe: 'response', body: [...files]})
+    return this.http.delete(Config.Host + `/api/directories/${directoryId}/files`, { headers: headers, observe: 'response', body: [...files] })
   }
 }
 

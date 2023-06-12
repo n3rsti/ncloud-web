@@ -19,7 +19,7 @@
                           (keydown)="onFileKeydown($event, i, contextMenuConstants.DIRECTORY)"
                           (dblclick)="this.router.navigate(['/' + dir.id])"
                           (contextmenu)="openContextMenu($event, i, contextMenuConstants.DIRECTORY); addSelected($event, dir.id, contextMenuConstants.DIRECTORY)"
-                          (keydown.shift.delete)="openPermanentlyDeleteDirectoryModal(dir.id)"
+                          (keydown.shift.delete)="openPermanentlyDeleteModal()"
                           (dropEventEmitter)="moveToDirectory($event)"
                           (dragstart)="dragElementId = dir.id; dragElementType=contextMenuConstants.DIRECTORY"
                           (click)="addSelected($event, dir.id, contextMenuConstants.DIRECTORY)"
@@ -105,7 +105,7 @@
         <i class="fa-solid fa-trash w-4 mr-2"></i>Delete
       </li>
       <li class="flex items-center bg-red-600 text-white cursor-pointer hover:bg-red-700 py-2 pl-4" *ngIf="isTrash"
-          (click)="openPermanentlyDeleteDirectoryModal(directory.directories[contextMenuId].id)"><i
+          (click)="openPermanentlyDeleteModal()"><i
         class="fa-solid fa-trash w-4 mr-2"></i>Delete
       </li>
       <li class="flex items-center bg-green-400 text-white cursor-pointer hover:bg-green-500 py-2 pl-4" *ngIf="isTrash"
