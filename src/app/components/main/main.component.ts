@@ -11,12 +11,12 @@ import { decodeJWT, FileFormats } from "../../utils";
 import { ConstNames } from "../../constants";
 
 let deleteModalConfig: ModalConfig = {
-  subjectName: 'deleteFile',
+  subjectName: 'deleteItems',
   title: 'Delete file',
   fields: [
     {
       type: 'text',
-      value: 'Do you want to move file to trash?'
+      value: 'Do you want to move x items to trash?'
     },
     {
       type: 'button',
@@ -102,37 +102,6 @@ let createDirectoryModalConfig: ModalConfig = {
   ]
 }
 
-let permanentlyDeleteDirectoryModalConfig: ModalConfig = {
-  subjectName: 'permanentlyDeleteDirectory',
-  title: 'Permanently delete directory',
-  fields: [
-    {
-      type: 'text',
-      value: 'Do you want to permanently delete the folder?'
-    },
-    {
-      type: 'button',
-      value: 'Delete',
-      additionalData: { "color": "red-600", "hover": "red-700" }
-    }
-  ]
-}
-
-let deleteDirectoryModalConfig: ModalConfig = {
-  subjectName: 'deleteDirectory',
-  title: 'Delete directory',
-  fields: [
-    {
-      type: 'text',
-      value: 'Do you want to move directory to trash?'
-    },
-    {
-      type: 'button',
-      value: 'Delete',
-      additionalData: { "color": "red-600", "hover": "red-700" }
-    }
-  ]
-}
 
 let restoreDirectoryModalConfig: ModalConfig = {
   subjectName: 'restoreDirectory',
@@ -224,14 +193,19 @@ export class MainComponent {
       switch (data.subjectName) {
         case 'permanentlyDeleteItems':
           // Argument must be passed as value because otherwise it will be overwritten while doing delete request
-          this.permanentlyDeleteDirectories(new Set(this.selectedDirectories))
-          this.permanentlyDeleteMultipleFiles(new Set(this.selectedFiles))
+          if(this.selectedDirectories.size > 0){
+            this.permanentlyDeleteDirectories(new Set(this.selectedDirectories));
+          }
+          if(this.selectedFiles.size > 0){
+            this.permanentlyDeleteMultipleFiles(new Set(this.selectedFiles));
+          }
+
 
           break;
-        case 'deleteFile':
-          file = this.directory.files.find(x => x.id == data.value);
-          if (file)
-            this.deleteFile(file);
+        case 'deleteItems':
+          console.log(this.selectedDirectories);
+          console.log(this.selectedFiles);
+          // TODO: implement moving to trash
 
           break;
 
@@ -275,21 +249,6 @@ export class MainComponent {
           if (newFolderName) {
             this.createDirectory(newFolderName);
           }
-          break;
-
-        case 'permanentlyDeleteDirectory':
-          directory = this.directory.directories.find(x => x.id == data.value);
-          if (directory) {
-            this.permanentlyDeleteDirectory(directory);
-          }
-
-          break;
-        case 'deleteDirectory':
-          directory = this.directory.directories.find(x => x.id == data.value);
-          if (directory) {
-            this.deleteDirectory(directory);
-          }
-
           break;
 
         case 'restoreDirectory':
@@ -343,14 +302,20 @@ export class MainComponent {
       permanentlyDeleteModalConfig.fields[0].value = `Do you want to permanently delete these ${this.selectedFiles.size + this.selectedDirectories.size} items?`
     }
     else {
-      permanentlyDeleteModalConfig.fields[0].value = 'Do you want to permanently delete the item?'
+      permanentlyDeleteModalConfig.fields[0].value = 'Do you want to permanently delete this item?'
     }
 
     this.openModal(permanentlyDeleteModalConfig);
   }
 
-  openDeleteModal(id: string | number) {
-    deleteModalConfig.data = id;
+  openDeleteModal() {
+    if (this.selectedFiles.size + this.selectedDirectories.size > 1) {
+      deleteModalConfig.fields[0].value = `Do you want to move these ${this.selectedDirectories.size + this.selectedFiles.size} items to trash?`;
+    }
+    else {
+      deleteModalConfig.fields[0].value = `Do you want to move this item to trash?`;
+    }
+
     this.openModal(deleteModalConfig);
   }
 
@@ -373,16 +338,6 @@ export class MainComponent {
 
   openCreateDirectoryModal() {
     this.openModal(createDirectoryModalConfig);
-  }
-
-  openPermanentlyDeleteDirectoryModal(id: string) {
-    permanentlyDeleteDirectoryModalConfig.data = id;
-    this.openModal(permanentlyDeleteDirectoryModalConfig);
-  }
-
-  openDeleteDirectoryModal(id: string) {
-    deleteDirectoryModalConfig.data = id;
-    this.openModal(deleteDirectoryModalConfig);
   }
 
   openRestoreDirectoryModal(id: string) {
@@ -565,10 +520,10 @@ export class MainComponent {
           this.openRenameFileModal(index);
           break;
         case "F4":
-          this.openDeleteModal(this.directory.files[index].id);
+          this.openDeleteModal();
           break;
         case "Delete":
-          this.openDeleteModal(this.directory.files[index].id);
+          this.openDeleteModal();
           break;
       }
     }
@@ -580,6 +535,12 @@ export class MainComponent {
           break;
         case "F2":
           this.openRenameDirectoryModal(index);
+          break;
+        case "F4":
+          this.openDeleteModal();
+          break;
+        case "Delete":
+          this.openDeleteModal();
           break;
       }
     }
@@ -829,7 +790,7 @@ export class MainComponent {
     this.data.deleteDirectories(directories).subscribe({
       next: (data) => {
         if(data.status === 204) {
-          this.directory.directories = this.directory.directories.filter(x => !directories.has(x.id))
+          this.directory.directories = this.directory.directories.filter(x => !directories.has(x.id));
         }
       }
     })
