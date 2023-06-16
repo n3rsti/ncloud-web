@@ -141,8 +141,9 @@ export class MainComponent {
   dragElementType = "";
 
   isLoaded = false;
-  selectedFiles: Set<string> = new Set();
-  selectedDirectories: Set<string> = new Set();
+  selectedFiles: FileModel[] = [];
+  selectedDirectories: Directory[] = [];
+
   lastSelectedElement: string = this.contextMenuConstants.DIRECTORY;
 
 
@@ -161,8 +162,8 @@ export class MainComponent {
         }
         target = target.parentElement;
       }
-      this.selectedFiles.clear();
-      this.selectedDirectories.clear();
+      this.selectedFiles = [];
+      this.selectedDirectories = [];
       this.lastSelectedElement = this.contextMenuConstants.DIRECTORY;
 
 
@@ -193,12 +194,8 @@ export class MainComponent {
       switch (data.subjectName) {
         case 'permanentlyDeleteItems':
           // Argument must be passed as value because otherwise it will be overwritten while doing delete request
-          if(this.selectedDirectories.size > 0){
-            this.permanentlyDeleteDirectories(new Set(this.selectedDirectories));
-          }
-          if(this.selectedFiles.size > 0){
-            this.permanentlyDeleteMultipleFiles(new Set(this.selectedFiles));
-          }
+          this.permanentlyDeleteDirectories([...this.selectedDirectories]);
+          this.permanentlyDeleteMultipleFiles([...this.selectedFiles]);
 
 
           break;
@@ -298,8 +295,8 @@ export class MainComponent {
   }
 
   openPermanentlyDeleteModal() {
-    if (this.selectedFiles.size + this.selectedDirectories.size > 1) {
-      permanentlyDeleteModalConfig.fields[0].value = `Do you want to permanently delete these ${this.selectedFiles.size + this.selectedDirectories.size} items?`
+    if (this.selectedFiles.length + this.selectedDirectories.length > 1) {
+      permanentlyDeleteModalConfig.fields[0].value = `Do you want to permanently delete these ${this.selectedFiles.length + this.selectedDirectories.length} items?`
     }
     else {
       permanentlyDeleteModalConfig.fields[0].value = 'Do you want to permanently delete this item?'
@@ -309,8 +306,8 @@ export class MainComponent {
   }
 
   openDeleteModal() {
-    if (this.selectedFiles.size + this.selectedDirectories.size > 1) {
-      deleteModalConfig.fields[0].value = `Do you want to move these ${this.selectedDirectories.size + this.selectedFiles.size} items to trash?`;
+    if (this.selectedFiles.length + this.selectedDirectories.length > 1) {
+      deleteModalConfig.fields[0].value = `Do you want to move these ${this.selectedDirectories.length + this.selectedFiles.length} items to trash?`;
     }
     else {
       deleteModalConfig.fields[0].value = `Do you want to move this item to trash?`;
@@ -579,218 +576,139 @@ export class MainComponent {
     }
   }
 
-  handleFileSelection(event: MouseEvent, id: string) {
-    // CTRL key: Add file to selected with ctrl key if it's not already selected
-    if (event.ctrlKey && !this.selectedFiles.has(id)) {
-      this.selectedFiles.add(id);
+  addSelectedDirectory(event: MouseEvent, directory: Directory){
+    if(event.shiftKey){
+      if(this.lastSelectedElement === this.contextMenuConstants.DIRECTORY){
+        let lastSelectedElement = this.selectedDirectories.at(-1);
+        let lastSelectedElementIndex = 0;
+
+        let selectedElementIndex = 0;
+        this.directory.directories.forEach((element, index) => {
+          if(element === directory){
+            selectedElementIndex = index;
+          }
+          else if(element === lastSelectedElement){
+            lastSelectedElementIndex = index;
+          }
+        })
+
+        let [startIndex, endIndex] = [lastSelectedElementIndex, selectedElementIndex].sort();
+
+        this.selectedDirectories = this.directory.directories.slice(startIndex, endIndex + 1);
+
+      }
+      else if(this.lastSelectedElement === this.contextMenuConstants.FILE){
+        let lastSelectedElement = this.selectedFiles.at(-1) || new FileBuilder().build();
+        let lastSelectedElementIndex = 0;
+
+        this.directory.files.forEach((element, index) => {
+          if(element === lastSelectedElement){
+            lastSelectedElementIndex = index;
+          }
+        })
+
+        let selectedElementIndex = 0;
+        this.directory.directories.forEach((element, index) => {
+          if(element === directory){
+            selectedElementIndex = index;
+          }
+        })
+
+
+        this.selectedDirectories = this.directory.directories.slice(selectedElementIndex);
+        this.selectedFiles = this.directory.files.slice(0, lastSelectedElementIndex + 1);
+
+      }
     }
-    // CTRL key: Remove file from selected with ctrl key if it's already selected
-    else if (event.ctrlKey && this.selectedFiles.has(id)) {
-      this.selectedFiles.delete(id);
+    else if(event.ctrlKey){
+      if(!this.selectedDirectories.includes(directory)){
+        this.selectedDirectories.push(directory);
+      }
     }
-    // Right click without CTRL: Don't unselect other files
-    else if (event.button === 2 && this.selectedFiles.has(id)) {
-      return
+    else {
+      this.selectedDirectories = [directory];
+      this.selectedFiles = [];
     }
-    // Left click without CTRL: Unselect all files and select only clicked
-    else if (!event.ctrlKey) {
-      this.selectedDirectories.clear();
-      this.selectedFiles.clear();
-      this.selectedFiles.add(id);
-    }
+    this.lastSelectedElement = this.contextMenuConstants.DIRECTORY;
   }
 
-  handleDirectorySelection(event: MouseEvent, id: string) {
+  addSelectedFile(event: MouseEvent, file: FileModel){
+    if(event.shiftKey){
+      if(this.lastSelectedElement === this.contextMenuConstants.FILE){
+        let lastSelectedElement = this.selectedFiles.at(-1);
+        let lastSelectedElementIndex = 0;
 
-    // CTRL key: Add directory to selected with ctrl key if it's not already selected
-    if (event.ctrlKey && !this.selectedDirectories.has(id)) {
-      this.selectedDirectories.add(id);
+        let selectedElementIndex = 0;
+        this.directory.files.forEach((element, index) => {
+          if(element === file){
+            selectedElementIndex = index;
+          }
+          else if(element === lastSelectedElement){
+            lastSelectedElementIndex = index;
+          }
+        })
+
+        let [startIndex, endIndex] = [lastSelectedElementIndex, selectedElementIndex].sort();
+
+        this.selectedFiles = this.directory.files.slice(startIndex, endIndex + 1);
+
+      }
+      else if(this.lastSelectedElement === this.contextMenuConstants.DIRECTORY){
+        let lastSelectedElement = this.selectedDirectories.at(-1);
+        let lastSelectedElementIndex = 0;
+
+        this.directory.directories.forEach((element, index) => {
+          if(element === lastSelectedElement){
+            lastSelectedElementIndex = index;
+          }
+        })
+
+        let selectedElementIndex = 0;
+        this.directory.files.forEach((element, index) => {
+          if(element === file){
+            selectedElementIndex = index;
+          }
+        })
+
+        this.selectedDirectories = this.directory.directories.slice(lastSelectedElementIndex);
+        this.selectedFiles = this.directory.files.slice(0, selectedElementIndex + 1);
+
+      }
     }
-    // CTRL key: Remove directory from selected with ctrl key if it's already selected
-    else if (event.ctrlKey && this.selectedDirectories.has(id)) {
-      this.selectedDirectories.delete(id);
+    else if(event.ctrlKey){
+      if(!this.selectedFiles.includes(file)){
+        this.selectedFiles.push(file);
+      }
     }
-    // Right click without CTRL: Don't unselect other files
-    else if (event.button === 2 && this.selectedDirectories.has(id)) {
-      return
+    else {
+      this.selectedFiles = [file];
+      this.selectedDirectories = [];
     }
-    // Left click without CTRL: Unselect all files and select only clicked
-    else if (!event.ctrlKey) {
-      this.selectedFiles.clear();
-      this.selectedDirectories.clear();
-      this.selectedDirectories.add(id);
-    }
+    this.lastSelectedElement = this.contextMenuConstants.FILE;
   }
 
+  permanentlyDeleteMultipleFiles(files: FileModel[]) {
+    let body = [{
+      "id": this.directory.id,
+      "access_key": this.directory.access_key,
+      "files": files.map(x => x.id)
+    }]
 
-  /*
-  Add to selected all elements between last selected element and now selected element
-
-  The problem with this code is that it has to handle 4 possibilites:
-  1. Last selected item was directory, now selected item is file
-  2. Last selected item was file, now selected item is directory
-
-  3. Last selected and now selected items are files
-  4. Last selected and now selected items are directories
-
-  Technically there are 2 more cases:
-  - No selected element before and now selected is file
-  - No selected element before and now selected is directory
-
-  Luckily they can be solved by setting this.lastSelectedElement to DIRECTORY and functions from groups 1-4 will solve them
-
-  These 2 groups (1,2 and 3,4) are so similar yet so different in functionality that I couldn't find a solution how to wrap them into 2 functions (1 for each group)
-
-  The positive thing about this function is that it works
-  I would really recommend not to touch this thing
-
-  If it works, don't change it
-
-  */
-  handleMultipleSelection(id: string, type: string) {
-    if (this.lastSelectedElement === this.contextMenuConstants.DIRECTORY && type === this.contextMenuConstants.FILE) {
-      let lastSelectedElementId = Array.from(this.selectedDirectories).at(-1);
-      let lastSelectedElementIndex = 0;
-
-      // Find index of last selected directory
-      this.directory.directories.forEach((directory, index) => {
-        if (directory.id === lastSelectedElementId) {
-          lastSelectedElementIndex = index;
-        }
-      })
-
-      // Add to selected all directories after the last selected one
-      this.directory.directories.slice(lastSelectedElementIndex).forEach(directory => {
-        this.selectedDirectories.add(directory.id);
-      })
-
-
-      let selectedFileIndex = 0;
-      // Find index of selected file
-      this.directory.files.forEach((file, index) => {
-        if (file.id === id) {
-          selectedFileIndex = index;
-        }
-      })
-
-      this.directory.files.slice(0, selectedFileIndex + 1).forEach(file => {
-        this.selectedFiles.add(file.id);
-      })
-    }
-    else if (this.lastSelectedElement === this.contextMenuConstants.FILE && type === this.contextMenuConstants.DIRECTORY) {
-      let lastSelectedElementId = Array.from(this.selectedFiles).at(-1);
-      let lastSelectedElementIndex = 0;
-
-      // Find index of last selected file
-      this.directory.files.forEach((file, index) => {
-        if (file.id === lastSelectedElementId) {
-          lastSelectedElementIndex = index;
-        }
-      })
-
-      // Add to selected all files before the last selected one
-      this.directory.files.slice(0, lastSelectedElementIndex + 1).forEach(file => {
-        this.selectedFiles.add(file.id);
-      })
-
-      let selectedDirectoryIndex = 0;
-      // Find index of selected directory
-      this.directory.directories.forEach((directory, index) => {
-        if (directory.id === id) {
-          selectedDirectoryIndex = index;
-        }
-      })
-
-      this.directory.directories.slice(selectedDirectoryIndex).forEach(directory => {
-        this.selectedDirectories.add(directory.id);
-      })
-
-    }
-    else if (this.lastSelectedElement === this.contextMenuConstants.FILE && type === this.contextMenuConstants.FILE) {
-      // Find last selected file
-      let lastSelectedElementId = Array.from(this.selectedFiles).at(-1);
-
-
-      // Find position of last selected and now selected files in order to find files in between
-      let lastSelectedElementIndex = 0;
-      let selectedItemIndex = 0;
-      this.directory.files.forEach((directory, index) => {
-        if (directory.id === lastSelectedElementId) {
-          lastSelectedElementIndex = index;
-        }
-        else if (directory.id === id) {
-          selectedItemIndex = index;
-        }
-      })
-
-
-
-      let [startIndex, endIndex] = [lastSelectedElementIndex, selectedItemIndex].sort();
-      this.directory.files.slice(startIndex, endIndex + 1).forEach(element => {
-        this.selectedFiles.add(element.id);
-      })
-
-    }
-    else if (this.lastSelectedElement === this.contextMenuConstants.DIRECTORY && type === this.contextMenuConstants.DIRECTORY) {
-      // Find last selected directory
-      let lastSelectedElementId = Array.from(this.selectedDirectories).at(-1);
-
-
-      // Find position of last selected and now selected files in order to find files in between
-      let lastSelectedElementIndex = 0;
-      let selectedItemIndex = 0;
-      this.directory.directories.forEach((directory, index) => {
-        if (directory.id === lastSelectedElementId) {
-          lastSelectedElementIndex = index;
-        }
-        else if (directory.id === id) {
-          selectedItemIndex = index;
-        }
-      })
-
-
-
-      let [startIndex, endIndex] = [lastSelectedElementIndex, selectedItemIndex].sort();
-      this.directory.directories.slice(startIndex, endIndex + 1).forEach(element => {
-        this.selectedDirectories.add(element.id);
-      })
-    }
-  }
-
-
-  addSelected(event: MouseEvent, id: string, type: string) {
-    if (this.lastSelectedElement === '') {
-      this.lastSelectedElement = type;
-    }
-    if (event.shiftKey) {
-      this.handleMultipleSelection(id, type);
-
-    }
-    else if (type === this.contextMenuConstants.FILE) {
-      this.handleFileSelection(event, id);
-    }
-    else if (type === this.contextMenuConstants.DIRECTORY) {
-      this.handleDirectorySelection(event, id);
-    }
-
-    this.lastSelectedElement = type;
-  }
-
-  permanentlyDeleteMultipleFiles(files: Set<String>) {
-    this.data.permanentlyDeleteMultipleFiles(this.directory.id, files, this.directory.access_key).subscribe({
+    this.data.permanentlyDeleteMultipleFiles(body).subscribe({
       next: (data) => {
         if (data.status === 200) {
-          this.directory.files = this.directory.files.filter(x => !files.has(x.id));
+          this.directory.files = this.directory.files.filter(x => !files.includes(x));
         }
       }
     })
   }
 
-  permanentlyDeleteDirectories(directories: Set<String>) {
-    this.data.deleteDirectories(directories).subscribe({
+  permanentlyDeleteDirectories(directories: Directory[]) {
+    let body = directories.map(x => ({"id": x.id, "access_key": x.access_key}));
+    this.data.deleteDirectories(body).subscribe({
       next: (data) => {
         if(data.status === 204) {
-          this.directory.directories = this.directory.directories.filter(x => !directories.has(x.id));
+          this.directory.directories = this.directory.directories.filter(x => !directories.includes(x));
         }
       }
     })

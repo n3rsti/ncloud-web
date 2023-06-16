@@ -8,7 +8,7 @@ import {Directory, DirectoryBuilder} from "../../models/directory.model";
 })
 export class DirectoryTileComponent {
   @Input() directory: Directory = new DirectoryBuilder().build();
-  @Input() selectedList: Set<string> = new Set();
+  @Input() selectedList: Directory[] = [];
 
   @ViewChild('directoryTile', {static: false}) directoryTile: ElementRef | undefined;
 

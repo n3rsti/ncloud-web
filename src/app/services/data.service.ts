@@ -181,14 +181,8 @@ export class DataService {
     return this.http.delete(Config.Host + `/api/directories/${directory.id}`, { headers: headers, observe: 'response' })
   }
 
-  deleteDirectories(directories: Set<String>) {
-    return this.http.patch(Config.Host + `/api/directories`,
-      {
-        "operation": "delete",
-        "items": [...directories]
-      }, {
-      observe: 'response'
-    })
+  deleteDirectories(directories: object) {
+    return this.http.post(Config.Host + `/api/directories/delete`, directories, {observe: 'response'})
   }
 
   searchDirectories(name?: string, parent_directory?: string) {
@@ -223,12 +217,8 @@ export class DataService {
     )
   }
 
-  permanentlyDeleteMultipleFiles(directoryId: string, files: Set<String>, directoryAccessKey: string) {
-    let headers = new HttpHeaders({
-      'DirectoryAccessKey': directoryAccessKey,
-    })
-
-    return this.http.delete(Config.Host + `/api/directories/${directoryId}/files`, { headers: headers, observe: 'response', body: [...files] })
+  permanentlyDeleteMultipleFiles(body: object) {
+    return this.http.post(Config.Host + `/api/files/delete`, body, {observe: 'response'})
   }
 }
 

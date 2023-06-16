@@ -15,7 +15,7 @@ export class FileTileComponent {
   icon = '';
   color = '';
 
-  @Input() selectedList: Set<string> = new Set();
+  @Input() selectedList: FileModel[] = [];
 
   @ViewChild('btn', {static: false}) btn: ElementRef | undefined;
 
