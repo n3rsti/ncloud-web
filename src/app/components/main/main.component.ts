@@ -204,6 +204,8 @@ export class MainComponent {
           console.log(this.selectedFiles);
           // TODO: implement moving to trash
 
+          this.deleteDirectories([...this.selectedDirectories]);
+
           break;
 
         case 'restoreFile':
@@ -467,16 +469,25 @@ export class MainComponent {
     this.updateDirectory(directory);
   }
 
-  deleteDirectory(directory: Directory) {
+  deleteDirectories(directories: Directory[]) {
     const trashAccessKey = localStorage.getItem("trashAccessKey");
     if (!trashAccessKey)
       return
 
 
-    directory.previous_parent_directory = directory.parent_directory;
-    directory.parent_directory = decodeJWT(trashAccessKey)["id"];
+    let destinationDirectory = new DirectoryBuilder()
+      .setId(decodeJWT(trashAccessKey)["id"])
+      .setAccessKey(trashAccessKey)
+      .build();
 
-    this.updateDirectory(directory, trashAccessKey);
+
+    this.data.moveDirectories(directories, destinationDirectory).subscribe({
+      next: (data) => {
+        if(data.status === 200) {
+          this.directory.directories = this.directory.directories.filter(x => !directories.includes(x))
+        }
+      }
+    })
   }
 
   updateDirectory(directory: Directory, newDirectoryAccessKey?: string) {
@@ -576,18 +587,18 @@ export class MainComponent {
     }
   }
 
-  addSelectedDirectory(event: MouseEvent, directory: Directory){
-    if(event.shiftKey){
-      if(this.lastSelectedElement === this.contextMenuConstants.DIRECTORY){
+  addSelectedDirectory(event: MouseEvent, directory: Directory) {
+    if (event.shiftKey) {
+      if (this.lastSelectedElement === this.contextMenuConstants.DIRECTORY) {
         let lastSelectedElement = this.selectedDirectories.at(-1);
         let lastSelectedElementIndex = 0;
 
         let selectedElementIndex = 0;
         this.directory.directories.forEach((element, index) => {
-          if(element === directory){
+          if (element === directory) {
             selectedElementIndex = index;
           }
-          else if(element === lastSelectedElement){
+          else if (element === lastSelectedElement) {
             lastSelectedElementIndex = index;
           }
         })
@@ -597,19 +608,19 @@ export class MainComponent {
         this.selectedDirectories = this.directory.directories.slice(startIndex, endIndex + 1);
 
       }
-      else if(this.lastSelectedElement === this.contextMenuConstants.FILE){
+      else if (this.lastSelectedElement === this.contextMenuConstants.FILE) {
         let lastSelectedElement = this.selectedFiles.at(-1) || new FileBuilder().build();
         let lastSelectedElementIndex = 0;
 
         this.directory.files.forEach((element, index) => {
-          if(element === lastSelectedElement){
+          if (element === lastSelectedElement) {
             lastSelectedElementIndex = index;
           }
         })
 
         let selectedElementIndex = 0;
         this.directory.directories.forEach((element, index) => {
-          if(element === directory){
+          if (element === directory) {
             selectedElementIndex = index;
           }
         })
@@ -620,8 +631,8 @@ export class MainComponent {
 
       }
     }
-    else if(event.ctrlKey){
-      if(!this.selectedDirectories.includes(directory)){
+    else if (event.ctrlKey) {
+      if (!this.selectedDirectories.includes(directory)) {
         this.selectedDirectories.push(directory);
       }
     }
@@ -632,18 +643,18 @@ export class MainComponent {
     this.lastSelectedElement = this.contextMenuConstants.DIRECTORY;
   }
 
-  addSelectedFile(event: MouseEvent, file: FileModel){
-    if(event.shiftKey){
-      if(this.lastSelectedElement === this.contextMenuConstants.FILE){
+  addSelectedFile(event: MouseEvent, file: FileModel) {
+    if (event.shiftKey) {
+      if (this.lastSelectedElement === this.contextMenuConstants.FILE) {
         let lastSelectedElement = this.selectedFiles.at(-1);
         let lastSelectedElementIndex = 0;
 
         let selectedElementIndex = 0;
         this.directory.files.forEach((element, index) => {
-          if(element === file){
+          if (element === file) {
             selectedElementIndex = index;
           }
-          else if(element === lastSelectedElement){
+          else if (element === lastSelectedElement) {
             lastSelectedElementIndex = index;
           }
         })
@@ -653,19 +664,19 @@ export class MainComponent {
         this.selectedFiles = this.directory.files.slice(startIndex, endIndex + 1);
 
       }
-      else if(this.lastSelectedElement === this.contextMenuConstants.DIRECTORY){
+      else if (this.lastSelectedElement === this.contextMenuConstants.DIRECTORY) {
         let lastSelectedElement = this.selectedDirectories.at(-1);
         let lastSelectedElementIndex = 0;
 
         this.directory.directories.forEach((element, index) => {
-          if(element === lastSelectedElement){
+          if (element === lastSelectedElement) {
             lastSelectedElementIndex = index;
           }
         })
 
         let selectedElementIndex = 0;
         this.directory.files.forEach((element, index) => {
-          if(element === file){
+          if (element === file) {
             selectedElementIndex = index;
           }
         })
@@ -675,8 +686,8 @@ export class MainComponent {
 
       }
     }
-    else if(event.ctrlKey){
-      if(!this.selectedFiles.includes(file)){
+    else if (event.ctrlKey) {
+      if (!this.selectedFiles.includes(file)) {
         this.selectedFiles.push(file);
       }
     }
@@ -704,10 +715,10 @@ export class MainComponent {
   }
 
   permanentlyDeleteDirectories(directories: Directory[]) {
-    let body = directories.map(x => ({"id": x.id, "access_key": x.access_key}));
+    let body = directories.map(x => ({ "id": x.id, "access_key": x.access_key }));
     this.data.deleteDirectories(body).subscribe({
       next: (data) => {
-        if(data.status === 204) {
+        if (data.status === 204) {
           this.directory.directories = this.directory.directories.filter(x => !directories.includes(x));
         }
       }

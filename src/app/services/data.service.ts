@@ -220,6 +220,18 @@ export class DataService {
   permanentlyDeleteMultipleFiles(body: object) {
     return this.http.post(Config.Host + `/api/files/delete`, body, {observe: 'response'})
   }
+
+  moveDirectories(directories: Directory[], destinationDirectory: Directory){
+    let body = {
+      "id": destinationDirectory.id,
+      "access_key": destinationDirectory.access_key,
+      "items": directories.map(dir => ({
+        "id": dir.id,
+        "access_key": dir.access_key
+      }))
+    }
+    return this.http.post(Config.Host + `/api/directories/move`, body, {observe: 'response'})
+  }
 }
 
 
