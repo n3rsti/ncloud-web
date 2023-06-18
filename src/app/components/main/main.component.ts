@@ -194,17 +194,22 @@ export class MainComponent {
       switch (data.subjectName) {
         case 'permanentlyDeleteItems':
           // Argument must be passed as value because otherwise it will be overwritten while doing delete request
-          this.permanentlyDeleteDirectories([...this.selectedDirectories]);
-          this.permanentlyDeleteMultipleFiles([...this.selectedFiles]);
-
+          if (this.selectedDirectories.length > 0) {
+            this.permanentlyDeleteDirectories([...this.selectedDirectories]);
+          }
+          if (this.selectedFiles.length > 0) {
+            this.permanentlyDeleteFiles([...this.selectedFiles]);
+          }
 
           break;
         case 'deleteItems':
-          console.log(this.selectedDirectories);
-          console.log(this.selectedFiles);
-          // TODO: implement moving to trash
-
-          this.deleteDirectories([...this.selectedDirectories]);
+          // Argument must be passed as value because otherwise it will be overwritten while doing move request
+          if (this.selectedDirectories.length > 0) {
+            this.deleteDirectories([...this.selectedDirectories]);
+          }
+          if (this.selectedFiles.length > 0) {
+            this.deleteFiles([...this.selectedFiles]);
+          }
 
           break;
 
@@ -423,16 +428,32 @@ export class MainComponent {
     })
   }
 
-  deleteFile(file: FileModel) {
+  deleteFiles(files: FileModel[]) {
     const trashAccessKey = localStorage.getItem("trashAccessKey");
     if (!trashAccessKey)
       return
 
 
-    file.previous_parent_directory = file.parent_directory;
-    file.parent_directory = decodeJWT(trashAccessKey)["id"];
+    let destinationDirectory = new DirectoryBuilder()
+      .setId(decodeJWT(trashAccessKey)["id"])
+      .setAccessKey(trashAccessKey)
+      .build();
 
-    this.updateFile(file, trashAccessKey);
+    let directoriesWithFiles = [
+      new DirectoryBuilder()
+        .setId(this.directory.id)
+        .setAccessKey(this.directory.access_key)
+        .setFiles(files)
+        .build()
+    ]
+
+    this.data.moveFiles(directoriesWithFiles, destinationDirectory).subscribe({
+      next: (data) => {
+        if (data.status === 200) {
+          this.directory.files = this.directory.files.filter(x => !files.includes(x));
+        }
+      }
+    });
   }
 
   restoreFile(file: FileModel) {
@@ -483,7 +504,7 @@ export class MainComponent {
 
     this.data.moveDirectories(directories, destinationDirectory).subscribe({
       next: (data) => {
-        if(data.status === 200) {
+        if (data.status === 200) {
           this.directory.directories = this.directory.directories.filter(x => !directories.includes(x))
         }
       }
@@ -636,11 +657,21 @@ export class MainComponent {
         this.selectedDirectories.push(directory);
       }
     }
+    else if (event.button === 2) {
+      if (!this.selectedDirectories.includes(directory)) {
+        this.selectedDirectories = [directory];
+        this.selectedFiles = [];
+      }
+
+      this.lastSelectedElement = this.contextMenuConstants.DIRECTORY;
+      return;
+    }
     else {
       this.selectedDirectories = [directory];
       this.selectedFiles = [];
     }
     this.lastSelectedElement = this.contextMenuConstants.DIRECTORY;
+    console.log(event.button)
   }
 
   addSelectedFile(event: MouseEvent, file: FileModel) {
@@ -691,6 +722,14 @@ export class MainComponent {
         this.selectedFiles.push(file);
       }
     }
+    else if (event.button === 2) {
+      if (!this.selectedFiles.includes(file)) {
+        this.selectedFiles = [file];
+        this.selectedDirectories = [];
+      }
+      this.lastSelectedElement = this.contextMenuConstants.FILE;
+      return;
+    }
     else {
       this.selectedFiles = [file];
       this.selectedDirectories = [];
@@ -698,7 +737,7 @@ export class MainComponent {
     this.lastSelectedElement = this.contextMenuConstants.FILE;
   }
 
-  permanentlyDeleteMultipleFiles(files: FileModel[]) {
+  permanentlyDeleteFiles(files: FileModel[]) {
     let body = [{
       "id": this.directory.id,
       "access_key": this.directory.access_key,

@@ -182,7 +182,7 @@ export class DataService {
   }
 
   deleteDirectories(directories: object) {
-    return this.http.post(Config.Host + `/api/directories/delete`, directories, {observe: 'response'})
+    return this.http.post(Config.Host + `/api/directories/delete`, directories, { observe: 'response' })
   }
 
   searchDirectories(name?: string, parent_directory?: string) {
@@ -218,19 +218,33 @@ export class DataService {
   }
 
   permanentlyDeleteMultipleFiles(body: object) {
-    return this.http.post(Config.Host + `/api/files/delete`, body, {observe: 'response'})
+    return this.http.post(Config.Host + `/api/files/delete`, body, { observe: 'response' })
   }
 
-  moveDirectories(directories: Directory[], destinationDirectory: Directory){
+  moveDirectories(directoriesWithFiles: Directory[], destinationDirectory: Directory) {
     let body = {
       "id": destinationDirectory.id,
       "access_key": destinationDirectory.access_key,
-      "items": directories.map(dir => ({
+      "items": directoriesWithFiles.map(dir => ({
         "id": dir.id,
         "access_key": dir.access_key
       }))
     }
-    return this.http.post(Config.Host + `/api/directories/move`, body, {observe: 'response'})
+    return this.http.post(Config.Host + `/api/directories/move`, body, { observe: 'response' })
+  }
+
+  moveFiles(directories: Directory[], destinationDirectory: Directory) {
+    let body = {
+      "id": destinationDirectory.id,
+      "access_key": destinationDirectory.access_key,
+      "directories": directories.map(dir => ({
+        "id": dir.id,
+        "access_key": dir.access_key,
+        "files": dir.files.map(x => x.id)
+      }))
+    }
+
+    return this.http.post(Config.Host + `/api/files/move`, body, { observe: 'response' })
   }
 }
 
