@@ -146,28 +146,38 @@ export class MainComponent {
 
   lastSelectedElement: string = this.contextMenuConstants.DIRECTORY;
 
+  keyboardEvent = (e: KeyboardEvent) => {
+    this.handleKeyDown(e);
+  }
+
+  clickEvent = (e: MouseEvent) => {
+    if (e.button === 0) {
+      this.closeContextMenu();
+    }
+    let target = e.target as HTMLElement;
+    while (target.parentElement) {
+      if (target.classList.contains("utility:keep-selected")) {
+        return;
+      }
+      target = target.parentElement;
+    }
+    this.selectedFiles = [];
+    this.selectedDirectories = [];
+    this.lastSelectedElement = this.contextMenuConstants.DIRECTORY;
+  }
 
   constructor(private data: DataService, public sanitizer: DomSanitizer, private route: ActivatedRoute, public router: Router) {
   }
 
+  ngOnDestroy(){
+    // Very important. Don't remove
+    document.body.removeEventListener("keydown", this.keyboardEvent);
+    document.body.removeEventListener("click", this.clickEvent);
+  }
   ngOnInit() {
-    document.addEventListener("click", (e) => {
-      if (e.button === 0) {
-        this.closeContextMenu();
-      }
-      let target = e.target as HTMLElement;
-      while (target.parentElement) {
-        if (target.classList.contains("utility:keep-selected")) {
-          return;
-        }
-        target = target.parentElement;
-      }
-      this.selectedFiles = [];
-      this.selectedDirectories = [];
-      this.lastSelectedElement = this.contextMenuConstants.DIRECTORY;
+    document.body.addEventListener("click", this.clickEvent);
+    document.body.addEventListener("keydown", this.keyboardEvent)
 
-
-    })
     this.route.params.subscribe(params => {
       if (params["id"]) {
         this.directoryId = params["id"];
@@ -417,16 +427,7 @@ export class MainComponent {
     this.contextMenu.nativeElement.classList.add("scale-0");
     this.contextMenu.nativeElement.style.transform = null;
   }
-
-  permanentlyDeleteFile(file: FileModel) {
-    return this.data.deleteFile(file).subscribe({
-      next: (data) => {
-        if (data.status === 204) {
-          this.directory.files = this.directory.files.filter(x => x != file);
-        }
-      }
-    })
-  }
+  
 
   deleteFiles(files: FileModel[]) {
     const trashAccessKey = localStorage.getItem("trashAccessKey");
@@ -502,10 +503,24 @@ export class MainComponent {
       .build();
 
 
+    this.moveDirectories(directories, destinationDirectory);
+  }
+
+  moveDirectories(directories: Directory[], destinationDirectory: Directory){
     this.data.moveDirectories(directories, destinationDirectory).subscribe({
       next: (data) => {
+        let filesAdded = false;
         if (data.status === 200) {
-          this.directory.directories = this.directory.directories.filter(x => !directories.includes(x))
+          directories.forEach(element => {
+            if(!this.directory.directories.map(x => x.id).includes(element.id)){
+              this.directory.directories = [...this.directory.directories, element];
+              filesAdded = true;
+            }
+          })
+
+          if(!filesAdded){
+            this.directory.directories = this.directory.directories.filter(x => !directories.includes(x))
+          }
         }
       }
     })
@@ -522,16 +537,6 @@ export class MainComponent {
           if (directory.parent_directory != "" && directory.parent_directory != this.directoryId) {
             this.directory.directories = this.directory.directories.filter(x => x.id != directory.id);
           }
-        }
-      }
-    })
-  }
-
-  permanentlyDeleteDirectory(directory: Directory) {
-    return this.data.deleteDirectory(directory).subscribe({
-      next: (data) => {
-        if (data.status === 204) {
-          this.directory.directories = this.directory.directories.filter(x => x.id != directory.id);
         }
       }
     })
@@ -671,7 +676,6 @@ export class MainComponent {
       this.selectedFiles = [];
     }
     this.lastSelectedElement = this.contextMenuConstants.DIRECTORY;
-    console.log(event.button)
   }
 
   addSelectedFile(event: MouseEvent, file: FileModel) {
@@ -762,5 +766,38 @@ export class MainComponent {
         }
       }
     })
+  }
+
+  handleKeyDown(event: KeyboardEvent){
+    if(event.key === "x" && event.ctrlKey){
+      localStorage.removeItem("cutFiles");
+      localStorage.removeItem("cutDirectories");
+
+      if(this.selectedFiles.length > 0){
+        localStorage.setItem("cutFiles", JSON.stringify(this.selectedFiles));
+      }
+      if(this.selectedDirectories.length > 0){
+        localStorage.setItem("cutDirectories", JSON.stringify(this.selectedDirectories));
+      }
+    }
+    else if(event.key === "v" && event.ctrlKey){
+      let cutDirectories = localStorage.getItem("cutDirectories");
+      let cutFiles = localStorage.getItem("cutFiles");
+
+      if(cutDirectories) {
+        let parsedDirectories = JSON.parse(cutDirectories).map((element: any) => {
+          return new DirectoryBuilder()
+            .setId(element._id)
+            .setAccessKey(element._access_key)
+            .setName(element._name)
+            .setParentDirectory(element._parent_directory)
+            .build()
+        });
+        this.moveDirectories(parsedDirectories, this.directory);
+
+        localStorage.removeItem("cutFiles");
+        localStorage.removeItem("cutDirectories");
+      }
+    }
   }
 }

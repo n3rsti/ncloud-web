@@ -95,12 +95,15 @@ export class DataService {
     return this.http.post(Config.Host + `/api/directories/${newDirectory.parent_directory}`, {
       'name': newDirectory.name,
     }, { headers: headers }).pipe(
-      map((data: any) => (data || Array().map((directory: any) => {
-        return new DirectoryBuilder()
-          .setId(directory.id)
-          .setName(directory.name)
+      map((data: any) => (
+        new DirectoryBuilder()
+          .setName(data.name)
+          .setId(data.id)
+          .setParentDirectory(data.parent_directory)
+          .setUser(data.user)
+          .setAccessKey(data.access_key)
           .build()
-      })))
+      ))
     )
   }
 
@@ -227,7 +230,8 @@ export class DataService {
       "access_key": destinationDirectory.access_key,
       "items": directoriesWithFiles.map(dir => ({
         "id": dir.id,
-        "access_key": dir.access_key
+        "access_key": dir.access_key,
+        "parent_directory": dir.parent_directory // optional
       }))
     }
     return this.http.post(Config.Host + `/api/directories/move`, body, { observe: 'response' })
@@ -240,7 +244,7 @@ export class DataService {
       "directories": directories.map(dir => ({
         "id": dir.id,
         "access_key": dir.access_key,
-        "files": dir.files.map(x => x.id)
+        "files": dir.files.map(x => x.id),
       }))
     }
 
