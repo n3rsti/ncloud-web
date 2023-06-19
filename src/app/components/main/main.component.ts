@@ -169,7 +169,7 @@ export class MainComponent {
   constructor(private data: DataService, public sanitizer: DomSanitizer, private route: ActivatedRoute, public router: Router) {
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     // Very important. Don't remove
     document.body.removeEventListener("keydown", this.keyboardEvent);
     document.body.removeEventListener("click", this.clickEvent);
@@ -290,17 +290,20 @@ export class MainComponent {
   }
 
   openFileDetails(i: number, type: string) {
-    let title = '';
-    if (type === ConstNames.FILE) {
-      title = 'File details';
-    } else if (type === ConstNames.DIRECTORY) {
-      title = 'Directory details'
+    if (this.selectedDirectories.length + this.selectedFiles.length === 1) {
+      let title = '';
+      if (type === ConstNames.FILE) {
+        title = 'File details';
+      } else if (type === ConstNames.DIRECTORY) {
+        title = 'Directory details'
+      }
+      this.fileDetailsSubject.next({
+        index: i,
+        type: type,
+        title: title
+      });
     }
-    this.fileDetailsSubject.next({
-      index: i,
-      type: type,
-      title: title
-    });
+
   }
 
   // Modal functions
@@ -339,15 +342,19 @@ export class MainComponent {
   }
 
   openRenameDirectoryModal(id: number) {
-    renameDirectoryModalConfig.data = this.directory.directories[id].id;
-    renameDirectoryModalConfig.fields[1].value = this.directory.directories[id].name;
-    this.openModal(renameDirectoryModalConfig);
+    if (this.selectedDirectories.length === 1) {
+      renameDirectoryModalConfig.data = this.directory.directories[id].id;
+      renameDirectoryModalConfig.fields[1].value = this.directory.directories[id].name;
+      this.openModal(renameDirectoryModalConfig);
+    }
   }
 
   openRenameFileModal(id: number) {
-    renameFileModalConfig.data = this.directory.files[id].id;
-    renameFileModalConfig.fields[1].value = this.directory.files[id].name;
-    this.openModal(renameFileModalConfig);
+    if (this.selectedFiles.length === 1) {
+      renameFileModalConfig.data = this.directory.files[id].id;
+      renameFileModalConfig.fields[1].value = this.directory.files[id].name;
+      this.openModal(renameFileModalConfig);
+    }
   }
 
   openCreateDirectoryModal() {
@@ -427,7 +434,7 @@ export class MainComponent {
     this.contextMenu.nativeElement.classList.add("scale-0");
     this.contextMenu.nativeElement.style.transform = null;
   }
-  
+
 
   deleteFiles(files: FileModel[]) {
     const trashAccessKey = localStorage.getItem("trashAccessKey");
@@ -506,19 +513,19 @@ export class MainComponent {
     this.moveDirectories(directories, destinationDirectory);
   }
 
-  moveDirectories(directories: Directory[], destinationDirectory: Directory){
+  moveDirectories(directories: Directory[], destinationDirectory: Directory) {
     this.data.moveDirectories(directories, destinationDirectory).subscribe({
       next: (data) => {
         let filesAdded = false;
         if (data.status === 200) {
           directories.forEach(element => {
-            if(!this.directory.directories.map(x => x.id).includes(element.id)){
+            if (!this.directory.directories.map(x => x.id).includes(element.id)) {
               this.directory.directories = [...this.directory.directories, element];
               filesAdded = true;
             }
           })
 
-          if(!filesAdded){
+          if (!filesAdded) {
             this.directory.directories = this.directory.directories.filter(x => !directories.includes(x))
           }
         }
@@ -556,9 +563,6 @@ export class MainComponent {
         case "F4":
           this.openDeleteModal();
           break;
-        case "Delete":
-          this.openDeleteModal();
-          break;
       }
     }
     // Directory hotkeys
@@ -571,9 +575,6 @@ export class MainComponent {
           this.openRenameDirectoryModal(index);
           break;
         case "F4":
-          this.openDeleteModal();
-          break;
-        case "Delete":
           this.openDeleteModal();
           break;
       }
@@ -768,36 +769,57 @@ export class MainComponent {
     })
   }
 
-  handleKeyDown(event: KeyboardEvent){
-    if(event.key === "x" && event.ctrlKey){
-      localStorage.removeItem("cutFiles");
-      localStorage.removeItem("cutDirectories");
+  handleKeyDown(event: KeyboardEvent) {
+    switch (event.key) {
+      case "x":
+        if (event.ctrlKey) {
+          localStorage.removeItem("cutFiles");
+          localStorage.removeItem("cutDirectories");
 
-      if(this.selectedFiles.length > 0){
-        localStorage.setItem("cutFiles", JSON.stringify(this.selectedFiles));
-      }
-      if(this.selectedDirectories.length > 0){
-        localStorage.setItem("cutDirectories", JSON.stringify(this.selectedDirectories));
-      }
-    }
-    else if(event.key === "v" && event.ctrlKey){
-      let cutDirectories = localStorage.getItem("cutDirectories");
-      let cutFiles = localStorage.getItem("cutFiles");
+          if (this.selectedFiles.length > 0) {
+            localStorage.setItem("cutFiles", JSON.stringify(this.selectedFiles));
+          }
+          if (this.selectedDirectories.length > 0) {
+            localStorage.setItem("cutDirectories", JSON.stringify(this.selectedDirectories));
+          }
+        }
+        break;
+      case "v":
+        if (event.ctrlKey) {
+          let cutDirectories = localStorage.getItem("cutDirectories");
+          let cutFiles = localStorage.getItem("cutFiles");
 
-      if(cutDirectories) {
-        let parsedDirectories = JSON.parse(cutDirectories).map((element: any) => {
-          return new DirectoryBuilder()
-            .setId(element._id)
-            .setAccessKey(element._access_key)
-            .setName(element._name)
-            .setParentDirectory(element._parent_directory)
-            .build()
-        });
-        this.moveDirectories(parsedDirectories, this.directory);
+          if (cutDirectories) {
+            let parsedDirectories = JSON.parse(cutDirectories).map((element: any) => {
+              return new DirectoryBuilder()
+                .setId(element._id)
+                .setAccessKey(element._access_key)
+                .setName(element._name)
+                .setParentDirectory(element._parent_directory)
+                .build()
+            });
+            this.moveDirectories(parsedDirectories, this.directory);
 
-        localStorage.removeItem("cutFiles");
-        localStorage.removeItem("cutDirectories");
-      }
+            localStorage.removeItem("cutFiles");
+            localStorage.removeItem("cutDirectories");
+          }
+        }
+        break;
+      case "a":
+        if (event.ctrlKey && (event.target as HTMLElement).tagName !== "INPUT") {
+          event.preventDefault();
+
+          this.selectedDirectories = [...this.directory.directories];
+          this.selectedFiles = [...this.directory.files];
+        }
+        break;
+      case "Delete":
+      case "F4":
+        if (this.selectedFiles.length + this.selectedDirectories.length > 0) {
+          this.openDeleteModal();
+        }
+        break;
+
     }
   }
 }
