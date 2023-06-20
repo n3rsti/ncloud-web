@@ -1,8 +1,8 @@
-import {Component, HostListener, Input} from '@angular/core';
-import {FileModel} from "../../models/file.model";
-import {Directory, DirectoryBuilder} from "../../models/directory.model";
-import {Subject} from "rxjs";
-import {ConstNames} from "../../constants";
+import { Component, HostListener, Input } from '@angular/core';
+import { FileModel } from "../../models/file.model";
+import { Directory, DirectoryBuilder } from "../../models/directory.model";
+import { Subject } from "rxjs";
+import { ConstNames } from "../../constants";
 
 @Component({
   selector: 'app-item-details',
@@ -37,9 +37,9 @@ export class ItemDetailsComponent {
       }
     })
   }
-  
+
   // These functions are in FileModel as well, but there is a bug where a new uploaded file can't access these methods, even though they are typof FileModel
-  getCreationDate(id: string){
+  getCreationDate(id: string) {
     return new Date(parseInt(id.substring(0, 8), 16) * 1000).toLocaleString();
   }
 
@@ -56,7 +56,7 @@ export class ItemDetailsComponent {
 
     const units = ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
     let u = -1;
-    const r = 10**dp;
+    const r = 10 ** dp;
 
     do {
       bytes /= thresh;

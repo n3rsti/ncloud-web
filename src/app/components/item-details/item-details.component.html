@@ -2,8 +2,8 @@
   <div class="fixed top-0 left-0 w-full h-screen bg-black bg-opacity-50" (click)="opened = false">
 
   </div>
-  <div *ngIf="directory.files.length > 0"
-       class="fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 bg-white w-1/2 shadow sm:rounded-lg overflow-hidden">
+  <div *ngIf="directory.files.length > 0 || directory.directories.length > 0"
+    class="fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 bg-white w-1/2 shadow sm:rounded-lg overflow-hidden">
     <div class="px-4 py-5 sm:px-6">
       <div class="flex items-center">
         <h3 class="text-base font-semibold leading-6 text-gray-900">{{ title }}</h3>
@@ -13,12 +13,13 @@
     <div class="border-t border-gray-200">
       <dl *ngIf="type === ConstNames.FILE">
         <app-item-details-row [name]="'Name'" [value]="directory.files[itemIndex].name"></app-item-details-row>
-        <app-item-details-row [name]="'Size'" [value]="getHumanReadableSize(directory.files[itemIndex].size)"></app-item-details-row>
+        <app-item-details-row [name]="'Size'"
+          [value]="getHumanReadableSize(directory.files[itemIndex].size)"></app-item-details-row>
         <app-item-details-row [name]="'Date created'"
-                              [value]="getCreationDate(directory.files[itemIndex].id)"></app-item-details-row>
-                          
+          [value]="getCreationDate(directory.files[itemIndex].id)"></app-item-details-row>
+
         <app-item-details-row *ngFor="let data of directory.files[itemIndex].additional_data" [name]="data.name"
-                              [value]="data.value"></app-item-details-row>
+          [value]="data.value"></app-item-details-row>
         <app-item-details-row [name]="'Type'" [value]="directory.files[itemIndex].type"></app-item-details-row>
       </dl>
       <dl *ngIf="type === ConstNames.DIRECTORY">
