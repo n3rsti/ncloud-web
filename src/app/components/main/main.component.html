@@ -18,7 +18,7 @@
         [selectedList]="selectedDirectories" (keydown)="onFileKeydown($event, i, contextMenuConstants.DIRECTORY)"
         (dblclick)="this.router.navigate(['/' + dir.id])"
         (contextmenu)="openContextMenu($event, i, contextMenuConstants.DIRECTORY); addSelectedDirectory($event, dir)"
-        (keydown.shift.delete)="openPermanentlyDeleteModal()" (dropEventEmitter)="moveToDirectory($event)"
+        (dropEventEmitter)="moveToDirectory($event)"
         (dragstart)="dragElementId = dir.id; dragElementType=contextMenuConstants.DIRECTORY"
         (click)="addSelectedDirectory($event, dir)">
       </app-directory-tile>
@@ -35,7 +35,6 @@
       <app-file-tile *ngFor="let file of directory.files; let i = index" [file]="file" [selectedList]="selectedFiles"
         (keydown)="onFileKeydown($event, i, contextMenuConstants.FILE)" (dblclick)="openFileCarousel(i);"
         (contextmenu)="openContextMenu($event, i, contextMenuConstants.FILE); addSelectedFile($event, file)"
-        (keydown.shift.delete)="openPermanentlyDeleteModal()"
         (dragstart)="dragElementId = file.id; dragElementType=contextMenuConstants.FILE"
         (click)="addSelectedFile($event, file)" draggable="true"></app-file-tile>
     </div>
@@ -73,7 +72,8 @@
           (click)="openRenameFileModal(contextMenuId)"><i class="fa-solid fa-pen w-4 mr-2"></i>Rename
         </li>
       </ng-container>
-      <li *ngIf="selectedDirectories.length === 0 && !isTrash" class="flex items-center bg-green-400 text-white cursor-pointer hover:bg-green-500 py-2 pl-4"
+      <li *ngIf="selectedDirectories.length === 0 && !isTrash"
+        class="flex items-center bg-green-400 text-white cursor-pointer hover:bg-green-500 py-2 pl-4"
         (click)="downloadFile(directory.files[contextMenuId])"><i class="fa-solid fa-download w-4 mr-2"></i>Download
       </li>
       <li class="flex items-center bg-red-600 text-white cursor-pointer hover:bg-red-700 py-2 pl-4" *ngIf="!isTrash"
@@ -83,8 +83,7 @@
         (click)="openPermanentlyDeleteModal()"><i class="fa-solid fa-trash w-4 mr-2"></i>Delete
       </li>
       <li class="flex items-center bg-green-400 text-white cursor-pointer hover:bg-green-500 py-2 pl-4" *ngIf="isTrash"
-        (click)="openRestoreFileModal(directory.files[contextMenuId].id)"><i
-          class="fa-solid fa-rotate-right w-4 mr-2"></i>Restore
+        (click)="openRestoreModal()"><i class="fa-solid fa-rotate-right w-4 mr-2"></i>Restore
       </li>
     </ng-container>
     <ng-container *ngIf="contextMenuType === contextMenuConstants.DIRECTORY">
@@ -107,7 +106,7 @@
         (click)="openPermanentlyDeleteModal()"><i class="fa-solid fa-trash w-4 mr-2"></i>Delete
       </li>
       <li class="flex items-center bg-green-400 text-white cursor-pointer hover:bg-green-500 py-2 pl-4" *ngIf="isTrash"
-        (click)="openRestoreDirectoryModal(directory.directories[contextMenuId].id)">
+        (click)="openRestoreModal()">
         <i class="fa-solid fa-rotate-right w-4 mr-2"></i>Restore
       </li>
     </ng-container>

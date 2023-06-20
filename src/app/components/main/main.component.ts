@@ -42,13 +42,13 @@ let permanentlyDeleteModalConfig: ModalConfig = {
   ]
 }
 
-let restoreFileModalConfig: ModalConfig = {
-  subjectName: 'restoreFile',
-  title: 'Restore file',
+let restoreModalConfig: ModalConfig = {
+  subjectName: 'restoreItems',
+  title: 'Restore items',
   fields: [
     {
       type: 'text',
-      value: 'Do you want to restore the file?'
+      value: 'Do you want to restore these x items?'
     },
     {
       type: 'button',
@@ -98,23 +98,6 @@ let createDirectoryModalConfig: ModalConfig = {
       type: 'button',
       value: 'Create new folder',
       additionalData: { "color": "indigo-700", "hover": "indigo-800" }
-    }
-  ]
-}
-
-
-let restoreDirectoryModalConfig: ModalConfig = {
-  subjectName: 'restoreDirectory',
-  title: 'Restore directory',
-  fields: [
-    {
-      type: 'text',
-      value: 'Do you want to restore this directory?'
-    },
-    {
-      type: 'button',
-      value: 'Restore',
-      additionalData: { "color": "green-400", "hover": "green-500" }
     }
   ]
 }
@@ -223,10 +206,13 @@ export class MainComponent {
 
           break;
 
-        case 'restoreFile':
-          file = this.directory.files.find(x => x.id == data.value);
-          if (file)
-            this.restoreFile(file);
+        case 'restoreItems':
+          if(this.selectedFiles.length > 0){
+            this.restoreFiles([...this.selectedFiles]);
+          }
+          if(this.selectedDirectories.length > 0){
+            this.restoreDirectories([...this.selectedDirectories]);
+          }
 
           break;
         case 'renameFile':
@@ -262,13 +248,6 @@ export class MainComponent {
           let newFolderName = data.formValues?.["name"];
           if (newFolderName) {
             this.createDirectory(newFolderName);
-          }
-          break;
-
-        case 'restoreDirectory':
-          directory = this.directory.directories.find(x => x.id == data.value);
-          if (directory) {
-            this.restoreDirectory(directory);
           }
           break;
 
@@ -335,12 +314,6 @@ export class MainComponent {
 
     this.openModal(deleteModalConfig);
   }
-
-  openRestoreFileModal(id: string) {
-    restoreFileModalConfig.data = id;
-    this.openModal(restoreFileModalConfig);
-  }
-
   openRenameDirectoryModal(id: number) {
     if (this.selectedDirectories.length === 1) {
       renameDirectoryModalConfig.data = this.directory.directories[id].id;
@@ -361,9 +334,15 @@ export class MainComponent {
     this.openModal(createDirectoryModalConfig);
   }
 
-  openRestoreDirectoryModal(id: string) {
-    restoreDirectoryModalConfig.data = id;
-    this.openModal(restoreDirectoryModalConfig);
+  openRestoreModal() {
+    if (this.selectedFiles.length + this.selectedDirectories.length > 1) {
+      restoreModalConfig.fields[0].value = `Do you want to restore these ${this.selectedDirectories.length + this.selectedFiles.length} items?`;
+    }
+    else {
+      restoreModalConfig.fields[0].value = `Do you want to restore this item?`;
+    }
+
+    this.openModal(restoreModalConfig);
   }
 
   getDirectory() {
@@ -662,6 +641,9 @@ export class MainComponent {
       if (!this.selectedDirectories.includes(directory)) {
         this.selectedDirectories.push(directory);
       }
+      else {
+        this.selectedDirectories = this.selectedDirectories.filter(x => x != directory);
+      }
     }
     else if (event.button === 2) {
       if (!this.selectedDirectories.includes(directory)) {
@@ -725,6 +707,9 @@ export class MainComponent {
     else if (event.ctrlKey) {
       if (!this.selectedFiles.includes(file)) {
         this.selectedFiles.push(file);
+      }
+      else {
+        this.selectedFiles = this.selectedFiles.filter(x => x != file);
       }
     }
     else if (event.button === 2) {
@@ -814,6 +799,13 @@ export class MainComponent {
         }
         break;
       case "Delete":
+        if(event.shiftKey && this.selectedFiles.length + this.selectedDirectories.length > 0){
+          this.openPermanentlyDeleteModal();
+        }
+        else if(this.selectedFiles.length + this.selectedDirectories.length > 0){
+          this.openDeleteModal();
+        }
+        break;
       case "F4":
         if (this.selectedFiles.length + this.selectedDirectories.length > 0) {
           this.openDeleteModal();
@@ -821,5 +813,25 @@ export class MainComponent {
         break;
 
     }
+  }
+
+  restoreFiles(files: FileModel[]){
+    this.data.restoreFiles(files).subscribe({
+      next: (data) => {
+        if(data.status === 200){
+          this.directory.files = this.directory.files.filter(x => !files.includes(x));
+        }
+      }
+    })
+  }
+
+  restoreDirectories(directories: Directory[]){
+    this.data.restoreDirectories(directories).subscribe({
+      next: (data) => {
+        if(data.status === 200){
+          this.directory.directories = this.directory.directories.filter(x => !directories.includes(x));
+        }
+      }
+    })
   }
 }

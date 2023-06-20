@@ -250,6 +250,22 @@ export class DataService {
 
     return this.http.post(Config.Host + `/api/files/move`, body, { observe: 'response' })
   }
+
+  restoreFiles(files: FileModel[]) {
+    let body = {
+      files: files.map(file => file.id)
+    }
+
+    return this.http.post(Config.Host + '/api/files/restore', body, {observe: 'response'})
+  }
+
+  restoreDirectories(directories: Directory[]) {
+    let body = {
+      directories: directories.map(directory => directory.id)
+    }
+
+    return this.http.post(Config.Host + '/api/directories/restore', body, {observe: 'response'})
+  }
 }
 
 
