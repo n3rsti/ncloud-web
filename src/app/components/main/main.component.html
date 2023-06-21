@@ -18,7 +18,7 @@
         [selectedList]="selectedDirectories" (keydown)="onFileKeydown($event, i, contextMenuConstants.DIRECTORY)"
         (dblclick)="this.router.navigate(['/' + dir.id])"
         (contextmenu)="openContextMenu($event, i, contextMenuConstants.DIRECTORY); addSelectedDirectory($event, dir)"
-        (dropEventEmitter)="moveToDirectory($event)"
+        (dropEventEmitter)="moveToDirectory(dir)"
         (dragstart)="dragElementId = dir.id; dragElementType=contextMenuConstants.DIRECTORY"
         (click)="addSelectedDirectory($event, dir)">
       </app-directory-tile>

@@ -426,6 +426,11 @@ export class MainComponent {
       .setAccessKey(trashAccessKey)
       .build();
 
+
+    this.moveFiles(files, destinationDirectory)
+  }
+
+  moveFiles(files: FileModel[], destinationDirectory: Directory){
     let directoriesWithFiles = [
       new DirectoryBuilder()
         .setId(this.directory.id)
@@ -576,20 +581,12 @@ export class MainComponent {
     })
   }
 
-  moveToDirectory(directoryId: string) {
-    if (this.dragElementType === this.contextMenuConstants.FILE) {
-      let file = this.directory.files.find(x => x.id === this.dragElementId);
-      if (file) {
-        file.parent_directory = directoryId;
-        this.updateFile(file);
-      }
+  moveToDirectory(directory: Directory) {
+    if(this.selectedDirectories.length > 0){
+      this.moveDirectories([...this.selectedDirectories], directory);
     }
-    else if (this.dragElementType === this.contextMenuConstants.DIRECTORY) {
-      let directory = this.directory.directories.find(x => x.id === this.dragElementId);
-      if (directory) {
-        directory.parent_directory = directoryId;
-        this.updateDirectory(directory);
-      }
+    if(this.selectedFiles.length > 0){
+      this.moveFiles([...this.selectedFiles], directory);
     }
   }
 
@@ -609,7 +606,7 @@ export class MainComponent {
           }
         })
 
-        let [startIndex, endIndex] = [lastSelectedElementIndex, selectedElementIndex].sort();
+        let [startIndex, endIndex] = [lastSelectedElementIndex, selectedElementIndex].sort((a, b) => (a - b));
 
         this.selectedDirectories = this.directory.directories.slice(startIndex, endIndex + 1);
 
@@ -677,7 +674,7 @@ export class MainComponent {
           }
         })
 
-        let [startIndex, endIndex] = [lastSelectedElementIndex, selectedElementIndex].sort();
+        let [startIndex, endIndex] = [lastSelectedElementIndex, selectedElementIndex].sort((a, b) => (a - b));
 
         this.selectedFiles = this.directory.files.slice(startIndex, endIndex + 1);
 
