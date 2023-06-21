@@ -76,11 +76,12 @@
     </div>
     <div class="w-full mt-3">
       <ul id="search_list">
+        <!-- TODO: IMPLEMENT
         <app-search-result *ngIf="searchInput.value" [value]="searchInput.value || ''"
                            [sideText]="'Search in this directory'"></app-search-result>
         <app-search-result *ngIf="searchInput.value" [value]="searchInput.value || ''"
                            [sideText]="'Search in all directories'"></app-search-result>
-        <hr class="m-2" *ngIf="searchFileResults.length > 0">
+        <hr class="m-2" *ngIf="searchFileResults.length > 0"> -->
 
         <div class="max-h-[70vh] overflow-y-scroll overflow-x-hidden">
           <ng-container *ngIf="searchFileResults.length > 0">

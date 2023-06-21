@@ -25,6 +25,7 @@ export class FileTileComponent {
       this.highlightedFile = params["file"];
       if(this.highlightedFile === this.file.id){
         this.btn?.nativeElement.focus();
+        console.log(this.btn)
       }
     })
   }

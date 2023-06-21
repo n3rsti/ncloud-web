@@ -33,7 +33,7 @@ export class NavbarComponent {
           this.searchElementSelected = 0;
         }
         else {
-          let listLength = this.searchFileResults.length + this.searchDirectoryResults.length + 2;
+          let listLength = this.searchFileResults.length + this.searchDirectoryResults.length; // + 2;
           this.removeSelectedElementClass();
 
           this.searchElementSelected += 1;
@@ -49,7 +49,7 @@ export class NavbarComponent {
       event.preventDefault();
 
       if(this.searchOpened && this.searchInput.value){
-        let listLength = this.searchFileResults.length + this.searchDirectoryResults.length + 2;
+        let listLength = this.searchFileResults.length + this.searchDirectoryResults.length; //+ 2;
         if(this.searchElementSelected === -1){
           this.searchElementSelected = listLength - 1;
         }

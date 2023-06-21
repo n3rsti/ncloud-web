@@ -120,8 +120,6 @@ export class MainComponent {
   contextMenuType = "";
   @ViewChild('contextMenu', { static: false }) contextMenu: ElementRef | undefined;
 
-  dragElementId = "";
-  dragElementType = "";
 
   isLoaded = false;
   selectedFiles: FileModel[] = [];
@@ -207,10 +205,10 @@ export class MainComponent {
           break;
 
         case 'restoreItems':
-          if(this.selectedFiles.length > 0){
+          if (this.selectedFiles.length > 0) {
             this.restoreFiles([...this.selectedFiles]);
           }
-          if(this.selectedDirectories.length > 0){
+          if (this.selectedDirectories.length > 0) {
             this.restoreDirectories([...this.selectedDirectories]);
           }
 
@@ -427,14 +425,14 @@ export class MainComponent {
       .build();
 
 
-    this.moveFiles(files, destinationDirectory)
+    this.moveFiles(files, this.directory, destinationDirectory)
   }
 
-  moveFiles(files: FileModel[], destinationDirectory: Directory){
+  moveFiles(files: FileModel[], filesParentDirectory: Directory, destinationDirectory: Directory) {
     let directoriesWithFiles = [
       new DirectoryBuilder()
-        .setId(this.directory.id)
-        .setAccessKey(this.directory.access_key)
+        .setId(filesParentDirectory.id)
+        .setAccessKey(filesParentDirectory.access_key)
         .setFiles(files)
         .build()
     ]
@@ -442,7 +440,29 @@ export class MainComponent {
     this.data.moveFiles(directoriesWithFiles, destinationDirectory).subscribe({
       next: (data) => {
         if (data.status === 200) {
-          this.directory.files = this.directory.files.filter(x => !files.includes(x));
+          let filesAdded = false;
+
+          files.forEach(element => {
+            if (!this.directory.files.map(x => x.id).includes(element.id)) {
+              this.data.getFile(element).subscribe({
+                next: (data) => {
+                  // Convert blob to URL
+                  const urlCreator = window.URL || window.webkitURL;
+                  element.src = this.sanitizer.bypassSecurityTrustUrl(urlCreator.createObjectURL(data));
+
+                  this.directory.files = [...this.directory.files, element];
+
+                  filesAdded = true;
+                },
+              })
+
+            }
+          })
+
+          if (!filesAdded) {
+            this.directory.files = this.directory.files.filter(x => !files.includes(x));
+          }
+
         }
       }
     });
@@ -582,11 +602,11 @@ export class MainComponent {
   }
 
   moveToDirectory(directory: Directory) {
-    if(this.selectedDirectories.length > 0){
+    if (this.selectedDirectories.length > 0) {
       this.moveDirectories([...this.selectedDirectories], directory);
     }
-    if(this.selectedFiles.length > 0){
-      this.moveFiles([...this.selectedFiles], directory);
+    if (this.selectedFiles.length > 0) {
+      this.moveFiles([...this.selectedFiles], this.directory, directory);
     }
   }
 
@@ -757,9 +777,11 @@ export class MainComponent {
         if (event.ctrlKey) {
           localStorage.removeItem("cutFiles");
           localStorage.removeItem("cutDirectories");
+          localStorage.removeItem("cutFilesParentDirectory");
 
           if (this.selectedFiles.length > 0) {
             localStorage.setItem("cutFiles", JSON.stringify(this.selectedFiles));
+            localStorage.setItem("cutFilesParentDirectory", JSON.stringify(this.directory));
           }
           if (this.selectedDirectories.length > 0) {
             localStorage.setItem("cutDirectories", JSON.stringify(this.selectedDirectories));
@@ -770,6 +792,7 @@ export class MainComponent {
         if (event.ctrlKey) {
           let cutDirectories = localStorage.getItem("cutDirectories");
           let cutFiles = localStorage.getItem("cutFiles");
+          let cutFilesParentDirectory = localStorage.getItem("cutFilesParentDirectory");
 
           if (cutDirectories) {
             let parsedDirectories = JSON.parse(cutDirectories).map((element: any) => {
@@ -782,9 +805,34 @@ export class MainComponent {
             });
             this.moveDirectories(parsedDirectories, this.directory);
 
-            localStorage.removeItem("cutFiles");
-            localStorage.removeItem("cutDirectories");
+
           }
+
+          if (cutFiles && cutFilesParentDirectory) {
+            let parsedFiles = JSON.parse(cutFiles).map((element: any) => {
+              return new FileBuilder()
+                .setId(element._id)
+                .setName(element._name)
+                .setAccessKey(element._access_key)
+                .setParentDirectory(element._parent_directory)
+                .setPreviousParentDirectory(element._previous_parent_directory)
+                .setUser(element._user)
+                .build()
+            })
+
+            let parsedDirectory = JSON.parse(cutFilesParentDirectory);
+
+            let parentDirectory = new DirectoryBuilder()
+              .setId(parsedDirectory._id)
+              .setAccessKey(parsedDirectory._access_key)
+              .build();
+
+            this.moveFiles(parsedFiles, parentDirectory, this.directory);
+          }
+
+          localStorage.removeItem("cutFiles");
+          localStorage.removeItem("cutFilesParentDirectory");
+          localStorage.removeItem("cutDirectories");
         }
         break;
       case "a":
@@ -796,10 +844,10 @@ export class MainComponent {
         }
         break;
       case "Delete":
-        if(event.shiftKey && this.selectedFiles.length + this.selectedDirectories.length > 0){
+        if (event.shiftKey && this.selectedFiles.length + this.selectedDirectories.length > 0) {
           this.openPermanentlyDeleteModal();
         }
-        else if(this.selectedFiles.length + this.selectedDirectories.length > 0){
+        else if (this.selectedFiles.length + this.selectedDirectories.length > 0) {
           this.openDeleteModal();
         }
         break;
@@ -812,20 +860,20 @@ export class MainComponent {
     }
   }
 
-  restoreFiles(files: FileModel[]){
+  restoreFiles(files: FileModel[]) {
     this.data.restoreFiles(files).subscribe({
       next: (data) => {
-        if(data.status === 200){
+        if (data.status === 200) {
           this.directory.files = this.directory.files.filter(x => !files.includes(x));
         }
       }
     })
   }
 
-  restoreDirectories(directories: Directory[]){
+  restoreDirectories(directories: Directory[]) {
     this.data.restoreDirectories(directories).subscribe({
       next: (data) => {
-        if(data.status === 200){
+        if (data.status === 200) {
           this.directory.directories = this.directory.directories.filter(x => !directories.includes(x));
         }
       }

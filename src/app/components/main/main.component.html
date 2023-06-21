@@ -19,7 +19,6 @@
         (dblclick)="this.router.navigate(['/' + dir.id])"
         (contextmenu)="openContextMenu($event, i, contextMenuConstants.DIRECTORY); addSelectedDirectory($event, dir)"
         (dropEventEmitter)="moveToDirectory(dir)"
-        (dragstart)="dragElementId = dir.id; dragElementType=contextMenuConstants.DIRECTORY"
         (click)="addSelectedDirectory($event, dir)">
       </app-directory-tile>
       <button *ngIf="directory.id && !isTrash" (click)="openCreateDirectoryModal()"
@@ -35,7 +34,6 @@
       <app-file-tile *ngFor="let file of directory.files; let i = index" [file]="file" [selectedList]="selectedFiles"
         (keydown)="onFileKeydown($event, i, contextMenuConstants.FILE)" (dblclick)="openFileCarousel(i);"
         (contextmenu)="openContextMenu($event, i, contextMenuConstants.FILE); addSelectedFile($event, file)"
-        (dragstart)="dragElementId = file.id; dragElementType=contextMenuConstants.FILE"
         (click)="addSelectedFile($event, file)" draggable="true"></app-file-tile>
     </div>
     <div *ngIf="isLoaded && (directory.files.length + directory.directories.length === 0)"
