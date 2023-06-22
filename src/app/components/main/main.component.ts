@@ -628,7 +628,11 @@ export class MainComponent {
 
         let [startIndex, endIndex] = [lastSelectedElementIndex, selectedElementIndex].sort((a, b) => (a - b));
 
-        this.selectedDirectories = this.directory.directories.slice(startIndex, endIndex + 1);
+        this.directory.directories.slice(startIndex, endIndex + 1).forEach(element => {
+          if (!this.selectedDirectories.includes(element)) {
+            this.selectedDirectories.push(element);
+          }
+        });
 
       }
       else if (this.lastSelectedElement === this.contextMenuConstants.FILE) {
@@ -649,8 +653,16 @@ export class MainComponent {
         })
 
 
-        this.selectedDirectories = this.directory.directories.slice(selectedElementIndex);
-        this.selectedFiles = this.directory.files.slice(0, lastSelectedElementIndex + 1);
+        this.directory.directories.slice(selectedElementIndex).forEach(element => {
+          if(!this.selectedDirectories.includes(element)){
+            this.selectedDirectories.push(element);
+          }
+        });
+        this.directory.files.slice(0, lastSelectedElementIndex + 1).forEach(element => {
+          if(!this.selectedFiles.includes(element)){
+            this.selectedFiles.push(element);
+          }
+        });
 
       }
     }
@@ -696,7 +708,11 @@ export class MainComponent {
 
         let [startIndex, endIndex] = [lastSelectedElementIndex, selectedElementIndex].sort((a, b) => (a - b));
 
-        this.selectedFiles = this.directory.files.slice(startIndex, endIndex + 1);
+        this.directory.files.slice(startIndex, endIndex + 1).forEach(element => {
+          if(!this.selectedFiles.includes(element)){
+            this.selectedFiles.push(element);
+          }
+        });
 
       }
       else if (this.lastSelectedElement === this.contextMenuConstants.DIRECTORY) {
@@ -716,8 +732,17 @@ export class MainComponent {
           }
         })
 
-        this.selectedDirectories = this.directory.directories.slice(lastSelectedElementIndex);
-        this.selectedFiles = this.directory.files.slice(0, selectedElementIndex + 1);
+
+        this.directory.directories.slice(lastSelectedElementIndex).forEach(element => {
+          if(!this.selectedDirectories.includes(element)){
+            this.selectedDirectories.push(element);
+          }
+        });
+        this.directory.files.slice(0, selectedElementIndex + 1).forEach(element => {
+          if(!this.selectedFiles.includes(element)){
+            this.selectedFiles.push(element);
+          }
+        });
 
       }
     }
