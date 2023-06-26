@@ -15,11 +15,11 @@
     <div
       class="grid grid-cols-8 max-2xl:grid-cols-6 max-xl:grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-3 max-sm:grid-cols-2 gap-2 mb-5">
       <app-directory-tile *ngFor="let dir of directory.directories; let i = index" [directory]="dir"
-        [selectedList]="selectedDirectories" (keydown)="onFileKeydown($event, i, contextMenuConstants.DIRECTORY)"
+        [selectedList]="selectedDirectories" (keydown)="onFileKeydown($event, i, constElementNames.DIRECTORY)"
         (dblclick)="this.router.navigate(['/' + dir.id])"
-        (contextmenu)="openContextMenu($event, i, contextMenuConstants.DIRECTORY); addSelectedDirectory($event, dir)"
-        (dropEventEmitter)="moveToDirectory(dir)"
-        (click)="addSelectedDirectory($event, dir)">
+        (contextmenu)="openContextMenu($event, i, constElementNames.DIRECTORY); addSelectedDirectory($event, dir)"
+        (dropEventEmitter)="moveToDirectory(dir)" (click)="addSelectedDirectory($event, dir)"
+        (dragstart)="addSelectedDirectory($event, dir)">
       </app-directory-tile>
       <button *ngIf="directory.id && !isTrash" (click)="openCreateDirectoryModal()"
         class="bg-white border border-gray-200 rounded-lg hover:bg-gray-100 dark:bg-gray-800
@@ -32,11 +32,12 @@
     <div
       class="grid grid-cols-8 max-2xl:grid-cols-6 max-xl:grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-3 max-sm:grid-cols-2 gap-2 last-of-type:mb-16">
       <app-file-tile *ngFor="let file of directory.files; let i = index" [file]="file" [selectedList]="selectedFiles"
-        (keydown)="onFileKeydown($event, i, contextMenuConstants.FILE)" (dblclick)="openFileCarousel(i);"
-        (contextmenu)="openContextMenu($event, i, contextMenuConstants.FILE); addSelectedFile($event, file)"
-        (click)="addSelectedFile($event, file)" draggable="true"></app-file-tile>
+        (keydown)="onFileKeydown($event, i, constElementNames.FILE)" (dblclick)="openFileCarousel(i);"
+        (contextmenu)="openContextMenu($event, i, constElementNames.FILE); addSelectedFile($event, file)"
+        (click)="addSelectedFile($event, file)" draggable="true"
+        (dragstart)="addSelectedFile($event, file)"></app-file-tile>
     </div>
-    <div *ngIf="isLoaded && (directory.files.length + directory.directories.length === 0)"
+    <div *ngIf="directory.files.length + directory.directories.length === 0"
       class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
       <ng-container *ngIf="isTrash">
         <i class="fa-solid fa-trash text-5xl text-gray-400 mb-5"></i>
@@ -60,19 +61,20 @@
 <div #contextMenu id="contextMenu"
   class="utility:keep-selected scale-0 absolute top-0 left-0 bg-white rounded overflow-hidden w-44 text-sm hidden md:block z-20">
   <ul class="text-left font-medium">
-    <ng-container *ngIf="contextMenuType === contextMenuConstants.FILE">
+    <ng-container *ngIf="contextMenuElementType === constElementNames.FILE">
       <ng-container *ngIf="selectedDirectories.length + selectedFiles.length === 1">
         <li class="flex items-center text-gray-600 cursor-pointer hover:bg-gray-100 py-2 pl-4"
-          (click)="openFileDetails(contextMenuId, contextMenuConstants.FILE)"><i
+          (click)="openFileDetails(contextMenuElementIndex, constElementNames.FILE)"><i
             class="fa-solid fa-circle-info w-4 mr-2"></i>Details
         </li>
         <li class="flex items-center text-gray-600 cursor-pointer hover:bg-gray-100 py-2 pl-4"
-          (click)="openRenameFileModal(contextMenuId)"><i class="fa-solid fa-pen w-4 mr-2"></i>Rename
+          (click)="openRenameFileModal(contextMenuElementIndex)"><i class="fa-solid fa-pen w-4 mr-2"></i>Rename
         </li>
       </ng-container>
       <li *ngIf="selectedDirectories.length === 0 && !isTrash"
         class="flex items-center bg-green-400 text-white cursor-pointer hover:bg-green-500 py-2 pl-4"
-        (click)="downloadFile(directory.files[contextMenuId])"><i class="fa-solid fa-download w-4 mr-2"></i>Download
+        (click)="downloadFile(directory.files[contextMenuElementIndex])"><i
+          class="fa-solid fa-download w-4 mr-2"></i>Download
       </li>
       <li class="flex items-center bg-red-600 text-white cursor-pointer hover:bg-red-700 py-2 pl-4" *ngIf="!isTrash"
         (click)="openDeleteModal()"><i class="fa-solid fa-trash w-4 mr-2"></i>Delete
@@ -84,14 +86,14 @@
         (click)="openRestoreModal()"><i class="fa-solid fa-rotate-right w-4 mr-2"></i>Restore
       </li>
     </ng-container>
-    <ng-container *ngIf="contextMenuType === contextMenuConstants.DIRECTORY">
+    <ng-container *ngIf="contextMenuElementType === constElementNames.DIRECTORY">
       <ng-container *ngIf="selectedDirectories.length + selectedFiles.length === 1">
         <li class="flex items-center text-gray-600 cursor-pointer hover:bg-gray-100 py-2 pl-4"
-          (click)="openFileDetails(contextMenuId, contextMenuConstants.DIRECTORY)">
+          (click)="openFileDetails(contextMenuElementIndex, constElementNames.DIRECTORY)">
           <i class="fa-solid fa-circle-info w-4 mr-2"></i>Details
         </li>
         <li class="flex items-center text-gray-600 cursor-pointer hover:bg-gray-100 py-2 pl-4"
-          (click)="openRenameDirectoryModal(contextMenuId)">
+          (click)="openRenameDirectoryModal(contextMenuElementIndex)">
           <i class="fa-solid fa-pen w-4 mr-2"></i>Rename
         </li>
       </ng-container>

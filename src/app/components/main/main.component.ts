@@ -9,98 +9,10 @@ import { FileBuilder, FileModel } from "../../models/file.model";
 import { ModalConfig, ModalOutput } from "../../interfaces";
 import { decodeJWT, FileFormats } from "../../utils";
 import { ConstNames } from "../../constants";
+import { createDirectoryModalConfig, deleteModalConfig, permanentlyDeleteModalConfig, renameDirectoryModalConfig, renameFileModalConfig, restoreModalConfig } from '../modal/modal.config';
 
-let deleteModalConfig: ModalConfig = {
-  subjectName: 'deleteItems',
-  title: 'Delete file',
-  fields: [
-    {
-      type: 'text',
-      value: 'Do you want to move x items to trash?'
-    },
-    {
-      type: 'button',
-      value: 'Delete',
-      additionalData: { "color": "red-600", "hover": "red-700" }
-    }
-  ]
-}
-
-let permanentlyDeleteModalConfig: ModalConfig = {
-  subjectName: 'permanentlyDeleteItems',
-  title: 'Permanently delete items',
-  fields: [
-    {
-      type: 'text',
-      value: 'Do you want to permanently delete x items?'
-    },
-    {
-      type: 'button',
-      value: 'Delete',
-      additionalData: { "color": "red-600", "hover": "red-700" }
-    }
-  ]
-}
-
-let restoreModalConfig: ModalConfig = {
-  subjectName: 'restoreItems',
-  title: 'Restore items',
-  fields: [
-    {
-      type: 'text',
-      value: 'Do you want to restore these x items?'
-    },
-    {
-      type: 'button',
-      value: 'Restore',
-      additionalData: { "color": "green-400", "hover": "green-500" }
-    }
-  ]
-}
-
-let renameFileModalConfig: ModalConfig = {
-  subjectName: 'renameFile',
-  title: 'Rename file',
-  fields: [
-    {
-      type: 'text',
-      value: 'Do you want to rename the file?'
-    },
-    {
-      type: 'input-text',
-      value: '',
-      name: 'name'
-    },
-    {
-      type: 'button',
-      value: 'Rename',
-      additionalData: { "color": "green-400", "hover": "green-500" }
-    }
-  ]
-}
-
-let renameDirectoryModalConfig: ModalConfig = Object.create(renameFileModalConfig)
-renameDirectoryModalConfig.subjectName = 'renameDirectory';
-renameDirectoryModalConfig.title = 'Rename Directory'
-renameDirectoryModalConfig.fields[0].value = 'Do you want to rename the directory?';
-
-let createDirectoryModalConfig: ModalConfig = {
-  subjectName: 'createDirectory',
-  title: 'New folder',
-  fields: [
-    {
-      type: 'input-text',
-      value: '',
-      name: 'name',
-      additionalData: { "placeholder": "Example folder name..." }
-    },
-    {
-      type: 'button',
-      value: 'Create new folder',
-      additionalData: { "color": "indigo-700", "hover": "indigo-800" }
-    }
-  ]
-}
+const RIGHT_CLICK = 2;
+const LEFT_CLICK = 0;
 
 
 @Component({
@@ -109,30 +21,31 @@ let createDirectoryModalConfig: ModalConfig = {
   styleUrls: ['./main.component.scss']
 })
 export class MainComponent {
-  contextMenuConstants = ConstNames
-  modalToggle = new FormControl('');
-  // Current directory object and ID
+  constElementNames = ConstNames
+
   directory: Directory = new DirectoryBuilder().build();
   directoryId: string = '';
   isTrash = true;
 
-  contextMenuId = 0;
-  contextMenuType = "";
+  contextMenuElementIndex = 0;
+  contextMenuElementType = "";
   @ViewChild('contextMenu', { static: false }) contextMenu: ElementRef | undefined;
 
 
-  isLoaded = false;
   selectedFiles: FileModel[] = [];
   selectedDirectories: Directory[] = [];
 
-  lastSelectedElement: string = this.contextMenuConstants.DIRECTORY;
+  lastSelectedElement: string = this.constElementNames.DIRECTORY;
 
+
+  // These functions are used in event listeners
+  // They are here so they can get removed from event listener on ngOnDestroy
   keyboardEvent = (e: KeyboardEvent) => {
     this.handleKeyDown(e);
   }
 
   clickEvent = (e: MouseEvent) => {
-    if (e.button === 0) {
+    if (e.button === LEFT_CLICK) {
       this.closeContextMenu();
     }
     let target = e.target as HTMLElement;
@@ -144,7 +57,7 @@ export class MainComponent {
     }
     this.selectedFiles = [];
     this.selectedDirectories = [];
-    this.lastSelectedElement = this.contextMenuConstants.DIRECTORY;
+    this.lastSelectedElement = this.constElementNames.DIRECTORY;
   }
 
   constructor(private data: DataService, public sanitizer: DomSanitizer, private route: ActivatedRoute, public router: Router) {
@@ -164,7 +77,7 @@ export class MainComponent {
         this.directoryId = params["id"];
         this.getDirectory();
       }
-      else if (localStorage.getItem("mainDirectoryId")) {
+      else if (!params["id"] && localStorage.getItem("mainDirectoryId")) {
         this.directoryId = localStorage.getItem("mainDirectoryId") || "";
         this.router.navigate(['/' + this.directoryId]);
       }
@@ -173,7 +86,7 @@ export class MainComponent {
       }
 
 
-      let trashId = decodeJWT(localStorage.getItem("trashAccessKey") || "")["id"];
+      const trashId = decodeJWT(localStorage.getItem("trashAccessKey") || "")["id"];
       this.isTrash = trashId == this.directoryId;
     }
     )
@@ -184,7 +97,6 @@ export class MainComponent {
       let directory = null;
       switch (data.subjectName) {
         case 'permanentlyDeleteItems':
-          // Argument must be passed as value because otherwise it will be overwritten while doing delete request
           if (this.selectedDirectories.length > 0) {
             this.permanentlyDeleteDirectories([...this.selectedDirectories]);
           }
@@ -194,7 +106,6 @@ export class MainComponent {
 
           break;
         case 'deleteItems':
-          // Argument must be passed as value because otherwise it will be overwritten while doing move request
           if (this.selectedDirectories.length > 0) {
             this.deleteDirectories([...this.selectedDirectories]);
           }
@@ -266,17 +177,17 @@ export class MainComponent {
     this.fileCarouselSubject.next(counter);
   }
 
-  openFileDetails(i: number, type: string) {
+  openFileDetails(elementIndex: number, elementType: string) {
     if (this.selectedDirectories.length + this.selectedFiles.length === 1) {
       let title = '';
-      if (type === ConstNames.FILE) {
+      if (elementType === ConstNames.FILE) {
         title = 'File details';
-      } else if (type === ConstNames.DIRECTORY) {
+      } else if (elementType === ConstNames.DIRECTORY) {
         title = 'Directory details'
       }
       this.fileDetailsSubject.next({
-        index: i,
-        type: type,
+        index: elementIndex,
+        type: elementType,
         title: title
       });
     }
@@ -344,7 +255,6 @@ export class MainComponent {
   }
 
   getDirectory() {
-
     this.data.getDirectory(this.directoryId).subscribe({
       next: (data: Directory[]) => {
         this.directory = data[0];
@@ -364,7 +274,6 @@ export class MainComponent {
             })
           }
         })
-        this.isLoaded = true;
       },
     })
   }
@@ -376,21 +285,17 @@ export class MainComponent {
         next: (data: Directory) => {
           if (data) {
             this.directory.directories.push(data);
-
-            // Close modal
-            this.modalToggle.setValue('');
           }
         }
       })
     }
   }
 
-  // openContextMenu function opens context menu and sets contextMenuId value to INDEX of file in file list
-  openContextMenu(event: any, id: number, type: string) {
+  openContextMenu(event: any, elementIndex: number, elementType: string) {
     event.preventDefault();
 
-    this.contextMenuId = id;
-    this.contextMenuType = type;
+    this.contextMenuElementIndex = elementIndex;
+    this.contextMenuElementType = elementType;
 
 
     if (!this.contextMenu) {
@@ -406,7 +311,7 @@ export class MainComponent {
       return;
     }
 
-    this.contextMenuId = 0;
+    this.contextMenuElementIndex = 0;
 
     this.contextMenu.nativeElement.classList.add("scale-0");
     this.contextMenu.nativeElement.style.transform = null;
@@ -468,13 +373,6 @@ export class MainComponent {
     });
   }
 
-  restoreFile(file: FileModel) {
-    file.parent_directory = file.previous_parent_directory;
-    file.previous_parent_directory = "";
-
-    this.updateFile(file);
-  }
-
   updateFile(file: FileModel, directoryAccessKey?: string) {
     return this.data.updateFile(file, directoryAccessKey).subscribe({
       next: (data) => {
@@ -493,13 +391,6 @@ export class MainComponent {
         }
       }
     })
-  }
-
-  restoreDirectory(directory: Directory) {
-    directory.parent_directory = directory.previous_parent_directory;
-    directory.previous_parent_directory = "";
-
-    this.updateDirectory(directory);
   }
 
   deleteDirectories(directories: Directory[]) {
@@ -544,9 +435,6 @@ export class MainComponent {
           let directoryBeforeUpdate = this.directory.directories.find(x => x.id === directory.id);
           if (directoryBeforeUpdate && directoryBeforeUpdate.name !== directory.name) {
             directoryBeforeUpdate.name = directory.name;
-          }
-          if (directory.parent_directory != "" && directory.parent_directory != this.directoryId) {
-            this.directory.directories = this.directory.directories.filter(x => x.id != directory.id);
           }
         }
       }
@@ -612,7 +500,7 @@ export class MainComponent {
 
   addSelectedDirectory(event: MouseEvent, directory: Directory) {
     if (event.shiftKey) {
-      if (this.lastSelectedElement === this.contextMenuConstants.DIRECTORY) {
+      if (this.lastSelectedElement === this.constElementNames.DIRECTORY) {
         let lastSelectedElement = this.selectedDirectories.at(-1);
         let lastSelectedElementIndex = 0;
 
@@ -635,7 +523,7 @@ export class MainComponent {
         });
 
       }
-      else if (this.lastSelectedElement === this.contextMenuConstants.FILE) {
+      else if (this.lastSelectedElement === this.constElementNames.FILE) {
         let lastSelectedElement = this.selectedFiles.at(-1) || new FileBuilder().build();
         let lastSelectedElementIndex = 0;
 
@@ -654,12 +542,12 @@ export class MainComponent {
 
 
         this.directory.directories.slice(selectedElementIndex).forEach(element => {
-          if(!this.selectedDirectories.includes(element)){
+          if (!this.selectedDirectories.includes(element)) {
             this.selectedDirectories.push(element);
           }
         });
         this.directory.files.slice(0, lastSelectedElementIndex + 1).forEach(element => {
-          if(!this.selectedFiles.includes(element)){
+          if (!this.selectedFiles.includes(element)) {
             this.selectedFiles.push(element);
           }
         });
@@ -674,25 +562,29 @@ export class MainComponent {
         this.selectedDirectories = this.selectedDirectories.filter(x => x != directory);
       }
     }
-    else if (event.button === 2) {
+    else if (event.button === RIGHT_CLICK) {
       if (!this.selectedDirectories.includes(directory)) {
         this.selectedDirectories = [directory];
         this.selectedFiles = [];
       }
 
-      this.lastSelectedElement = this.contextMenuConstants.DIRECTORY;
+      this.lastSelectedElement = this.constElementNames.DIRECTORY;
       return;
     }
     else {
-      this.selectedDirectories = [directory];
-      this.selectedFiles = [];
+      let dragNewDirectory = event.type === "dragstart" && !this.selectedDirectories.includes(directory);
+      if (event.type === "click" || dragNewDirectory) {
+        this.selectedDirectories = [directory];
+        this.selectedFiles = [];
+      }
+
     }
-    this.lastSelectedElement = this.contextMenuConstants.DIRECTORY;
+    this.lastSelectedElement = this.constElementNames.DIRECTORY;
   }
 
   addSelectedFile(event: MouseEvent, file: FileModel) {
     if (event.shiftKey) {
-      if (this.lastSelectedElement === this.contextMenuConstants.FILE) {
+      if (this.lastSelectedElement === this.constElementNames.FILE) {
         let lastSelectedElement = this.selectedFiles.at(-1);
         let lastSelectedElementIndex = 0;
 
@@ -709,13 +601,13 @@ export class MainComponent {
         let [startIndex, endIndex] = [lastSelectedElementIndex, selectedElementIndex].sort((a, b) => (a - b));
 
         this.directory.files.slice(startIndex, endIndex + 1).forEach(element => {
-          if(!this.selectedFiles.includes(element)){
+          if (!this.selectedFiles.includes(element)) {
             this.selectedFiles.push(element);
           }
         });
 
       }
-      else if (this.lastSelectedElement === this.contextMenuConstants.DIRECTORY) {
+      else if (this.lastSelectedElement === this.constElementNames.DIRECTORY) {
         let lastSelectedElement = this.selectedDirectories.at(-1);
         let lastSelectedElementIndex = 0;
 
@@ -734,12 +626,12 @@ export class MainComponent {
 
 
         this.directory.directories.slice(lastSelectedElementIndex).forEach(element => {
-          if(!this.selectedDirectories.includes(element)){
+          if (!this.selectedDirectories.includes(element)) {
             this.selectedDirectories.push(element);
           }
         });
         this.directory.files.slice(0, selectedElementIndex + 1).forEach(element => {
-          if(!this.selectedFiles.includes(element)){
+          if (!this.selectedFiles.includes(element)) {
             this.selectedFiles.push(element);
           }
         });
@@ -754,19 +646,23 @@ export class MainComponent {
         this.selectedFiles = this.selectedFiles.filter(x => x != file);
       }
     }
-    else if (event.button === 2) {
+    else if (event.button === RIGHT_CLICK) {
       if (!this.selectedFiles.includes(file)) {
         this.selectedFiles = [file];
         this.selectedDirectories = [];
       }
-      this.lastSelectedElement = this.contextMenuConstants.FILE;
+      this.lastSelectedElement = this.constElementNames.FILE;
       return;
     }
     else {
-      this.selectedFiles = [file];
-      this.selectedDirectories = [];
+      const dragNewFile = event.type === "dragstart" && !this.selectedFiles.includes(file);
+      if (event.type === "click" || dragNewFile) {
+        this.selectedFiles = [file];
+        this.selectedDirectories = [];
+      }
+
     }
-    this.lastSelectedElement = this.contextMenuConstants.FILE;
+    this.lastSelectedElement = this.constElementNames.FILE;
   }
 
   permanentlyDeleteFiles(files: FileModel[]) {

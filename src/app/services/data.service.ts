@@ -166,8 +166,6 @@ export class DataService {
     return this.http.patch(Config.Host + `/api/directories/${directory.id}`,
       {
         "name": directory.name,
-        "parent_directory": directory.parent_directory,
-        "previous_parent_directory": directory.previous_parent_directory
       },
       {
         headers: headers,
@@ -256,7 +254,7 @@ export class DataService {
       files: files.map(file => file.id)
     }
 
-    return this.http.post(Config.Host + '/api/files/restore', body, {observe: 'response'})
+    return this.http.post(Config.Host + '/api/files/restore', body, { observe: 'response' })
   }
 
   restoreDirectories(directories: Directory[]) {
@@ -264,7 +262,7 @@ export class DataService {
       directories: directories.map(directory => directory.id)
     }
 
-    return this.http.post(Config.Host + '/api/directories/restore', body, {observe: 'response'})
+    return this.http.post(Config.Host + '/api/directories/restore', body, { observe: 'response' })
   }
 }
 
