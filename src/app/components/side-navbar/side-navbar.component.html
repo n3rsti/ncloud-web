@@ -13,15 +13,11 @@
   </a>
 </section>
 <div class="btm-nav h-16 hidden max-md:flex">
-  <button class="active text-indigo-700" [routerLink]="['/' + mainDirectoryId]">
+  <button class="{{ currentId === mainDirectoryId ? 'active' : '' }} text-indigo-700" [routerLink]="['/' + mainDirectoryId]">
     <i class="fa-solid fa-home h-7 flex items-center text-xl"></i>
     <p class="text-xs font-semibold">Home</p>
   </button>
-  <label for="folder-modal" class="text-accent">
-    <i class="fa-solid fa-circle-plus text-2xl h-7"></i>
-    <p class="text-xs font-semibold">New folder</p>
-  </label>
-  <button class="text-red-700" [routerLink]="['/' + trashId]">
+  <button class="{{ currentId === trashId ? 'active' : '' }} text-red-700" [routerLink]="['/' + trashId]">
     <i class="fa-solid fa-trash h-7 flex items-center text-xl"></i>
     <p class="text-xs font-semibold">Trash</p>
   </button>
