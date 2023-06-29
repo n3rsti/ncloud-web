@@ -1,6 +1,6 @@
 # NcloudWeb
 
-Cloud storage interface for (ncloud-api)[https://github.com/n3rsti/ncloud-api]
+Cloud storage interface for [ncloud-api](https://github.com/n3rsti/ncloud-api)
 
 ## Setup
 ### Install dependencies
