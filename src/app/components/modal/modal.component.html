@@ -1,6 +1,11 @@
 <ng-container *ngIf="opened && Config">
-  <section class="fixed top-0 left-0 w-full h-screen bg-black bg-opacity-50 z-20" (click)="opened = false"></section>
-  <div class="fixed z-20 top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 bg-white shadow p-5 rounded-lg md:min-w-[30%] min-w-[90%]">
+  <section
+    class="fixed top-0 left-0 w-full h-screen bg-black bg-opacity-50 z-20"
+    (click)="opened = false"
+  ></section>
+  <div
+    class="fixed z-20 top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 bg-white shadow p-5 rounded-lg md:min-w-[30%] min-w-[90%]"
+  >
     <div class="flex items-end mb-3">
       <h3 class="text-lg font-bold mb-0 mr-auto">{{ Config.title }}</h3>
       <button class="btn btn-sm btn-circle" (click)="opened = false">✕</button>
@@ -8,15 +13,25 @@
     <form class="space-y-6 flex flex-col" action="#">
       <ng-container *ngFor="let field of Config.fields">
         <p *ngIf="field.type === 'text'">{{ field.value }}</p>
-        <input #modalInput *ngIf="field.type === 'input-text'" type="text" [name]="field.name" [id]="field.name"
-               [value]="field.value" [placeholder]="field.additionalData?.['placeholder'] || ''"
-               class="md:min-w-[600px] bg-gray-50 border font-medium border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-        <button type="submit" *ngIf="field.type === 'button'" (click)="onSubmit()"
-                class="w-full self-end text-white bg-{{ field.additionalData?.['color'] || 'indigo-700' }} hover:bg-{{ field.additionalData?.['hover'] || 'indigo-800' }} focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+        <input
+          #modalInput
+          *ngIf="field.type === 'input-text'"
+          type="text"
+          [name]="field.name"
+          [id]="field.name"
+          [value]="field.value"
+          [placeholder]="field.additionalData?.['placeholder'] || ''"
+          class="md:min-w-[600px] bg-gray-50 border font-medium border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+        />
+        <button
+          type="submit"
+          *ngIf="field.type === 'button'"
+          (click)="onSubmit()"
+          class="w-full self-end text-white bg-{{ field.additionalData?.['color'] || 'indigo-700' }} hover:bg-{{ field.additionalData?.['hover'] || 'indigo-800' }} focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+        >
           {{ field.value }}
         </button>
       </ng-container>
     </form>
   </div>
-
 </ng-container>
