@@ -1,27 +1,38 @@
 # NcloudWeb
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.1.3.
+Cloud storage interface for (ncloud-api)[https://github.com/n3rsti/ncloud-api]
 
-## Development server
+## Setup
+### Install dependencies
+`sudo npm install`
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+### Install angular cli
+`sudo npm install -g @angular/cli`
 
-## Code scaffolding
+## Features
+### Basic features
+This project has most of the features expected in file storage:
+- upload / delete / rename / move files
+- create / delete / rename / move directories
+- display basic file details: 
+    - name
+    - date created
+    - resolution (for images)
+    - size
+    - file type
+- display file (for now supporting only images)
+- recycle bin functionality: deleted files are put in recycle bin with option to either restore or permanently delete it
+- search bar: searching for files and directories in real time
+- file carousel (for now supporting only images)
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+*Disclaimer*: app is currently focused on desktop devices. UI is responsive for all devices, but some features might be still incomplete on mobile
 
-## Build
+### Keybinds
+Keybinds for files and directories:
+- `delete` / `F4` : move to recycle bin
+- `shift` + `delete` / `shift` + `F4` : permanently delete
+- `F2` : rename
+- `F1` : show details
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Other keybinds:
+- `/` : open search bar
