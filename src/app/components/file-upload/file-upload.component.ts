@@ -1,26 +1,20 @@
-import {Component, Input} from '@angular/core';
-import {FileModel} from "../../models/file.model";
-import {DataService} from "../../services/data.service";
-import {Directory, DirectoryBuilder} from "../../models/directory.model";
+import { Component, Input } from '@angular/core';
+import { FileModel } from '../../models/file.model';
+import { DataService } from '../../services/data.service';
+import { Directory, DirectoryBuilder } from '../../models/directory.model';
+import { ToastService } from 'src/app/src/app/services/toast.service';
 
-
-const FILES_TO_DOWNLOAD = [
-  'image/jpeg',
-  'image/png',
-  'image/bmp'
-]
+const FILES_TO_DOWNLOAD = ['image/jpeg', 'image/png', 'image/bmp'];
 @Component({
   selector: 'app-file-upload',
   templateUrl: './file-upload.component.html',
-  styleUrls: ['./file-upload.component.scss']
+  styleUrls: ['./file-upload.component.scss'],
 })
 export class FileUploadComponent {
   fileUploadPanelOpened = false;
   @Input() directory: Directory = new DirectoryBuilder().build();
 
-
-  constructor(private data: DataService) {
-  }
+  constructor(private data: DataService, private toastService: ToastService) { }
   preventEvent(event: any) {
     event.preventDefault();
   }
@@ -43,25 +37,33 @@ export class FileUploadComponent {
           let imgSrc: any = '';
           const reader = new FileReader();
 
-          reader.addEventListener("load", () => {
-            imgSrc = reader.result;
+          reader.addEventListener(
+            'load',
+            () => {
+              imgSrc = reader.result;
 
-            let newFile = data[i];
-            if (FILES_TO_DOWNLOAD.includes(files[i].type)) {
-              newFile.src = imgSrc;
-            } else {
-              newFile.src = '';
-            }
-            this.directory.files.push(newFile)
-
-          }, false)
+              let newFile = data[i];
+              if (FILES_TO_DOWNLOAD.includes(files[i].type)) {
+                newFile.src = imgSrc;
+              } else {
+                newFile.src = '';
+              }
+              this.directory.files.push(newFile);
+            },
+            false
+          );
 
           reader.readAsDataURL(files[i]);
         }
+
+        this.toastService.displayToast(
+          `Files (${files.length}) uploaded`,
+          'fire'
+        );
       },
       error: (err) => {
         console.log(err);
-      }
+      },
     });
   }
 
@@ -81,10 +83,8 @@ export class FileUploadComponent {
     event.preventDefault();
 
     const files: FileList = event.dataTransfer.files;
-    if(files.length > 0){
+    if (files.length > 0) {
       this.uploadFiles(files);
     }
-
   }
-
 }

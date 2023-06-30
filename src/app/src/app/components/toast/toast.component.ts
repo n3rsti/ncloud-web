@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Component } from '@angular/core';
 import { ToastInput } from 'src/app/interfaces';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-toast',
@@ -8,8 +8,6 @@ import { ToastInput } from 'src/app/interfaces';
   styleUrls: ['./toast.component.scss'],
 })
 export class ToastComponent {
-  @Input() data: Subject<any> = new Subject<any>();
-
   icon: string = 'check';
   message: string = '';
   toasts: ToastInput[] = [];
@@ -32,8 +30,10 @@ export class ToastComponent {
     fire: 'text-blue-500 bg-blue-100 dark:bg-blue-800 dark:text-blue-200',
   };
 
+  constructor(private toastService: ToastService) { }
+
   ngOnInit() {
-    this.data.subscribe((data: ToastInput) => {
+    this.toastService.data.subscribe((data: ToastInput) => {
       this.toasts.unshift(data);
 
       setTimeout(() => {

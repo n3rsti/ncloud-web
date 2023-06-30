@@ -16,6 +16,7 @@ import {
   renameFileModalConfig,
   restoreModalConfig,
 } from '../modal/modal.config';
+import { ToastService } from 'src/app/src/app/services/toast.service';
 
 const RIGHT_CLICK = 2;
 const LEFT_CLICK = 0;
@@ -31,7 +32,7 @@ export class MainComponent {
   directory: Directory = new DirectoryBuilder().build();
   directoryId: string = '';
   isTrash = true;
-  toastOpened: boolean = true;
+
   contextMenuElementIndex = 0;
   contextMenuElementType = '';
   @ViewChild('contextMenu', { static: false }) contextMenu:
@@ -69,7 +70,8 @@ export class MainComponent {
     private data: DataService,
     public sanitizer: DomSanitizer,
     private route: ActivatedRoute,
-    public router: Router
+    public router: Router,
+    private toastService: ToastService
   ) { }
 
   ngOnDestroy() {
@@ -182,10 +184,9 @@ export class MainComponent {
   // Subjects for opening file carousel and file details
   fileCarouselSubject: Subject<any> = new Subject();
   fileDetailsSubject: Subject<any> = new Subject();
-  toastSubject: Subject<any> = new Subject();
 
   openToast(message: string, icon: string) {
-    this.toastSubject.next({
+    this.toastService.data.next({
       message: message,
       icon: icon,
     });
