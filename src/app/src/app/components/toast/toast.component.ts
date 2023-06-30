@@ -10,9 +10,9 @@ import { ToastInput } from 'src/app/interfaces';
 export class ToastComponent {
   @Input() data: Subject<any> = new Subject<any>();
 
-  opened: boolean = false;
   icon: string = 'check';
   message: string = '';
+  toasts: ToastInput[] = [];
 
   icons: { [key: string]: string } = {
     check:
@@ -34,12 +34,10 @@ export class ToastComponent {
 
   ngOnInit() {
     this.data.subscribe((data: ToastInput) => {
-      this.icon = data.icon;
-      this.message = data.message;
-      this.opened = true;
+      this.toasts.unshift(data);
 
       setTimeout(() => {
-        this.opened = false;
+        this.toasts.pop();
       }, 5000);
     });
   }

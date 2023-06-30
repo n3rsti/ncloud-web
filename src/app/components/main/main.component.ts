@@ -371,22 +371,21 @@ export class MainComponent {
 
           files.forEach((element) => {
             if (!this.directory.files.map((x) => x.id).includes(element.id)) {
-              this.data.getFile(element).subscribe({
-                next: (data) => {
-                  // Convert blob to URL
-                  const urlCreator = window.URL || window.webkitURL;
-                  element.src = this.sanitizer.bypassSecurityTrustUrl(
-                    urlCreator.createObjectURL(data)
-                  );
-
-                  this.directory.files = [...this.directory.files, element];
-
-                  filesAdded = true;
-                },
-              });
+              if (FileFormats.FILES_TO_DISPLAY.includes(element.type)) {
+                this.data.getFile(element).subscribe({
+                  next: (data) => {
+                    // Convert blob to URL
+                    const urlCreator = window.URL || window.webkitURL;
+                    element.src = this.sanitizer.bypassSecurityTrustUrl(
+                      urlCreator.createObjectURL(data)
+                    );
+                  },
+                });
+              }
+              this.directory.files = [...this.directory.files, element];
+              filesAdded = true;
             }
           });
-
           if (!filesAdded) {
             this.directory.files = this.directory.files.filter(
               (x) => !files.includes(x)
@@ -800,6 +799,7 @@ export class MainComponent {
                 .setParentDirectory(element._parent_directory)
                 .setPreviousParentDirectory(element._previous_parent_directory)
                 .setUser(element._user)
+                .setType(element._type)
                 .build();
             });
 
@@ -852,11 +852,13 @@ export class MainComponent {
 
   restoreFiles(files: FileModel[]) {
     this.data.restoreFiles(files).subscribe({
-      next: (data) => {
+      next: (data: any) => {
         if (data.status === 200) {
           this.directory.files = this.directory.files.filter(
             (x) => !files.includes(x)
           );
+
+          this.openToast(`Files (${data.body['updated']}) restored`, 'check');
         }
       },
     });
@@ -864,10 +866,14 @@ export class MainComponent {
 
   restoreDirectories(directories: Directory[]) {
     this.data.restoreDirectories(directories).subscribe({
-      next: (data) => {
+      next: (data: any) => {
         if (data.status === 200) {
           this.directory.directories = this.directory.directories.filter(
             (x) => !directories.includes(x)
+          );
+          this.openToast(
+            `Directories (${data.body['updated']}) restored`,
+            'check'
           );
         }
       },
