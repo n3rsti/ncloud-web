@@ -83,7 +83,7 @@ export class FileCarouselComponent {
 
   changeCounter(value: number) {
     if (
-      this.fileCounter + value !== this.files.length &&
+      this.fileCounter + value !== this.filesToDisplay.length &&
       this.fileCounter + value !== -1
     ) {
       this.fileCounter += value;
