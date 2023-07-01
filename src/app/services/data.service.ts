@@ -42,7 +42,6 @@ export class DataService {
             .setId(directory._id)
             .setName(directory.name)
             .setParentDirectory(directory.parent_directory)
-            .setPreviousParentDirectory(directory.previous_parent_directory)
             .setUser(directory.user)
             .setAccessKey(directory.access_key)
             .setDirectories(
@@ -51,9 +50,6 @@ export class DataService {
                   .setId(dir._id)
                   .setName(dir.name)
                   .setParentDirectory(dir.parent_directory)
-                  .setPreviousParentDirectory(dir.previous_parent_directory)
-                  .setUser(dir.user)
-                  .setAccessKey(dir.access_key)
                   .build();
               })
             )
@@ -63,7 +59,6 @@ export class DataService {
                   .setId(file._id)
                   .setName(file.name)
                   .setParentDirectory(file.parent_directory)
-                  .setPreviousParentDirectory(file.previous_parent_directory)
                   .setUser(file.user)
                   .setType(file.type)
                   .setSize(file.size)
@@ -157,7 +152,6 @@ export class DataService {
       {
         name: file.name,
         parent_directory: file.parent_directory,
-        previous_parent_directory: file.previous_parent_directory,
       },
       { headers: headers, observe: 'response' }
     );

@@ -752,7 +752,6 @@ export class MainComponent {
           localStorage.removeItem('cutDirectories');
           localStorage.removeItem('cutFilesParentDirectory');
 
-          console.log(this.selectedFiles);
           if (this.selectedFiles.length > 0) {
             localStorage.setItem(
               'cutFiles',
@@ -800,7 +799,6 @@ export class MainComponent {
                 .setName(element._name)
                 .setAccessKey(element._access_key)
                 .setParentDirectory(element._parent_directory)
-                .setPreviousParentDirectory(element._previous_parent_directory)
                 .setUser(element._user)
                 .setType(element._type)
                 .setSize(element._size)

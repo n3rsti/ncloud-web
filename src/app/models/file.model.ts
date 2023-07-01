@@ -1,4 +1,4 @@
-import {SafeUrl} from "@angular/platform-browser";
+import { SafeUrl } from '@angular/platform-browser';
 
 interface additionalData {
   name: string;
@@ -9,7 +9,6 @@ export class FileModel {
   private _id: string;
   private _name: string;
   private _parent_directory: string;
-  private _previous_parent_directory: string;
   private _user: string;
   private _type: string;
   private _src: SafeUrl = '';
@@ -18,8 +17,15 @@ export class FileModel {
 
   private _access_key: string;
 
-
-  constructor(id: string, name: string, parent_directory: string, user: string, type: string, size: number, access_key: string, previous_parent_directory: string) {
+  constructor(
+    id: string,
+    name: string,
+    parent_directory: string,
+    user: string,
+    type: string,
+    size: number,
+    access_key: string
+  ) {
     this._id = id;
     this._name = name;
     this._parent_directory = parent_directory;
@@ -27,7 +33,6 @@ export class FileModel {
     this._type = type;
     this._size = size;
     this._access_key = access_key;
-    this._previous_parent_directory = previous_parent_directory;
   }
 
   get id(): string {
@@ -62,11 +67,10 @@ export class FileModel {
     this._user = value;
   }
 
-  setId(id: string){
+  setId(id: string) {
     this.id = id;
     return this;
   }
-
 
   get type(): string {
     return this._type;
@@ -75,7 +79,6 @@ export class FileModel {
   set type(value: string) {
     this._type = value;
   }
-
 
   get src(): SafeUrl {
     return this._src;
@@ -93,22 +96,23 @@ export class FileModel {
     let bytes = this.size;
     let dp = 1;
 
-
     const thresh = 1024;
 
     if (Math.abs(bytes) < thresh) {
       return bytes + ' B';
     }
 
-    const units = ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+    const units = ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     let u = -1;
-    const r = 10**dp;
+    const r = 10 ** dp;
 
     do {
       bytes /= thresh;
       ++u;
-    } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
-
+    } while (
+      Math.round(Math.abs(bytes) * r) / r >= thresh &&
+      u < units.length - 1
+    );
 
     return bytes.toFixed(dp) + ' ' + units[u];
   }
@@ -116,7 +120,6 @@ export class FileModel {
   set size(value: number) {
     this._size = value;
   }
-
 
   get additional_data(): [additionalData] | null {
     return this._additional_data;
@@ -126,77 +129,63 @@ export class FileModel {
     this._additional_data = value;
   }
 
-  get creationDate(){
+  get creationDate() {
     return new Date(parseInt(this.id.substring(0, 8), 16) * 1000);
   }
-
 
   get access_key(): string {
     return this._access_key;
   }
 
-  set access_key(access_key: string){
+  set access_key(access_key: string) {
     this._access_key = access_key;
-  }
-
-  get previous_parent_directory(): string {
-    return this._previous_parent_directory;
-  }
-
-  set previous_parent_directory(value: string) {
-    this._previous_parent_directory = value;
   }
 }
 
 export class FileBuilder extends FileModel {
-
   constructor() {
-    super('', '', '', '', '', 0, '', '');
+    super('', '', '', '', '', 0, '');
   }
 
-  setName(name: string){
+  setName(name: string) {
     this.name = name;
     return this;
   }
 
-  setParentDirectory(parent_directory: string){
+  setParentDirectory(parent_directory: string) {
     this.parent_directory = parent_directory;
     return this;
   }
 
-  setUser(user: string){
+  setUser(user: string) {
     this.user = user;
     return this;
   }
 
-  setType(type: string){
+  setType(type: string) {
     this.type = type;
     return this;
   }
 
-  setSize(size: number){
+  setSize(size: number) {
     this.size = size;
     return this;
   }
 
-  setAccessKey(accessKey: string){
+  setAccessKey(accessKey: string) {
     this.access_key = accessKey;
     return this;
   }
 
-  setPreviousParentDirectory(directory: string){
-    if(directory === undefined){
-      this.previous_parent_directory = "";
-    }
-    else {
-      this.previous_parent_directory = directory;
-    }
-
-    return this;
+  build() {
+    return new FileModel(
+      this.id,
+      this.name,
+      this.parent_directory,
+      this.user,
+      this.type,
+      this.size,
+      this.access_key
+    );
   }
-
-  build(){
-    return new FileModel(this.id, this.name, this.parent_directory, this.user, this.type, this.size, this.access_key, this.previous_parent_directory);
-  }
-
 }

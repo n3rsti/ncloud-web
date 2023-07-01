@@ -1,18 +1,24 @@
-import {FileModel} from "./file.model";
+import { FileModel } from './file.model';
 
 export class Directory {
   private _id: string;
   private _name: string;
   private _parent_directory: string;
-  private _previous_parent_directory: string;
   private _user: string;
   private _directories: Directory[];
   private _files: FileModel[];
 
   private _access_key: string;
 
-
-  constructor(id: string, name: string, parent_directory: string, user: string, directories: Directory[], files: FileModel[], accessKey: string, previousParentDirectory: string) {
+  constructor(
+    id: string,
+    name: string,
+    parent_directory: string,
+    user: string,
+    directories: Directory[],
+    files: FileModel[],
+    accessKey: string
+  ) {
     this._id = id;
     this._name = name;
     this._parent_directory = parent_directory;
@@ -20,9 +26,7 @@ export class Directory {
     this._directories = directories;
     this._files = files;
     this._access_key = accessKey;
-    this._previous_parent_directory = previousParentDirectory;
   }
-
 
   get files(): FileModel[] {
     return this._files;
@@ -64,7 +68,6 @@ export class Directory {
     this._user = value;
   }
 
-
   get directories(): Directory[] {
     return this._directories;
   }
@@ -73,7 +76,6 @@ export class Directory {
     this._directories = value;
   }
 
-
   get access_key(): string {
     return this._access_key;
   }
@@ -81,22 +83,12 @@ export class Directory {
   set access_key(value: string) {
     this._access_key = value;
   }
-
-
-  get previous_parent_directory(): string {
-    return this._previous_parent_directory;
-  }
-
-  set previous_parent_directory(value: string) {
-    this._previous_parent_directory = value;
-  }
 }
 
 export class DirectoryBuilder extends Directory {
   constructor() {
-    super('', '', '', '', [], [], '', '');
+    super('', '', '', '', [], [], '');
   }
-
 
   setId(id: string) {
     this.id = id;
@@ -133,12 +125,15 @@ export class DirectoryBuilder extends Directory {
     return this;
   }
 
-  setPreviousParentDirectory(previousParentDirectory: string) {
-    this.previous_parent_directory = previousParentDirectory;
-    return this;
-  }
-
   build() {
-    return new Directory(this.id, this.name, this.parent_directory, this.user, this.directories, this.files, this.access_key, this.previous_parent_directory);
+    return new Directory(
+      this.id,
+      this.name,
+      this.parent_directory,
+      this.user,
+      this.directories,
+      this.files,
+      this.access_key
+    );
   }
 }
