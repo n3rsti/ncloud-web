@@ -44,6 +44,7 @@ export class MainComponent {
 
   lastSelectedElement: string = this.constElementNames.DIRECTORY;
 
+  filesToDisplay = FileFormats.FILES_TO_DISPLAY;
   // These functions are used in event listeners
   // They are here so they can get removed from event listener on ngOnDestroy
   keyboardEvent = (e: KeyboardEvent) => {
@@ -192,7 +193,7 @@ export class MainComponent {
     });
   }
 
-  openFileCarousel(counter: number) {
+  openFileCarousel(counter: string) {
     this.fileCarouselSubject.next(counter);
   }
 

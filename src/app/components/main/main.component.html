@@ -52,7 +52,7 @@
         [file]="file"
         [selectedList]="selectedFiles"
         (keydown)="onFileKeydown($event, i, constElementNames.FILE)"
-        (dblclick)="openFileCarousel(i)"
+        (dblclick)="openFileCarousel(file.id)"
         (contextmenu)="
           openContextMenu($event, i, constElementNames.FILE);
           addSelectedFile($event, file)
