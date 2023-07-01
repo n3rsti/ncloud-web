@@ -50,6 +50,7 @@ export class DataService {
                   .setId(dir._id)
                   .setName(dir.name)
                   .setParentDirectory(dir.parent_directory)
+                  .setAccessKey(dir.access_key)
                   .build();
               })
             )
