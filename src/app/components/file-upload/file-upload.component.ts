@@ -1,8 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { FileModel } from '../../models/file.model';
 import { DataService } from '../../services/data.service';
 import { Directory, DirectoryBuilder } from '../../models/directory.model';
 import { ToastService } from 'src/app/src/app/services/toast.service';
+import { Subject } from 'rxjs';
 
 const FILES_TO_DOWNLOAD = ['image/jpeg', 'image/png', 'image/bmp'];
 @Component({
@@ -14,7 +15,16 @@ export class FileUploadComponent {
   fileUploadPanelOpened = false;
   @Input() directory: Directory = new DirectoryBuilder().build();
 
+  @Input() openSubject: Subject<any> = new Subject();
+
   constructor(private data: DataService, private toastService: ToastService) { }
+
+  ngOnInit() {
+    this.openSubject.subscribe(() => {
+      this.fileUploadPanelOpened = true;
+    });
+  }
+
   preventEvent(event: any) {
     event.preventDefault();
   }
@@ -28,6 +38,7 @@ export class FileUploadComponent {
   }
 
   uploadFiles(files: FileList) {
+    this.fileUploadPanelOpened = false;
     this.data.uploadFiles(files, this.directory).subscribe({
       next: (data: FileModel[]) => {
         // Combine data from API Response (id, name) with data from HTML Input (src, type)
@@ -86,5 +97,15 @@ export class FileUploadComponent {
     if (files.length > 0) {
       this.uploadFiles(files);
     }
+  }
+  closeUploadPanel(event: DragEvent) {
+    let target = event.relatedTarget;
+    while (target) {
+      if ((target as HTMLElement).id === 'fileUpload') {
+        return;
+      }
+      target = (target as HTMLElement).parentElement;
+    }
+    this.fileUploadPanelOpened = false;
   }
 }

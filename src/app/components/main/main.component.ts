@@ -33,6 +33,8 @@ export class MainComponent {
   directoryId: string = '';
   isTrash = true;
 
+  fileUploadOpened = false;
+
   contextMenuElementIndex = 0;
   contextMenuElementType = '';
   @ViewChild('contextMenu', { static: false }) contextMenu:
@@ -185,6 +187,13 @@ export class MainComponent {
   // Subjects for opening file carousel and file details
   fileCarouselSubject: Subject<any> = new Subject();
   fileDetailsSubject: Subject<any> = new Subject();
+  fileUploadSubject: Subject<any> = new Subject();
+
+  openUploadPanel(event: DragEvent) {
+    if (event.dataTransfer?.types.includes("Files")) {
+      this.fileUploadSubject.next(true);
+    }
+  }
 
   openToast(message: string, icon: string) {
     this.toastService.data.next({
