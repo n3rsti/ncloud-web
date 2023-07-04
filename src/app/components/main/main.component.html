@@ -1,5 +1,5 @@
-<div class="flex mt-5">
-  <div class="w-56 flex justify-center max-md:hidden">
+<div class="flex items-center mt-[5.5rem]">
+  <div class="w-56 flex justify-center max-md:hidden fixed">
     <button
       (click)="openCreateDirectoryModal()"
       class="w-9/12 text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800 cursor-pointer"
@@ -7,15 +7,18 @@
       New folder
     </button>
   </div>
-  <div class="flex items-center overflow-x-hidden mr-3">
+  <div class="flex items-center overflow-x-hidden mr-3 md:ml-56">
     <h1 class="ml-2.5 text-xl font-semibold text-indigo-700 max-md:pl-3">
       {{ directory.name }}
     </h1>
   </div>
 </div>
-<section class="flex">
+<section class="flex grow">
   <app-side-navbar [directory]="directory"></app-side-navbar>
-  <main class="p-3 w-full relative" (dragenter)="openUploadPanel($event)">
+  <main
+    class="p-3 w-full relative md:ml-56"
+    (dragenter)="openUploadPanel($event)"
+  >
     <div
       class="grid grid-cols-8 max-2xl:grid-cols-6 max-xl:grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-3 max-sm:grid-cols-2 gap-2 mb-5"
     >

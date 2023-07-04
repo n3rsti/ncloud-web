@@ -1,67 +1,128 @@
 <nav
-  class="bg-white border-gray-200 px-2 sm:px-4 py-2.5 rounded dark:bg-gray-900 sticky top-0 border-b-2 border-indigo-700 z-20">
-  <div class="container flex flex-wrap items-center max-md:justify-between max-md:mx-auto">
-    <a [routerLink]="['/']" class="flex items-center justify-center w-56 max-md:justify-start max-md:pl-3">
+  class="bg-white px-2 sm:px-4 py-2.5 rounded dark:bg-gray-900 fixed w-full top-0 border-b-2 border-indigo-700 z-20 flex items-center h-16"
+>
+  <div
+    class="container flex flex-wrap items-center max-md:justify-between max-md:mx-auto"
+  >
+    <a
+      [routerLink]="['/']"
+      class="flex items-center justify-center w-56 max-md:justify-start max-md:pl-3"
+    >
       <div class="w-8/12">
         <i class="fas fa-solid fa-cloud text-2xl text-indigo-700 mr-3"></i>
-        <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Ncloud</span>
+        <span
+          class="self-center text-xl font-semibold whitespace-nowrap dark:text-white"
+          >Ncloud</span
+        >
       </div>
-
     </a>
     <div class="flex md:order-2">
-      <button type="button" data-collapse-toggle="navbar-search" aria-controls="navbar-search" aria-expanded="false"
-              (click)="openSearchInput()"
-              class="md:hidden text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 mr-1">
-        <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
-             xmlns="http://www.w3.org/2000/svg">
-          <path fill-rule="evenodd"
-                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                clip-rule="evenodd"></path>
+      <button
+        type="button"
+        data-collapse-toggle="navbar-search"
+        aria-controls="navbar-search"
+        aria-expanded="false"
+        (click)="openSearchInput()"
+        class="md:hidden text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 mr-1"
+      >
+        <svg
+          class="w-5 h-5"
+          aria-hidden="true"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+            clip-rule="evenodd"
+          ></path>
         </svg>
         <span class="sr-only">Search</span>
       </button>
       <div class="relative hidden md:block">
-        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-          <svg class="w-5 h-5 text-gray-500" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
-               xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd"
-                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                  clip-rule="evenodd"></path>
+        <div
+          class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
+        >
+          <svg
+            class="w-5 h-5 text-gray-500"
+            aria-hidden="true"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+              clip-rule="evenodd"
+            ></path>
           </svg>
           <span class="sr-only">Search icon</span>
         </div>
-        <button (click)="openSearchInput()"
-                class="text-left cursor-text w-96 block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500">
+        <button
+          (click)="openSearchInput()"
+          class="text-left cursor-text w-96 block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
+        >
           Type <kbd class="border rounded p-1">/</kbd> to search
         </button>
       </div>
     </div>
-    <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-search">
+    <div
+      class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
+      id="navbar-search"
+    >
       <div class="relative mt-3 md:hidden">
-        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-          <svg class="w-5 h-5 text-gray-500" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
-               xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd"
-                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                  clip-rule="evenodd"></path>
+        <div
+          class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
+        >
+          <svg
+            class="w-5 h-5 text-gray-500"
+            aria-hidden="true"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+              clip-rule="evenodd"
+            ></path>
           </svg>
         </div>
-        <input type="text" id="search-navbar"
-               class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
-               placeholder="Search...">
+        <input
+          type="text"
+          id="search-navbar"
+          class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
+          placeholder="Search..."
+        />
       </div>
     </div>
   </div>
 </nav>
 <div [class.scale-0]="!searchOpened">
-  <div class="fixed w-full h-full bg-black opacity-30 z-30 left-0 top-0" (click)="searchOpened = false"></div>
   <div
-    class="fixed z-40 top-0 md:top-4 w-full md:w-4/5 lg:w-3/5 left-1/2 -translate-x-1/2 bg-white p-3 rounded-lg border border-gray-100">
-    <div #search class="w-full bg-white p-1 border-2 rounded-lg focus:border-indigo-600 flex items-center cursor-text">
+    class="fixed w-full h-full bg-black opacity-30 z-30 left-0 top-0"
+    (click)="searchOpened = false"
+  ></div>
+  <div
+    class="fixed z-40 top-0 md:top-4 w-full md:w-4/5 lg:w-3/5 left-1/2 -translate-x-1/2 bg-white p-3 rounded-lg border border-gray-100"
+  >
+    <div
+      #search
+      class="w-full bg-white p-1 border-2 rounded-lg focus:border-indigo-600 flex items-center cursor-text"
+    >
       <i class="fas fa-search w-10 text-center"></i>
-      <input (input)="onInputChange()" [formControl]="searchInput" type="text" name="" id=""
-             class="search w-full text-sm border-0 focus:border-0 p-1" (focusin)="addSearchBorderClass()"
-             (focusout)="removeSearchBorderClass()" placeholder="Search...">
+      <input
+        (input)="onInputChange()"
+        [formControl]="searchInput"
+        type="text"
+        name=""
+        id=""
+        class="search w-full text-sm border-0 focus:border-0 p-1"
+        (focusin)="addSearchBorderClass()"
+        (focusout)="removeSearchBorderClass()"
+        placeholder="Search..."
+      />
     </div>
     <div class="w-full mt-3">
       <ul id="search_list">
@@ -75,20 +136,32 @@
         <div class="max-h-[70vh] overflow-y-scroll overflow-x-hidden">
           <ng-container *ngIf="searchFileResults.length > 0">
             <p class="text-sm font-semibold ml-2 my-1">Files</p>
-            <app-search-result *ngFor="let file of searchFileResults"
-                               [value]="file.name" [icon]="FileFormats.getIcon(file.type)"
-                               (click)="resetSearch()" [routerLink]="file.parent_directory"
-                               [queryParams]="{ file: file.id}"></app-search-result>
+            <app-search-result
+              *ngFor="let file of searchFileResults"
+              [value]="file.name"
+              [icon]="FileFormats.getIcon(file.type)"
+              (click)="resetSearch()"
+              [routerLink]="file.parent_directory"
+              [queryParams]="{ file: file.id }"
+            ></app-search-result>
           </ng-container>
 
           <ng-container *ngIf="searchDirectoryResults.length > 0">
-            <hr class="m-2">
+            <hr class="m-2" />
             <p class="text-sm font-semibold ml-2 my-1">Directories</p>
-            <app-search-result *ngFor="let directory of searchDirectoryResults"
-                               [value]="directory.name"
-                               [icon]="directory.id === trashId ? 'trash' : directory.id === homeId ? 'inbox' : 'folder'"
-                               [routerLink]="directory.id"
-                               (click)="resetSearch()"></app-search-result>
+            <app-search-result
+              *ngFor="let directory of searchDirectoryResults"
+              [value]="directory.name"
+              [icon]="
+                directory.id === trashId
+                  ? 'trash'
+                  : directory.id === homeId
+                  ? 'inbox'
+                  : 'folder'
+              "
+              [routerLink]="directory.id"
+              (click)="resetSearch()"
+            ></app-search-result>
           </ng-container>
         </div>
       </ul>
