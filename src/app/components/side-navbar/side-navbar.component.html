@@ -1,23 +1,47 @@
 <section class="w-56 bg-white mt-3 max-md:hidden">
-  <a class="a w-full flex flex-col items-center cursor-pointer {{ currentId != trashId ? 'selected' : ''}}" [routerLink]="['/' + mainDirectoryId]">
+  <a
+    class="a w-full flex flex-col items-center cursor-pointer {{
+      currentId != trashId ? 'selected' : ''
+    }}"
+    [routerLink]="['/' + mainDirectoryId]"
+  >
     <div class="flex items-center py-2 w-9/12 select-none">
-      <i class="fa-solid fa-hard-drive text-xl mr-2 w-6 transition-colors duration-100 {{ currentId != trashId ? 'text-indigo-700' : 'text-gray-600'}}"></i>
+      <i
+        class="fa-solid fa-hard-drive text-xl mr-2 w-6 transition-colors duration-100 {{
+          currentId != trashId ? 'text-indigo-700' : 'text-gray-600'
+        }}"
+      ></i>
       <p class="text-sm font-medium text-gray-600">Drive</p>
     </div>
   </a>
-  <a class="a a-trash w-full flex flex-col items-center cursor-pointer {{ currentId == trashId ? 'selected' : ''}}" [routerLink]="['/' + trashId]">
-    <div class="flex items-center py-2  w-9/12 select-none">
-      <i class="fa-solid fa-trash text-xl mr-2 w-6 {{ currentId == trashId ? 'text-red-700' : 'text-gray-600'}} transition-colors duration-100"></i>
+  <a
+    class="a a-trash w-full flex flex-col items-center cursor-pointer {{
+      currentId == trashId ? 'selected' : ''
+    }}"
+    [routerLink]="['/' + trashId]"
+  >
+    <div class="flex items-center py-2 w-9/12 select-none">
+      <i
+        class="fa-solid fa-trash text-xl mr-2 w-6 {{
+          currentId == trashId ? 'text-red-700' : 'text-gray-600'
+        }} transition-colors duration-100"
+      ></i>
       <p class="text-sm font-medium text-gray-600 hover:text-gray-900">Trash</p>
     </div>
   </a>
 </section>
-<div class="btm-nav h-16 hidden max-md:flex">
-  <button class="{{ currentId === mainDirectoryId ? 'active' : '' }} text-indigo-700" [routerLink]="['/' + mainDirectoryId]">
+<div class="btm-nav h-16 hidden max-md:flex z-10">
+  <button
+    class="{{ currentId === mainDirectoryId ? 'active' : '' }} text-indigo-700"
+    [routerLink]="['/' + mainDirectoryId]"
+  >
     <i class="fa-solid fa-home h-7 flex items-center text-xl"></i>
     <p class="text-xs font-semibold">Home</p>
   </button>
-  <button class="{{ currentId === trashId ? 'active' : '' }} text-red-700" [routerLink]="['/' + trashId]">
+  <button
+    class="{{ currentId === trashId ? 'active' : '' }} text-red-700"
+    [routerLink]="['/' + trashId]"
+  >
     <i class="fa-solid fa-trash h-7 flex items-center text-xl"></i>
     <p class="text-xs font-semibold">Trash</p>
   </button>
