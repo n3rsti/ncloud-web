@@ -17,10 +17,14 @@ export class DataService {
   constructor(private http: HttpClient) { }
 
   login(username: string, password: string) {
-    return this.http.post(`${Config.Host}/api/login`, {
-      username: username,
-      password: password,
-    });
+    return this.http.post(
+      `${Config.Host}/api/login`,
+      {
+        username: username,
+        password: password,
+      },
+      { observe: 'response' }
+    );
   }
 
   refreshToken() {
