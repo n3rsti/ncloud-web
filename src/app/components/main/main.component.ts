@@ -3,7 +3,7 @@ import { DataService } from '../../services/data.service';
 import { Directory, DirectoryBuilder } from '../../models/directory.model';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { FileBuilder, FileModel } from '../../models/file.model';
 import { ModalConfig, ModalOutput } from '../../interfaces';
 import { decodeJWT, FileFormats } from '../../utils';
@@ -70,6 +70,8 @@ export class MainComponent {
     this.lastSelectedElement = this.constElementNames.DIRECTORY;
   };
 
+  modalServiceSub: Subscription | undefined;
+
   constructor(
     private data: DataService,
     public sanitizer: DomSanitizer,
@@ -83,6 +85,8 @@ export class MainComponent {
     // Very important. Don't remove
     document.body.removeEventListener('keydown', this.keyboardEvent);
     document.body.removeEventListener('click', this.clickEvent);
+
+    this.modalServiceSub?.unsubscribe();
   }
   ngOnInit() {
     document.body.addEventListener('click', this.clickEvent);
@@ -104,86 +108,87 @@ export class MainComponent {
       ];
       this.isTrash = trashId == this.directoryId;
     });
-
     // Subject for receiving data from modal. See app-modal for more information
-    this.modalService.output.subscribe((data: ModalOutput) => {
-      let file = null;
-      let directory = null;
-      switch (data.subjectName) {
-        case 'permanentlyDeleteItems':
-          if (this.selectedDirectories.length > 0) {
-            this.permanentlyDeleteDirectories([...this.selectedDirectories]);
-          }
-          if (this.selectedFiles.length > 0) {
-            this.permanentlyDeleteFiles([...this.selectedFiles]);
-          }
-
-          break;
-        case 'deleteItems':
-          if (this.selectedDirectories.length > 0) {
-            this.deleteDirectories([...this.selectedDirectories]);
-          }
-          if (this.selectedFiles.length > 0) {
-            this.deleteFiles([...this.selectedFiles]);
-          }
-
-          break;
-
-        case 'restoreItems':
-          if (this.selectedFiles.length > 0) {
-            this.restoreFiles([...this.selectedFiles]);
-          }
-          if (this.selectedDirectories.length > 0) {
-            this.restoreDirectories([...this.selectedDirectories]);
-          }
-
-          break;
-        case 'renameFile':
-          if (data.formValues) {
-            file = this.directory.files.find((x) => x.id == data.value);
-            if (file) {
-              file = new FileBuilder()
-                .setAccessKey(file.access_key)
-                .setId(file.id)
-                .setName(data.formValues['name'])
-                .build();
-              this.updateFile(file);
+    this.modalServiceSub = this.modalService.output.subscribe(
+      (data: ModalOutput) => {
+        let file = null;
+        let directory = null;
+        switch (data.subjectName) {
+          case 'permanentlyDeleteItems':
+            if (this.selectedDirectories.length > 0) {
+              this.permanentlyDeleteDirectories([...this.selectedDirectories]);
             }
-          }
+            if (this.selectedFiles.length > 0) {
+              this.permanentlyDeleteFiles([...this.selectedFiles]);
+            }
 
-          break;
-        case 'renameDirectory':
-          if (!data.formValues) {
-            return;
-          }
-          directory = this.directory.directories.find(
-            (x) => x.id == data.value
-          );
+            break;
+          case 'deleteItems':
+            if (this.selectedDirectories.length > 0) {
+              this.deleteDirectories([...this.selectedDirectories]);
+            }
+            if (this.selectedFiles.length > 0) {
+              this.deleteFiles([...this.selectedFiles]);
+            }
 
-          if (!directory) {
-            return;
-          }
+            break;
 
-          const dirToUpdate = new DirectoryBuilder()
-            .setAccessKey(directory.access_key)
-            .setName(data.formValues['name'])
-            .setId(directory.id)
-            .build();
-          this.updateDirectory(dirToUpdate);
+          case 'restoreItems':
+            if (this.selectedFiles.length > 0) {
+              this.restoreFiles([...this.selectedFiles]);
+            }
+            if (this.selectedDirectories.length > 0) {
+              this.restoreDirectories([...this.selectedDirectories]);
+            }
 
-          break;
-        case 'createDirectory':
-          let newFolderName = data.formValues?.['name'];
-          if (newFolderName) {
-            this.createDirectory(newFolderName);
-          }
-          break;
+            break;
+          case 'renameFile':
+            if (data.formValues) {
+              file = this.directory.files.find((x) => x.id == data.value);
+              if (file) {
+                file = new FileBuilder()
+                  .setAccessKey(file.access_key)
+                  .setId(file.id)
+                  .setName(data.formValues['name'])
+                  .build();
+                this.updateFile(file);
+              }
+            }
 
-        default:
-          console.log(data);
-          break;
+            break;
+          case 'renameDirectory':
+            if (!data.formValues) {
+              return;
+            }
+            directory = this.directory.directories.find(
+              (x) => x.id == data.value
+            );
+
+            if (!directory) {
+              return;
+            }
+
+            const dirToUpdate = new DirectoryBuilder()
+              .setAccessKey(directory.access_key)
+              .setName(data.formValues['name'])
+              .setId(directory.id)
+              .build();
+            this.updateDirectory(dirToUpdate);
+
+            break;
+          case 'createDirectory':
+            let newFolderName = data.formValues?.['name'];
+            if (newFolderName) {
+              this.createDirectory(newFolderName);
+            }
+            break;
+
+          default:
+            console.log(data);
+            break;
+        }
       }
-    });
+    );
   }
 
   // Subjects for opening file carousel and file details
