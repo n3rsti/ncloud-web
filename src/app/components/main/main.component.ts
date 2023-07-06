@@ -17,6 +17,7 @@ import {
   restoreModalConfig,
 } from '../modal/modal.config';
 import { ToastService } from 'src/app/src/app/services/toast.service';
+import { ModalService } from 'src/app/services/modal.service';
 
 const RIGHT_CLICK = 2;
 const LEFT_CLICK = 0;
@@ -74,7 +75,8 @@ export class MainComponent {
     public sanitizer: DomSanitizer,
     private route: ActivatedRoute,
     public router: Router,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private modalService: ModalService
   ) { }
 
   ngOnDestroy() {
@@ -104,7 +106,7 @@ export class MainComponent {
     });
 
     // Subject for receiving data from modal. See app-modal for more information
-    this.outputModalSubject.subscribe((data: ModalOutput) => {
+    this.modalService.output.subscribe((data: ModalOutput) => {
       let file = null;
       let directory = null;
       switch (data.subjectName) {
@@ -190,7 +192,7 @@ export class MainComponent {
   fileUploadSubject: Subject<any> = new Subject();
 
   openUploadPanel(event: DragEvent) {
-    if (event.dataTransfer?.types.includes("Files")) {
+    if (event.dataTransfer?.types.includes('Files')) {
       this.fileUploadSubject.next(true);
     }
   }
@@ -222,12 +224,8 @@ export class MainComponent {
     }
   }
 
-  // Modal functions
-  inputModalSubject: Subject<any> = new Subject();
-  outputModalSubject: Subject<any> = new Subject();
-
   openModal(config: ModalConfig) {
-    this.inputModalSubject.next(config);
+    this.modalService.input.next(config);
   }
 
   openPermanentlyDeleteModal() {
