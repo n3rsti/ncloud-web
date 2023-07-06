@@ -16,7 +16,7 @@ import {
   renameFileModalConfig,
   restoreModalConfig,
 } from '../modal/modal.config';
-import { ToastService } from 'src/app/src/app/services/toast.service';
+import { ToastService } from 'src/app/services/toast.service';
 import { ModalService } from 'src/app/services/modal.service';
 
 const RIGHT_CLICK = 2;

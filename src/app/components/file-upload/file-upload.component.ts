@@ -2,7 +2,7 @@ import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { FileModel } from '../../models/file.model';
 import { DataService } from '../../services/data.service';
 import { Directory, DirectoryBuilder } from '../../models/directory.model';
-import { ToastService } from 'src/app/src/app/services/toast.service';
+import { ToastService } from 'src/app/services/toast.service';
 import { Subject } from 'rxjs';
 
 const FILES_TO_DOWNLOAD = ['image/jpeg', 'image/png', 'image/bmp'];

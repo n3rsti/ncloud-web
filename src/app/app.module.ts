@@ -21,7 +21,7 @@ import { FileUploadComponent } from './components/file-upload/file-upload.compon
 import { ItemDetailsComponent } from './components/item-details/item-details.component';
 import { ItemDetailsRowComponent } from './components/item-details/item-details-row/item-details-row.component';
 import { SearchResultComponent } from './components/navbar/search-result/search-result.component';
-import { ToastComponent } from './src/app/components/toast/toast.component';
+import { ToastComponent } from './components/toast/toast.component';
 
 @NgModule({
   declarations: [
