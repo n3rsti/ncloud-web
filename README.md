@@ -25,7 +25,6 @@ This project has most of the features expected in file storage:
 - search bar: searching for files and directories in real time
 - file carousel (for now supporting only images)
 
-*Disclaimer*: app is currently focused on desktop devices. UI is responsive for all devices, but some features might be still incomplete on mobile
 
 ### Keybinds
 Keybinds for files and directories:
