@@ -22,6 +22,7 @@ import { ItemDetailsComponent } from './components/item-details/item-details.com
 import { ItemDetailsRowComponent } from './components/item-details/item-details-row/item-details-row.component';
 import { SearchResultComponent } from './components/navbar/search-result/search-result.component';
 import { ToastComponent } from './components/toast/toast.component';
+import { RegisterComponent } from './components/register/register.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { ToastComponent } from './components/toast/toast.component';
     ItemDetailsRowComponent,
     SearchResultComponent,
     ToastComponent,
+    RegisterComponent,
   ],
   imports: [
     BrowserModule,

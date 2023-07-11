@@ -5,11 +5,6 @@ import { map } from 'rxjs';
 import { Directory, DirectoryBuilder } from '../models/directory.model';
 import { FileBuilder, FileModel } from '../models/file.model';
 
-interface SearchResponse {
-  files: FileModel[];
-  directories: Directory[];
-}
-
 @Injectable({
   providedIn: 'root',
 })
@@ -19,6 +14,17 @@ export class DataService {
   login(username: string, password: string) {
     return this.http.post(
       `${Config.Host}/api/login`,
+      {
+        username: username,
+        password: password,
+      },
+      { observe: 'response' }
+    );
+  }
+
+  register(username: string, password: string) {
+    return this.http.post(
+      `${Config.Host}/api/register`,
       {
         username: username,
         password: password,
