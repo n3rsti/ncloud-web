@@ -23,11 +23,10 @@ export class ToastComponent {
   };
 
   colors: { [key: string]: string } = {
-    check: 'text-green-500 bg-green-100 dark:bg-green-800 dark:text-green-200',
-    error: 'text-red-500 bg-red-100 dark:bg-red-800 dark:text-red-200',
-    warning:
-      'text-orange-500 bg-orange-100 dark:bg-orange-700 dark:text-orange-200',
-    fire: 'text-blue-500 bg-blue-100 dark:bg-blue-800 dark:text-blue-200',
+    check: 'text-green-500 bg-green-100',
+    error: 'text-red-500 bg-red-100',
+    warning: 'text-orange-500 bg-orange-100',
+    fire: 'text-blue-500 bg-blue-100',
   };
 
   constructor(private toastService: ToastService) { }

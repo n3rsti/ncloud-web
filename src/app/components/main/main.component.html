@@ -2,7 +2,7 @@
   <div class="w-56 flex justify-center max-md:hidden fixed">
     <button
       (click)="openCreateDirectoryModal()"
-      class="w-9/12 text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800 cursor-pointer"
+      class="w-9/12 text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer"
     >
       New folder
     </button>
@@ -40,7 +40,7 @@
       <button
         *ngIf="directory.id && !isTrash"
         (click)="openCreateDirectoryModal()"
-        class="utility-upload-position bg-white border border-gray-200 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 flex flex-col justify-center items-center h-24 w-full mr-3 cursor-pointer"
+        class="utility-upload-position bg-white border border-gray-200 rounded-lg hover:bg-gray-100 flex flex-col justify-center items-center h-24 w-full mr-3 cursor-pointer"
       >
         <i class="fa-solid fa-circle-plus text-indigo-700 text-4xl mb-1"></i>
         <h3 class="text-sm text-gray-600 font-semibold">Create new folder</h3>

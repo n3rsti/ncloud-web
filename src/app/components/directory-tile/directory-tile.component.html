@@ -1,9 +1,23 @@
-<button #directoryTile draggable="true"
-  class="utility:focus-on-select-all utility:keep-selected drop-target relative bg-white border border-gray-200 rounded-lg {{ !selectedList.includes(directory) ? 'hover:bg-gray-100' : 'bg-gray-200'  }} dark:bg-gray-800
-       dark:border-gray-700 dark:hover:bg-gray-700 flex flex-col justify-center items-center h-24 w-full mr-3 cursor-default">
+<button
+  #directoryTile
+  draggable="true"
+  class="utility:focus-on-select-all utility:keep-selected drop-target relative bg-white border border-gray-200 rounded-lg {{
+    !selectedList.includes(directory) ? 'hover:bg-gray-100' : 'bg-gray-200'
+  }} flex flex-col justify-center items-center h-24 w-full mr-3 cursor-default"
+>
   <i class="drop-target fa-solid fa-folder text-indigo-700 text-4xl mb-1"></i>
-  <p [title]="directory.name"
-     class="drop-target text-sm text-gray-600 font-medium whitespace-nowrap overflow-hidden overflow-ellipsis text-center px-3 w-full">{{ directory.name }}</p>
+  <p
+    [title]="directory.name"
+    class="drop-target text-sm text-gray-600 font-medium whitespace-nowrap overflow-hidden overflow-ellipsis text-center px-3 w-full"
+  >
+    {{ directory.name }}
+  </p>
 
-  <div class="w-full h-24 absolute z-10" (dragenter)="addHoverClass()" (dragleave)="removeHoverClass()" (drop)="dropEvent($event)" (dragover)="$event.preventDefault()"></div>
+  <div
+    class="w-full h-24 absolute z-10"
+    (dragenter)="addHoverClass()"
+    (dragleave)="removeHoverClass()"
+    (drop)="dropEvent($event)"
+    (dragover)="$event.preventDefault()"
+  ></div>
 </button>

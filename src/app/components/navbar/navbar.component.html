@@ -1,5 +1,5 @@
 <nav
-  class="bg-white px-2 sm:px-4 py-2.5 rounded dark:bg-gray-900 fixed w-full top-0 border-b-2 border-indigo-700 z-20 flex items-center h-16"
+  class="bg-white px-2 sm:px-4 py-2.5 rounded fixed w-full top-0 border-b-2 border-indigo-700 z-20 flex items-center h-16"
 >
   <div
     class="flex-grow flex flex-wrap items-center max-md:justify-between max-md:mx-auto"
@@ -10,8 +10,7 @@
     >
       <div class="w-8/12">
         <i class="fas fa-solid fa-cloud text-2xl text-indigo-700 mr-3"></i>
-        <span
-          class="self-center text-xl font-semibold whitespace-nowrap dark:text-white"
+        <span class="self-center text-xl font-semibold whitespace-nowrap"
           >Ncloud</span
         >
       </div>
@@ -38,7 +37,7 @@
         </div>
         <button
           (click)="openSearchInput()"
-          class="text-left cursor-text w-96 block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
+          class="text-left cursor-text w-96 block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-indigo-500 focus:border-indigo-500"
         >
           Type <kbd class="border rounded p-1">/</kbd> to search
         </button>
@@ -49,7 +48,7 @@
         aria-controls="navbar-search"
         aria-expanded="false"
         (click)="openSearchInput()"
-        class="md:hidden text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 mr-1"
+        class="md:hidden text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 rounded-lg text-sm p-2.5 mr-1"
       >
         <svg
           class="w-5 h-5"
@@ -69,7 +68,7 @@
       <button
         (click)="openLogoutModal()"
         type=""
-        class="md:ml-auto text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 mr-1"
+        class="md:ml-auto text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 rounded-lg text-sm p-2.5 mr-1"
       >
         <i class="fa-solid fa-right-from-bracket"></i>
         <span class="sr-only">Logout</span>
@@ -100,7 +99,7 @@
         <input
           type="text"
           id="search-navbar"
-          class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
+          class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-indigo-500 focus:border-indigo-500"
           placeholder="Search..."
         />
       </div>
