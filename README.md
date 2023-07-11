@@ -35,3 +35,7 @@ Keybinds for files and directories:
 
 Other keybinds:
 - `/` : open search bar
+
+
+### Dark theme
+App doesn't have builtin dark theme mode. I recommend using [dark reader](https://darkreader.org/). Works perfectly fine.
