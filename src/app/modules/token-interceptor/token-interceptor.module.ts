@@ -1,5 +1,5 @@
-import {Injectable, ModuleWithProviders, NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import { Injectable, ModuleWithProviders, NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import {
   HTTP_INTERCEPTORS,
   HttpErrorResponse,
@@ -7,135 +7,129 @@ import {
   HttpHandler,
   HttpInterceptor,
   HttpRequest,
-} from "@angular/common/http";
-import {catchError, Observable, switchMap} from "rxjs";
-import {Router} from "@angular/router";
-import {DataService} from "../../services/data.service";
-import {Config} from "../../config";
+} from '@angular/common/http';
+import { catchError, Observable, switchMap } from 'rxjs';
+import { Router } from '@angular/router';
+import { DataService } from '../../services/data.service';
+import { Config } from '../../config';
 
-
-const JWT_REFRESH_ENDPOINT = '/api/token/refresh'
+const JWT_REFRESH_ENDPOINT = '/api/token/refresh';
 
 const WHITELISTED_URLS = [
   '/api/login',
   '/logout',
-  JWT_REFRESH_ENDPOINT
-]
-
+  '/register',
+  JWT_REFRESH_ENDPOINT,
+];
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TokenInterceptor implements HttpInterceptor {
   returnUrl = '';
 
   constructor(private router: Router, private data: DataService) {
-    if (!this.router.routerState.snapshot.root.queryParams?.['return'] || this.router.routerState.snapshot.root.queryParams?.['return'] === '')
+    if (
+      !this.router.routerState.snapshot.root.queryParams?.['return'] ||
+      this.router.routerState.snapshot.root.queryParams?.['return'] === ''
+    )
       this.returnUrl = this.router.routerState.snapshot.url;
   }
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
     const token: string = localStorage.getItem('access_token') || '';
     const refresh_token: string = localStorage.getItem('refresh_token') || '';
-
-    if (WHITELISTED_URLS.includes(req.url.replace(Config.Host, ''))) {
-      if (req.url.replace(Config.Host, '') == JWT_REFRESH_ENDPOINT) {
+    const URN = req.url.replace(Config.Host, '');
+    if (WHITELISTED_URLS.includes(URN)) {
+      if (URN == JWT_REFRESH_ENDPOINT) {
         const reqWithToken = req.clone({
           setHeaders: {
-            Authorization: `Bearer ${refresh_token}`
-          }
-        })
+            Authorization: `Bearer ${refresh_token}`,
+          },
+        });
         return next.handle(reqWithToken);
       }
 
       return next.handle(req);
     }
 
-    if (token != "" && token != null) {
+    if (token) {
       const reqWithToken = this.addTokenHeader(req, token);
 
-      return next.handle(this.addTokenHeader(req, token)).pipe(catchError(error => {
-        if (error instanceof HttpErrorResponse) {
-          if(error.status === 401){
-            return this.handle401Error(reqWithToken, next);
+      return next.handle(this.addTokenHeader(req, token)).pipe(
+        catchError((error) => {
+          if (error instanceof HttpErrorResponse) {
+            if (error.status === 401) {
+              return this.handle401Error(reqWithToken, next);
+            } else if (error.status === 400) {
+              throw error;
+            } else if (error.status === 200) {
+              throw error;
+            }
           }
-          else if(error.status === 400){
-            throw error;
-          }
-          else if(error.status === 200){
-            throw error;
-          }
-        }
-        throw error;
-      }))
-
-
-    } else {
-      this.router.navigate(['/login'], {
-        queryParams: {
-          return: this.returnUrl
-        }
-      });
+          throw error;
+        })
+      );
     }
 
     return next.handle(req);
-
   }
 
   private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
-    const refreshToken = localStorage.getItem("refresh_token");
+    const refreshToken = localStorage.getItem('refresh_token');
 
     if (refreshToken) {
       return this.data.refreshToken().pipe(
         catchError((err) => {
-          if(err.status === 401){
+          if (err.status === 401) {
             this.router.navigate(['/login'], {
               queryParams: {
-                return: this.returnUrl
-              }
+                return: this.returnUrl,
+              },
             });
           }
           throw err;
         }),
         switchMap((token: any) => {
-          localStorage.setItem("access_token", token.body.access_token);
+          localStorage.setItem('access_token', token.body.access_token);
 
-          return next.handle(this.addTokenHeader(request, token.body.access_token));
-        }),
-      )
+          return next.handle(
+            this.addTokenHeader(request, token.body.access_token)
+          );
+        })
+      );
     }
     this.router.navigate(['/login'], {
       queryParams: {
-        return: this.returnUrl
-      }
+        return: this.returnUrl,
+      },
     });
-    throw "";
+    throw '';
   }
 
   private addTokenHeader(request: HttpRequest<any>, token: string) {
     return request.clone({
       setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
-
 }
-
 
 @NgModule({
   declarations: [],
-  imports: [
-    CommonModule
-  ],
+  imports: [CommonModule],
   providers: [
     TokenInterceptor,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
-      multi: true
-    }
-  ]
+      multi: true,
+    },
+  ],
 })
 export class TokenInterceptorModule {
   static forRoot(): ModuleWithProviders<TokenInterceptorModule> {
@@ -145,9 +139,9 @@ export class TokenInterceptorModule {
         {
           provide: HTTP_INTERCEPTORS,
           useClass: TokenInterceptor,
-          multi: true
-        }
-      ]
-    }
+          multi: true,
+        },
+      ],
+    };
   }
 }
