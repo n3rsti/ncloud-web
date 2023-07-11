@@ -13,6 +13,7 @@ export class LoginComponent {
   loginGroup: FormGroup;
 
   isInvalidLogin = false;
+  isNewUser = false;
 
   constructor(
     private data: DataService,
@@ -26,13 +27,15 @@ export class LoginComponent {
   }
 
   ngOnInit() {
-    this.route.queryParams.subscribe(
-      (params) => (this.returnUrl = params['return'] || '/')
-    );
+    this.route.queryParams.subscribe((params) => {
+      this.returnUrl = params['return'] || '/';
+      this.isNewUser = params['userCreated'] || false;
+    });
   }
 
   submitForm() {
     this.isInvalidLogin = false;
+    this.isNewUser = false;
     this.data.login(this.username, this.password).subscribe({
       next: (data: any) => {
         if (data.status === 200) {

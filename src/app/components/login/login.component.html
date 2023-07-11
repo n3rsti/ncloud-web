@@ -69,18 +69,18 @@
       </div>
     </form>
 
-    <!-- <p class="mt-10 text-center text-sm text-gray-500"> -->
-    <!--   Not a member? -->
-    <!--   <a -->
-    <!--     href="#" -->
-    <!--     class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500" -->
-    <!--     >Register</a -->
-    <!--   > -->
-    <!-- </p> -->
+    <p class="mt-10 text-center text-sm text-gray-500">
+      Not a member?
+      <a
+        [routerLink]="['/register']"
+        class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+        >Sign up</a
+      >
+    </p>
   </div>
   <div
     *ngIf="isInvalidLogin"
-    class="sm:mx-auto sm:w-full sm:max-w-sm bg-red-50 rounded-md mt-4 p-3 text-sm flex"
+    class="sm:mx-auto sm:w-full sm:max-w-sm bg-red-50 rounded-md mt-4 p-4 text-sm flex"
   >
     <div class="mr-3">
       <svg
@@ -99,9 +99,32 @@
     </div>
     <div>
       <h2 class="text-red-800 font-medium">Error</h2>
-      <p class="text-red-700">
+      <p class="text-red-700 mt-2">
         You have entered an invalid username or password
       </p>
+    </div>
+  </div>
+  <div
+    *ngIf="isNewUser"
+    class="sm:mx-auto sm:w-full sm:max-w-sm bg-green-50 rounded-md mt-4 p-4 text-sm flex"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+      aria-hidden="true"
+      class="w-5 h-5 text-green-400"
+    >
+      <path
+        fill-rule="evenodd"
+        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+        clip-rule="evenodd"
+      ></path>
+    </svg>
+    <div class="mr-3"></div>
+    <div>
+      <h2 class="text-green-600 font-medium">Account created</h2>
+      <p class="text-green-500 mt-2">You can now login to your new account</p>
     </div>
   </div>
 </div>
