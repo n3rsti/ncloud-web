@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { Directory, DirectoryBuilder } from '../../models/directory.model';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { FileBuilder, FileModel } from '../../models/file.model';
@@ -383,30 +383,49 @@ export class MainComponent {
         if (data.status === 200) {
           let filesAdded = false;
 
-          files.forEach((element) => {
-            if (!this.directory.files.map((x) => x.id).includes(element.id)) {
-              if (FileFormats.FILES_TO_DISPLAY.includes(element.type)) {
-                this.data.getFile(element).subscribe({
-                  next: (data) => {
-                    // Convert blob to URL
-                    const urlCreator = window.URL || window.webkitURL;
-                    element.src = this.sanitizer.bypassSecurityTrustUrl(
-                      urlCreator.createObjectURL(data)
-                    );
-                  },
-                });
-              }
-              this.directory.files = [...this.directory.files, element];
-              filesAdded = true;
-            }
-          });
-          if (!filesAdded) {
-            this.directory.files = this.directory.files.filter(
-              (x) => !files.includes(x)
-            );
+          const CURRENT_DIR_FILES_IDS = this.directory.files.map((x) => x.id);
+          const FIRST_MOVED_FILE_ID = files.at(0)?.id || '';
+
+          if (!CURRENT_DIR_FILES_IDS.includes(FIRST_MOVED_FILE_ID)) {
+            this.selectedFiles = files;
+            this.insertFilesInOrder(files);
+            filesAdded = true;
+          } else {
+            this.removeFilesFromCurrentDirectory(files);
           }
         }
       },
+    });
+  }
+
+  removeFilesFromCurrentDirectory(files: FileModel[]) {
+    this.directory.files = this.directory.files.filter(
+      (x) => !files.includes(x)
+    );
+  }
+
+  insertFilesInOrder(files: FileModel[]) {
+    let currentDirectoryFilesLength = this.directory.files.length;
+
+    files.forEach((file) => {
+      let lo = 0;
+      let hi = currentDirectoryFilesLength;
+
+      while (lo < hi) {
+        const mid = Math.floor(lo + (hi - lo) / 2);
+        const val = parseInt(this.directory.files[mid].id.substring(0, 8), 16);
+
+        const insertedFileTimestamp = parseInt(file.id.substring(0, 8), 16);
+
+        if (insertedFileTimestamp > val) {
+          lo = mid + 1;
+        } else {
+          hi = mid;
+        }
+      }
+
+      this.directory.files.splice(lo, 0, file);
+      currentDirectoryFilesLength += 1;
     });
   }
 
@@ -806,6 +825,18 @@ export class MainComponent {
 
           if (cutFiles && cutFilesParentDirectory) {
             let parsedFiles = JSON.parse(cutFiles).map((element: any) => {
+              let fileSrc =
+                element._src.changingThisBreaksApplicationSecurity || '';
+
+              let safeFileUrl: SafeUrl = '';
+
+              if (fileSrc) {
+                safeFileUrl =
+                  this.sanitizer.bypassSecurityTrustUrl(fileSrc);
+              }
+
+
+
               return new FileBuilder()
                 .setId(element._id)
                 .setName(element._name)
@@ -814,6 +845,7 @@ export class MainComponent {
                 .setUser(element._user)
                 .setType(element._type)
                 .setSize(element._size)
+                .setSrc(safeFileUrl)
                 .build();
             });
 

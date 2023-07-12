@@ -24,7 +24,8 @@ export class FileModel {
     user: string,
     type: string,
     size: number,
-    access_key: string
+    access_key: string,
+    src: SafeUrl
   ) {
     this._id = id;
     this._name = name;
@@ -33,6 +34,7 @@ export class FileModel {
     this._type = type;
     this._size = size;
     this._access_key = access_key;
+    this._src = src;
   }
 
   get id(): string {
@@ -65,11 +67,6 @@ export class FileModel {
 
   set user(value: string) {
     this._user = value;
-  }
-
-  setId(id: string) {
-    this.id = id;
-    return this;
   }
 
   get type(): string {
@@ -144,7 +141,12 @@ export class FileModel {
 
 export class FileBuilder extends FileModel {
   constructor() {
-    super('', '', '', '', '', 0, '');
+    super('', '', '', '', '', 0, '', '');
+  }
+
+  setId(id: string) {
+    this.id = id;
+    return this;
   }
 
   setName(name: string) {
@@ -159,6 +161,11 @@ export class FileBuilder extends FileModel {
 
   setUser(user: string) {
     this.user = user;
+    return this;
+  }
+
+  setSrc(value: SafeUrl) {
+    this.src = value;
     return this;
   }
 
@@ -185,7 +192,8 @@ export class FileBuilder extends FileModel {
       this.user,
       this.type,
       this.size,
-      this.access_key
+      this.access_key,
+      this.src
     );
   }
 }
