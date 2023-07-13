@@ -147,7 +147,6 @@ export class MainComponent {
               file = this.directory.files.find((x) => x.id == data.value);
               if (file) {
                 file = new FileBuilder()
-                  .setAccessKey(file.access_key)
                   .setId(file.id)
                   .setName(data.formValues['name'])
                   .build();
@@ -298,7 +297,7 @@ export class MainComponent {
 
         this.directory.files.forEach((file) => {
           if (FileFormats.FILES_TO_DISPLAY.includes(file.type)) {
-            this.data.getFile(file).subscribe({
+            this.data.getFile(file, this.directory.access_key).subscribe({
               next: (data) => {
                 // Convert blob to URL
                 const urlCreator = window.URL || window.webkitURL;
@@ -429,21 +428,10 @@ export class MainComponent {
     });
   }
 
-  updateFile(file: FileModel, directoryAccessKey?: string) {
-    return this.data.updateFile(file, directoryAccessKey).subscribe({
+  updateFile(file: FileModel) {
+    return this.data.updateFile(file, this.directory.access_key).subscribe({
       next: (data) => {
         if (data.status === 204) {
-          // Check if parent_directory is changed (file moved).
-          // If it is, file must be removed from current directory
-          if (
-            file.parent_directory != '' &&
-            file.parent_directory != this.directoryId
-          ) {
-            this.directory.files = this.directory.files.filter(
-              (x) => x.id != file.id
-            );
-          }
-
           // Check if file name was changed and update it in template
           let changedFile = this.directory.files.find((x) => x.id == file.id);
           if (changedFile && changedFile.name != file.name) {
@@ -546,7 +534,7 @@ export class MainComponent {
   }
 
   downloadFile(file: FileModel) {
-    this.data.getFile(file).subscribe({
+    this.data.getFile(file, this.directory.access_key).subscribe({
       next: (data) => {
         // Convert blob to URL
         const urlCreator = window.URL || window.webkitURL;
@@ -831,16 +819,12 @@ export class MainComponent {
               let safeFileUrl: SafeUrl = '';
 
               if (fileSrc) {
-                safeFileUrl =
-                  this.sanitizer.bypassSecurityTrustUrl(fileSrc);
+                safeFileUrl = this.sanitizer.bypassSecurityTrustUrl(fileSrc);
               }
-
-
 
               return new FileBuilder()
                 .setId(element._id)
                 .setName(element._name)
-                .setAccessKey(element._access_key)
                 .setParentDirectory(element._parent_directory)
                 .setUser(element._user)
                 .setType(element._type)

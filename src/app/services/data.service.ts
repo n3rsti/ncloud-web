@@ -73,7 +73,6 @@ export class DataService {
                   .setUser(file.user)
                   .setType(file.type)
                   .setSize(file.size)
-                  .setAccessKey(file.access_key)
                   .build();
               })
             )
@@ -83,9 +82,9 @@ export class DataService {
     );
   }
 
-  getFile(file: FileModel) {
+  getFile(file: FileModel, directoryAccessKey: string) {
     let headers = new HttpHeaders({
-      FileAccessKey: file.access_key,
+      DirectoryAccessKey: directoryAccessKey,
     });
 
     return this.http.get(Config.Host + `/files/${file.id}`, {
@@ -141,7 +140,6 @@ export class DataService {
             return new FileBuilder()
               .setName(file.name)
               .setId(file.id)
-              .setAccessKey(file.access_key)
               .setParentDirectory(file.parent_directory)
               .setSize(file.size)
               .setType(file.type)
@@ -151,13 +149,10 @@ export class DataService {
       );
   }
 
-  updateFile(file: FileModel, directoryAccessKey?: string) {
+  updateFile(file: FileModel, directoryAccessKey: string) {
     let headers = new HttpHeaders({
-      FileAccessKey: file.access_key,
+      DirectoryAccessKey: directoryAccessKey,
     });
-    if (directoryAccessKey) {
-      headers = headers.set('DirectoryAccessKey', directoryAccessKey);
-    }
     return this.http.patch(
       Config.Host + `/api/files/${file.id}`,
       {
@@ -166,17 +161,6 @@ export class DataService {
       },
       { headers: headers, observe: 'response' }
     );
-  }
-
-  deleteFile(file: FileModel) {
-    let headers = new HttpHeaders({
-      FileAccessKey: file.access_key,
-    });
-
-    return this.http.delete(Config.Host + `/api/files/${file.id}`, {
-      headers: headers,
-      observe: 'response',
-    });
   }
 
   updateDirectory(directory: Directory, newDirectoryAccessKey?: string) {

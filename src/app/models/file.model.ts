@@ -15,8 +15,6 @@ export class FileModel {
   private _size: number;
   private _additional_data: [additionalData] | null = null;
 
-  private _access_key: string;
-
   constructor(
     id: string,
     name: string,
@@ -24,7 +22,6 @@ export class FileModel {
     user: string,
     type: string,
     size: number,
-    access_key: string,
     src: SafeUrl
   ) {
     this._id = id;
@@ -33,7 +30,6 @@ export class FileModel {
     this._user = user;
     this._type = type;
     this._size = size;
-    this._access_key = access_key;
     this._src = src;
   }
 
@@ -129,19 +125,11 @@ export class FileModel {
   get creationDate() {
     return new Date(parseInt(this.id.substring(0, 8), 16) * 1000);
   }
-
-  get access_key(): string {
-    return this._access_key;
-  }
-
-  set access_key(access_key: string) {
-    this._access_key = access_key;
-  }
 }
 
 export class FileBuilder extends FileModel {
   constructor() {
-    super('', '', '', '', '', 0, '', '');
+    super('', '', '', '', '', 0, '');
   }
 
   setId(id: string) {
@@ -179,11 +167,6 @@ export class FileBuilder extends FileModel {
     return this;
   }
 
-  setAccessKey(accessKey: string) {
-    this.access_key = accessKey;
-    return this;
-  }
-
   build() {
     return new FileModel(
       this.id,
@@ -192,7 +175,6 @@ export class FileBuilder extends FileModel {
       this.user,
       this.type,
       this.size,
-      this.access_key,
       this.src
     );
   }
