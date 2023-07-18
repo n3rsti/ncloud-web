@@ -32,6 +32,9 @@ Keybinds for files and directories:
 - `shift` + `delete` / `shift` + `F4` : permanently delete
 - `F2` : rename
 - `F1` : show details
+- `ctrl` + `c` : copy files
+- `ctrl` + `x` : cut files / directories
+- `ctrl` + `v` : copy files / directories
 
 Other keybinds:
 - `/` : open search bar
