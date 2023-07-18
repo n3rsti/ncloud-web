@@ -84,21 +84,14 @@
         </p>
       </ng-container>
     </div>
-    <app-file-upload
-      [directory]="this.directory"
-      [openSubject]="fileUploadSubject"
-    ></app-file-upload>
+    <app-file-upload [openSubject]="fileUploadSubject"></app-file-upload>
   </main>
 </section>
 <app-file-carousel
   *ngIf="directory.files.length > 0"
-  [files]="directory.files"
   [openedSubject]="fileCarouselSubject"
 ></app-file-carousel>
-<app-item-details
-  [directory]="directory"
-  [openedSubject]="fileDetailsSubject"
-></app-item-details>
+<app-item-details [openedSubject]="fileDetailsSubject"></app-item-details>
 <div
   #contextMenu
   id="contextMenu"

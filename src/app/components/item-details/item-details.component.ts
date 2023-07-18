@@ -1,16 +1,15 @@
 import { Component, HostListener, Input } from '@angular/core';
-import { FileModel } from "../../models/file.model";
-import { Directory, DirectoryBuilder } from "../../models/directory.model";
-import { Subject } from "rxjs";
-import { ConstNames } from "../../constants";
+import { Subject } from 'rxjs';
+import { DirectoryService } from 'src/app/services/directory.service';
+import { ConstNames } from '../../constants';
 
 @Component({
   selector: 'app-item-details',
   templateUrl: './item-details.component.html',
-  styleUrls: ['./item-details.component.scss']
+  styleUrls: ['./item-details.component.scss'],
 })
 export class ItemDetailsComponent {
-  ConstNames = ConstNames
+  ConstNames = ConstNames;
 
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -19,7 +18,6 @@ export class ItemDetailsComponent {
     }
   }
 
-  @Input() directory: Directory = new DirectoryBuilder().build();
   @Input() openedSubject: Subject<any> = new Subject<any>();
 
   itemIndex = 0;
@@ -27,15 +25,21 @@ export class ItemDetailsComponent {
   type = '';
   title = '';
 
+  constructor(private directoryService: DirectoryService) { }
+
+  get directory() {
+    return this.directoryService.directory;
+  }
+
   ngOnInit() {
     this.openedSubject.subscribe({
       next: (data) => {
-        this.itemIndex = data["index"];
+        this.itemIndex = data['index'];
         this.opened = true;
-        this.type = data["type"];
-        this.title = data["title"];
-      }
-    })
+        this.type = data['type'];
+        this.title = data['title'];
+      },
+    });
   }
 
   // These functions are in FileModel as well, but there is a bug where a new uploaded file can't access these methods, even though they are typof FileModel
@@ -44,9 +48,8 @@ export class ItemDetailsComponent {
   }
 
   getHumanReadableSize(size: number): string {
-    let bytes = size
+    let bytes = size;
     let dp = 1;
-
 
     const thresh = 1024;
 
@@ -54,15 +57,17 @@ export class ItemDetailsComponent {
       return bytes + ' B';
     }
 
-    const units = ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+    const units = ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     let u = -1;
     const r = 10 ** dp;
 
     do {
       bytes /= thresh;
       ++u;
-    } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
-
+    } while (
+      Math.round(Math.abs(bytes) * r) / r >= thresh &&
+      u < units.length - 1
+    );
 
     return bytes.toFixed(dp) + ' ' + units[u];
   }

@@ -18,6 +18,7 @@ import {
 } from '../modal/modal.config';
 import { ToastService } from 'src/app/services/toast.service';
 import { ModalService } from 'src/app/services/modal.service';
+import { DirectoryService } from 'src/app/services/directory.service';
 
 const RIGHT_CLICK = 2;
 const LEFT_CLICK = 0;
@@ -30,7 +31,6 @@ const LEFT_CLICK = 0;
 export class MainComponent {
   constElementNames = ConstNames;
 
-  directory: Directory = new DirectoryBuilder().build();
   directoryId: string = '';
   isTrash = true;
 
@@ -78,7 +78,8 @@ export class MainComponent {
     private route: ActivatedRoute,
     public router: Router,
     private toastService: ToastService,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private directoryService: DirectoryService
   ) { }
 
   ngOnDestroy() {
@@ -95,12 +96,12 @@ export class MainComponent {
     this.route.params.subscribe((params) => {
       if (params['id']) {
         this.directoryId = params['id'];
-        this.getDirectory();
+        this.directoryService.getDirectory(this.directoryId);
       } else if (!params['id'] && localStorage.getItem('mainDirectoryId')) {
         this.directoryId = localStorage.getItem('mainDirectoryId') || '';
         this.router.navigate(['/' + this.directoryId]);
       } else {
-        this.getDirectory();
+        this.directoryService.getDirectory(this.directoryId);
       }
 
       const trashId = decodeJWT(localStorage.getItem('trashAccessKey') || '')[
@@ -144,7 +145,9 @@ export class MainComponent {
             break;
           case 'renameFile':
             if (data.formValues) {
-              file = this.directory.files.find((x) => x.id == data.value);
+              file = this.directoryService.directory.files.find(
+                (x) => x.id == data.value
+              );
               if (file) {
                 file = new FileBuilder()
                   .setId(file.id)
@@ -159,7 +162,7 @@ export class MainComponent {
             if (!data.formValues) {
               return;
             }
-            directory = this.directory.directories.find(
+            directory = this.directoryService.directory.directories.find(
               (x) => x.id == data.value
             );
 
@@ -188,6 +191,10 @@ export class MainComponent {
         }
       }
     );
+  }
+
+  get directory() {
+    return this.directoryService.directory;
   }
 
   // Subjects for opening file carousel and file details
@@ -256,17 +263,19 @@ export class MainComponent {
   }
   openRenameDirectoryModal(id: number) {
     if (this.selectedDirectories.length === 1) {
-      renameDirectoryModalConfig.data = this.directory.directories[id].id;
+      renameDirectoryModalConfig.data =
+        this.directoryService.directory.directories[id].id;
       renameDirectoryModalConfig.fields[1].value =
-        this.directory.directories[id].name;
+        this.directoryService.directory.directories[id].name;
       this.openModal(renameDirectoryModalConfig);
     }
   }
 
   openRenameFileModal(id: number) {
     if (this.selectedFiles.length === 1) {
-      renameFileModalConfig.data = this.directory.files[id].id;
-      renameFileModalConfig.fields[1].value = this.directory.files[id].name;
+      renameFileModalConfig.data = this.directoryService.directory.files[id].id;
+      renameFileModalConfig.fields[1].value =
+        this.directoryService.directory.files[id].name;
       this.openModal(renameFileModalConfig);
     }
   }
@@ -286,44 +295,20 @@ export class MainComponent {
     this.openModal(restoreModalConfig);
   }
 
-  getDirectory() {
-    this.data.getDirectory(this.directoryId).subscribe({
-      next: (data: Directory[]) => {
-        this.directory = data[0];
-        if (this.directoryId == '') {
-          localStorage.setItem('mainDirectoryId', this.directory.id);
-          this.router.navigate(['/' + this.directory.id]);
-        }
-
-        this.directory.files.forEach((file) => {
-          if (FileFormats.FILES_TO_DISPLAY.includes(file.type)) {
-            this.data.getFile(file, this.directory.access_key).subscribe({
-              next: (data) => {
-                // Convert blob to URL
-                const urlCreator = window.URL || window.webkitURL;
-                file.src = this.sanitizer.bypassSecurityTrustUrl(
-                  urlCreator.createObjectURL(data)
-                );
-              },
-            });
-          }
-        });
-      },
-    });
-  }
-
   createDirectory(name: string) {
     let newDir = new DirectoryBuilder()
       .setName(name)
-      .setParentDirectory(this.directory.id);
+      .setParentDirectory(this.directoryService.directory.id);
     if (name) {
-      this.data.createDirectory(newDir, this.directory.access_key).subscribe({
-        next: (data: Directory) => {
-          if (data) {
-            this.directory.directories.push(data);
-          }
-        },
-      });
+      this.data
+        .createDirectory(newDir, this.directoryService.directory.access_key)
+        .subscribe({
+          next: (data: Directory) => {
+            if (data) {
+              this.directoryService.directory.directories.push(data);
+            }
+          },
+        });
     }
   }
 
@@ -361,7 +346,11 @@ export class MainComponent {
       .setAccessKey(trashAccessKey)
       .build();
 
-    this.moveFiles(files, this.directory, destinationDirectory);
+    this.moveFiles(
+      files,
+      this.directoryService.directory,
+      destinationDirectory
+    );
   }
 
   moveFiles(
@@ -382,7 +371,8 @@ export class MainComponent {
         if (data.status === 200) {
           let filesAdded = false;
 
-          const CURRENT_DIR_FILES_IDS = this.directory.files.map((x) => x.id);
+          const CURRENT_DIR_FILES_IDS =
+            this.directoryService.directory.files.map((x) => x.id);
           const FIRST_MOVED_FILE_ID = files.at(0)?.id || '';
 
           if (!CURRENT_DIR_FILES_IDS.includes(FIRST_MOVED_FILE_ID)) {
@@ -398,13 +388,13 @@ export class MainComponent {
   }
 
   removeFilesFromCurrentDirectory(files: FileModel[]) {
-    this.directory.files = this.directory.files.filter(
-      (x) => !files.includes(x)
-    );
+    this.directoryService.directory.files =
+      this.directoryService.directory.files.filter((x) => !files.includes(x));
   }
 
   insertFilesInOrder(files: FileModel[]) {
-    let currentDirectoryFilesLength = this.directory.files.length;
+    let currentDirectoryFilesLength =
+      this.directoryService.directory.files.length;
 
     files.forEach((file) => {
       let lo = 0;
@@ -412,7 +402,10 @@ export class MainComponent {
 
       while (lo < hi) {
         const mid = Math.floor(lo + (hi - lo) / 2);
-        const val = parseInt(this.directory.files[mid].id.substring(0, 8), 16);
+        const val = parseInt(
+          this.directoryService.directory.files[mid].id.substring(0, 8),
+          16
+        );
 
         const insertedFileTimestamp = parseInt(file.id.substring(0, 8), 16);
 
@@ -423,23 +416,27 @@ export class MainComponent {
         }
       }
 
-      this.directory.files.splice(lo, 0, file);
+      this.directoryService.directory.files.splice(lo, 0, file);
       currentDirectoryFilesLength += 1;
     });
   }
 
   updateFile(file: FileModel) {
-    return this.data.updateFile(file, this.directory.access_key).subscribe({
-      next: (data) => {
-        if (data.status === 204) {
-          // Check if file name was changed and update it in template
-          let changedFile = this.directory.files.find((x) => x.id == file.id);
-          if (changedFile && changedFile.name != file.name) {
-            changedFile.name = file.name;
+    return this.data
+      .updateFile(file, this.directoryService.directory.access_key)
+      .subscribe({
+        next: (data) => {
+          if (data.status === 204) {
+            // Check if file name was changed and update it in template
+            let changedFile = this.directoryService.directory.files.find(
+              (x) => x.id == file.id
+            );
+            if (changedFile && changedFile.name != file.name) {
+              changedFile.name = file.name;
+            }
           }
-        }
-      },
-    });
+        },
+      });
   }
 
   deleteDirectories(directories: Directory[]) {
@@ -461,10 +458,12 @@ export class MainComponent {
         if (data.status === 200) {
           directories.forEach((element) => {
             if (
-              !this.directory.directories.map((x) => x.id).includes(element.id)
+              !this.directoryService.directory.directories
+                .map((x) => x.id)
+                .includes(element.id)
             ) {
-              this.directory.directories = [
-                ...this.directory.directories,
+              this.directoryService.directory.directories = [
+                ...this.directoryService.directory.directories,
                 element,
               ];
               filesAdded = true;
@@ -472,9 +471,10 @@ export class MainComponent {
           });
 
           if (!filesAdded) {
-            this.directory.directories = this.directory.directories.filter(
-              (x) => !directories.includes(x)
-            );
+            this.directoryService.directory.directories =
+              this.directoryService.directory.directories.filter(
+                (x) => !directories.includes(x)
+              );
           }
         }
       },
@@ -487,9 +487,10 @@ export class MainComponent {
       .subscribe({
         next: (data) => {
           if (data.status === 204) {
-            let directoryBeforeUpdate = this.directory.directories.find(
-              (x) => x.id === directory.id
-            );
+            let directoryBeforeUpdate =
+              this.directoryService.directory.directories.find(
+                (x) => x.id === directory.id
+              );
             if (
               directoryBeforeUpdate &&
               directoryBeforeUpdate.name !== directory.name
@@ -534,18 +535,20 @@ export class MainComponent {
   }
 
   downloadFile(file: FileModel) {
-    this.data.getFile(file, this.directory.access_key).subscribe({
-      next: (data) => {
-        // Convert blob to URL
-        const urlCreator = window.URL || window.webkitURL;
+    this.data
+      .getFile(file, this.directoryService.directory.access_key)
+      .subscribe({
+        next: (data) => {
+          // Convert blob to URL
+          const urlCreator = window.URL || window.webkitURL;
 
-        let link = document.createElement('a');
-        link.href = urlCreator.createObjectURL(data);
-        link.download = file.name;
-        link.click();
-        link.remove();
-      },
-    });
+          let link = document.createElement('a');
+          link.href = urlCreator.createObjectURL(data);
+          link.download = file.name;
+          link.click();
+          link.remove();
+        },
+      });
   }
 
   moveToDirectory(directory: Directory) {
@@ -553,7 +556,11 @@ export class MainComponent {
       this.moveDirectories([...this.selectedDirectories], directory);
     }
     if (this.selectedFiles.length > 0) {
-      this.moveFiles([...this.selectedFiles], this.directory, directory);
+      this.moveFiles(
+        [...this.selectedFiles],
+        this.directoryService.directory,
+        directory
+      );
     }
   }
 
@@ -564,20 +571,22 @@ export class MainComponent {
         let lastSelectedElementIndex = 0;
 
         let selectedElementIndex = 0;
-        this.directory.directories.forEach((element, index) => {
-          if (element === directory) {
-            selectedElementIndex = index;
-          } else if (element === lastSelectedElement) {
-            lastSelectedElementIndex = index;
+        this.directoryService.directory.directories.forEach(
+          (element, index) => {
+            if (element === directory) {
+              selectedElementIndex = index;
+            } else if (element === lastSelectedElement) {
+              lastSelectedElementIndex = index;
+            }
           }
-        });
+        );
 
         let [startIndex, endIndex] = [
           lastSelectedElementIndex,
           selectedElementIndex,
         ].sort((a, b) => a - b);
 
-        this.directory.directories
+        this.directoryService.directory.directories
           .slice(startIndex, endIndex + 1)
           .forEach((element) => {
             if (!this.selectedDirectories.includes(element)) {
@@ -589,27 +598,29 @@ export class MainComponent {
           this.selectedFiles.at(-1) || new FileBuilder().build();
         let lastSelectedElementIndex = 0;
 
-        this.directory.files.forEach((element, index) => {
+        this.directoryService.directory.files.forEach((element, index) => {
           if (element === lastSelectedElement) {
             lastSelectedElementIndex = index;
           }
         });
 
         let selectedElementIndex = 0;
-        this.directory.directories.forEach((element, index) => {
-          if (element === directory) {
-            selectedElementIndex = index;
+        this.directoryService.directory.directories.forEach(
+          (element, index) => {
+            if (element === directory) {
+              selectedElementIndex = index;
+            }
           }
-        });
+        );
 
-        this.directory.directories
+        this.directoryService.directory.directories
           .slice(selectedElementIndex)
           .forEach((element) => {
             if (!this.selectedDirectories.includes(element)) {
               this.selectedDirectories.push(element);
             }
           });
-        this.directory.files
+        this.directoryService.directory.files
           .slice(0, lastSelectedElementIndex + 1)
           .forEach((element) => {
             if (!this.selectedFiles.includes(element)) {
@@ -652,7 +663,7 @@ export class MainComponent {
         let lastSelectedElementIndex = 0;
 
         let selectedElementIndex = 0;
-        this.directory.files.forEach((element, index) => {
+        this.directoryService.directory.files.forEach((element, index) => {
           if (element === file) {
             selectedElementIndex = index;
           } else if (element === lastSelectedElement) {
@@ -665,7 +676,7 @@ export class MainComponent {
           selectedElementIndex,
         ].sort((a, b) => a - b);
 
-        this.directory.files
+        this.directoryService.directory.files
           .slice(startIndex, endIndex + 1)
           .forEach((element) => {
             if (!this.selectedFiles.includes(element)) {
@@ -678,27 +689,29 @@ export class MainComponent {
         let lastSelectedElement = this.selectedDirectories.at(-1);
         let lastSelectedElementIndex = 0;
 
-        this.directory.directories.forEach((element, index) => {
-          if (element === lastSelectedElement) {
-            lastSelectedElementIndex = index;
+        this.directoryService.directory.directories.forEach(
+          (element, index) => {
+            if (element === lastSelectedElement) {
+              lastSelectedElementIndex = index;
+            }
           }
-        });
+        );
 
         let selectedElementIndex = 0;
-        this.directory.files.forEach((element, index) => {
+        this.directoryService.directory.files.forEach((element, index) => {
           if (element === file) {
             selectedElementIndex = index;
           }
         });
 
-        this.directory.directories
+        this.directoryService.directory.directories
           .slice(lastSelectedElementIndex)
           .forEach((element) => {
             if (!this.selectedDirectories.includes(element)) {
               this.selectedDirectories.push(element);
             }
           });
-        this.directory.files
+        this.directoryService.directory.files
           .slice(0, selectedElementIndex + 1)
           .forEach((element) => {
             if (!this.selectedFiles.includes(element)) {
@@ -733,8 +746,8 @@ export class MainComponent {
   permanentlyDeleteFiles(files: FileModel[]) {
     let body = [
       {
-        id: this.directory.id,
-        access_key: this.directory.access_key,
+        id: this.directoryService.directory.id,
+        access_key: this.directoryService.directory.access_key,
         files: files.map((x) => x.id),
       },
     ];
@@ -742,9 +755,10 @@ export class MainComponent {
     this.data.permanentlyDeleteMultipleFiles(body).subscribe({
       next: (data) => {
         if (data.status === 200) {
-          this.directory.files = this.directory.files.filter(
-            (x) => !files.includes(x)
-          );
+          this.directoryService.directory.files =
+            this.directoryService.directory.files.filter(
+              (x) => !files.includes(x)
+            );
         }
       },
     });
@@ -755,9 +769,10 @@ export class MainComponent {
     this.data.deleteDirectories(body).subscribe({
       next: (data) => {
         if (data.status === 204) {
-          this.directory.directories = this.directory.directories.filter(
-            (x) => !directories.includes(x)
-          );
+          this.directoryService.directory.directories =
+            this.directoryService.directory.directories.filter(
+              (x) => !directories.includes(x)
+            );
         }
       },
     });
@@ -790,12 +805,16 @@ export class MainComponent {
   copyFiles(files: FileModel[], sourceAccessKey: string) {
     const fileIds = files.map((file) => file.id);
     this.data
-      .copyFiles(fileIds, sourceAccessKey, this.directory.access_key)
+      .copyFiles(
+        fileIds,
+        sourceAccessKey,
+        this.directoryService.directory.access_key
+      )
       .subscribe({
         next: (data: FileModel[]) => {
           data.forEach((file, idx) => {
             file.src = files[idx].src;
-            this.directory.files.push(file);
+            this.directoryService.directory.files.push(file);
           });
         },
       });
@@ -818,7 +837,7 @@ export class MainComponent {
             );
             localStorage.setItem(
               'cutFilesParentDirectory',
-              JSON.stringify(this.directory)
+              JSON.stringify(this.directoryService.directory)
             );
           }
           if (this.selectedDirectories.length > 0) {
@@ -848,7 +867,7 @@ export class MainComponent {
             );
             localStorage.setItem(
               'copiedFilesParentAccessKey',
-              this.directory.access_key
+              this.directoryService.directory.access_key
             );
           }
         }
@@ -877,7 +896,10 @@ export class MainComponent {
                   .build();
               }
             );
-            this.moveDirectories(parsedDirectories, this.directory);
+            this.moveDirectories(
+              parsedDirectories,
+              this.directoryService.directory
+            );
           }
 
           if (cutFiles && cutFilesParentDirectory) {
@@ -889,7 +911,11 @@ export class MainComponent {
               .setAccessKey(parsedDirectory._access_key)
               .build();
 
-            this.moveFiles(parsedFiles, parentDirectory, this.directory);
+            this.moveFiles(
+              parsedFiles,
+              parentDirectory,
+              this.directoryService.directory
+            );
           }
           if (copiedFiles && copiedFilesParentAccessKey) {
             const parsedFiles = this.mapFilesWithSrc(copiedFiles);
@@ -911,8 +937,10 @@ export class MainComponent {
         ) {
           event.preventDefault();
 
-          this.selectedDirectories = [...this.directory.directories];
-          this.selectedFiles = [...this.directory.files];
+          this.selectedDirectories = [
+            ...this.directoryService.directory.directories,
+          ];
+          this.selectedFiles = [...this.directoryService.directory.files];
         }
         break;
       case 'Delete':
@@ -940,9 +968,10 @@ export class MainComponent {
     this.data.restoreFiles(files).subscribe({
       next: (data: any) => {
         if (data.status === 200) {
-          this.directory.files = this.directory.files.filter(
-            (x) => !files.includes(x)
-          );
+          this.directoryService.directory.files =
+            this.directoryService.directory.files.filter(
+              (x) => !files.includes(x)
+            );
 
           this.openToast(`Files (${data.body['updated']}) restored`, 'check');
         }
@@ -954,9 +983,10 @@ export class MainComponent {
     this.data.restoreDirectories(directories).subscribe({
       next: (data: any) => {
         if (data.status === 200) {
-          this.directory.directories = this.directory.directories.filter(
-            (x) => !directories.includes(x)
-          );
+          this.directoryService.directory.directories =
+            this.directoryService.directory.directories.filter(
+              (x) => !directories.includes(x)
+            );
           this.openToast(
             `Directories (${data.body['updated']}) restored`,
             'check'

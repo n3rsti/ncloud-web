@@ -4,6 +4,7 @@ import { DataService } from '../../services/data.service';
 import { Directory, DirectoryBuilder } from '../../models/directory.model';
 import { ToastService } from 'src/app/services/toast.service';
 import { Subject } from 'rxjs';
+import { DirectoryService } from 'src/app/services/directory.service';
 
 const FILES_TO_DOWNLOAD = ['image/jpeg', 'image/png', 'image/bmp'];
 @Component({
@@ -13,11 +14,18 @@ const FILES_TO_DOWNLOAD = ['image/jpeg', 'image/png', 'image/bmp'];
 })
 export class FileUploadComponent {
   fileUploadPanelOpened = false;
-  @Input() directory: Directory = new DirectoryBuilder().build();
 
   @Input() openSubject: Subject<any> = new Subject();
 
-  constructor(private data: DataService, private toastService: ToastService) { }
+  constructor(
+    private data: DataService,
+    private toastService: ToastService,
+    private directoryService: DirectoryService
+  ) { }
+
+  get directory() {
+    return this.directoryService.directory;
+  }
 
   ngOnInit() {
     this.openSubject.subscribe(() => {

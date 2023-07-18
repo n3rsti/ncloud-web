@@ -8,6 +8,7 @@ import {
 import { FileModel } from '../../models/file.model';
 import { Subject } from 'rxjs';
 import { FileFormats } from 'src/app/utils';
+import { DirectoryService } from 'src/app/services/directory.service';
 
 @Component({
   selector: 'app-file-carousel',
@@ -28,7 +29,6 @@ export class FileCarouselComponent {
 
   IMAGE_FORMATS = ['image/jpeg', 'image/png', 'image/bmp'];
 
-  @Input() files: FileModel[] = [];
   filesToDisplay: FileModel[] = [];
   fileCounter = 0;
   @Input() openedSubject: Subject<any> = new Subject<any>();
@@ -36,6 +36,12 @@ export class FileCarouselComponent {
   width = 0;
   height = 0;
   @ViewChild('img', { static: false }) pic: ElementRef | undefined;
+
+  constructor(private directoryService: DirectoryService) { }
+
+  get files() {
+    return this.directoryService.directory.files;
+  }
 
   ngOnInit() {
     this.openedSubject.subscribe({
