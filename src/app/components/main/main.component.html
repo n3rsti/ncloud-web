@@ -25,7 +25,6 @@
       <app-directory-tile
         *ngFor="let dir of directory.directories; let i = index"
         [directory]="dir"
-        [selectedList]="selectedDirectories"
         (keydown)="onFileKeydown($event, i, constElementNames.DIRECTORY)"
         (dblclick)="this.router.navigate(['/' + dir.id])"
         (contextmenu)="
@@ -53,7 +52,6 @@
       <app-file-tile
         *ngFor="let file of directory.files; let i = index"
         [file]="file"
-        [selectedList]="selectedFiles"
         (keydown)="onFileKeydown($event, i, constElementNames.FILE)"
         (dblclick)="openFileCarousel(file.id)"
         (contextmenu)="

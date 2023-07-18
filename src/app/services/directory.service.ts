@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { Directory, DirectoryBuilder } from '../models/directory.model';
+import { FileModel } from '../models/file.model';
 import { FileFormats } from '../utils';
 import { DataService } from './data.service';
 
@@ -10,6 +11,8 @@ import { DataService } from './data.service';
 })
 export class DirectoryService {
   directory: Directory = new DirectoryBuilder().build();
+  selectedFiles: FileModel[] = [];
+  selectedDirectories: Directory[] = [];
 
   constructor(
     private sanitizer: DomSanitizer,

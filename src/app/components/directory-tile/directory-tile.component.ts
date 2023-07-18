@@ -6,6 +6,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
+import { DirectoryService } from 'src/app/services/directory.service';
 import { Directory, DirectoryBuilder } from '../../models/directory.model';
 
 @Component({
@@ -15,7 +16,12 @@ import { Directory, DirectoryBuilder } from '../../models/directory.model';
 })
 export class DirectoryTileComponent {
   @Input() directory: Directory = new DirectoryBuilder().build();
-  @Input() selectedList: Directory[] = [];
+
+  constructor(private directoryService: DirectoryService) { }
+
+  get selectedList() {
+    return this.directoryService.selectedDirectories;
+  }
 
   @ViewChild('directoryTile', { static: false }) directoryTile:
     | ElementRef

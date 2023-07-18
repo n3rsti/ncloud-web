@@ -42,9 +42,6 @@ export class MainComponent {
     | ElementRef
     | undefined;
 
-  selectedFiles: FileModel[] = [];
-  selectedDirectories: Directory[] = [];
-
   lastSelectedElement: string = this.constElementNames.DIRECTORY;
 
   filesToDisplay = FileFormats.FILES_TO_DISPLAY;
@@ -65,8 +62,8 @@ export class MainComponent {
       }
       target = target.parentElement;
     }
-    this.selectedFiles = [];
-    this.selectedDirectories = [];
+    this.directoryService.selectedFiles = [];
+    this.directoryService.selectedDirectories = [];
     this.lastSelectedElement = this.constElementNames.DIRECTORY;
   };
 
@@ -116,30 +113,38 @@ export class MainComponent {
         let directory = null;
         switch (data.subjectName) {
           case 'permanentlyDeleteItems':
-            if (this.selectedDirectories.length > 0) {
-              this.permanentlyDeleteDirectories([...this.selectedDirectories]);
+            if (this.directoryService.selectedDirectories.length > 0) {
+              this.permanentlyDeleteDirectories([
+                ...this.directoryService.selectedDirectories,
+              ]);
             }
-            if (this.selectedFiles.length > 0) {
-              this.permanentlyDeleteFiles([...this.selectedFiles]);
+            if (this.directoryService.selectedFiles.length > 0) {
+              this.permanentlyDeleteFiles([
+                ...this.directoryService.selectedFiles,
+              ]);
             }
 
             break;
           case 'deleteItems':
-            if (this.selectedDirectories.length > 0) {
-              this.deleteDirectories([...this.selectedDirectories]);
+            if (this.directoryService.selectedDirectories.length > 0) {
+              this.deleteDirectories([
+                ...this.directoryService.selectedDirectories,
+              ]);
             }
-            if (this.selectedFiles.length > 0) {
-              this.deleteFiles([...this.selectedFiles]);
+            if (this.directoryService.selectedFiles.length > 0) {
+              this.deleteFiles([...this.directoryService.selectedFiles]);
             }
 
             break;
 
           case 'restoreItems':
-            if (this.selectedFiles.length > 0) {
-              this.restoreFiles([...this.selectedFiles]);
+            if (this.directoryService.selectedFiles.length > 0) {
+              this.restoreFiles([...this.directoryService.selectedFiles]);
             }
-            if (this.selectedDirectories.length > 0) {
-              this.restoreDirectories([...this.selectedDirectories]);
+            if (this.directoryService.selectedDirectories.length > 0) {
+              this.restoreDirectories([
+                ...this.directoryService.selectedDirectories,
+              ]);
             }
 
             break;
@@ -197,6 +202,14 @@ export class MainComponent {
     return this.directoryService.directory;
   }
 
+  get selectedFiles() {
+    return this.directoryService.selectedFiles;
+  }
+
+  get selectedDirectories() {
+    return this.directoryService.selectedDirectories;
+  }
+
   // Subjects for opening file carousel and file details
   fileCarouselSubject: Subject<any> = new Subject();
   fileDetailsSubject: Subject<any> = new Subject();
@@ -220,7 +233,11 @@ export class MainComponent {
   }
 
   openFileDetails(elementIndex: number, elementType: string) {
-    if (this.selectedDirectories.length + this.selectedFiles.length === 1) {
+    if (
+      this.directoryService.selectedDirectories.length +
+      this.directoryService.selectedFiles.length ===
+      1
+    ) {
       let title = '';
       if (elementType === ConstNames.FILE) {
         title = 'File details';
@@ -240,8 +257,13 @@ export class MainComponent {
   }
 
   openPermanentlyDeleteModal() {
-    if (this.selectedFiles.length + this.selectedDirectories.length > 1) {
-      permanentlyDeleteModalConfig.fields[0].value = `Do you want to permanently delete these ${this.selectedFiles.length + this.selectedDirectories.length
+    if (
+      this.directoryService.selectedFiles.length +
+      this.directoryService.selectedDirectories.length >
+      1
+    ) {
+      permanentlyDeleteModalConfig.fields[0].value = `Do you want to permanently delete these ${this.directoryService.selectedFiles.length +
+        this.directoryService.selectedDirectories.length
         } items?`;
     } else {
       permanentlyDeleteModalConfig.fields[0].value =
@@ -252,8 +274,13 @@ export class MainComponent {
   }
 
   openDeleteModal() {
-    if (this.selectedFiles.length + this.selectedDirectories.length > 1) {
-      deleteModalConfig.fields[0].value = `Do you want to move these ${this.selectedDirectories.length + this.selectedFiles.length
+    if (
+      this.directoryService.selectedFiles.length +
+      this.directoryService.selectedDirectories.length >
+      1
+    ) {
+      deleteModalConfig.fields[0].value = `Do you want to move these ${this.directoryService.selectedDirectories.length +
+        this.directoryService.selectedFiles.length
         } items to trash?`;
     } else {
       deleteModalConfig.fields[0].value = `Do you want to move this item to trash?`;
@@ -262,7 +289,7 @@ export class MainComponent {
     this.openModal(deleteModalConfig);
   }
   openRenameDirectoryModal(id: number) {
-    if (this.selectedDirectories.length === 1) {
+    if (this.directoryService.selectedDirectories.length === 1) {
       renameDirectoryModalConfig.data =
         this.directoryService.directory.directories[id].id;
       renameDirectoryModalConfig.fields[1].value =
@@ -272,7 +299,7 @@ export class MainComponent {
   }
 
   openRenameFileModal(id: number) {
-    if (this.selectedFiles.length === 1) {
+    if (this.directoryService.selectedFiles.length === 1) {
       renameFileModalConfig.data = this.directoryService.directory.files[id].id;
       renameFileModalConfig.fields[1].value =
         this.directoryService.directory.files[id].name;
@@ -285,8 +312,13 @@ export class MainComponent {
   }
 
   openRestoreModal() {
-    if (this.selectedFiles.length + this.selectedDirectories.length > 1) {
-      restoreModalConfig.fields[0].value = `Do you want to restore these ${this.selectedDirectories.length + this.selectedFiles.length
+    if (
+      this.directoryService.selectedFiles.length +
+      this.directoryService.selectedDirectories.length >
+      1
+    ) {
+      restoreModalConfig.fields[0].value = `Do you want to restore these ${this.directoryService.selectedDirectories.length +
+        this.directoryService.selectedFiles.length
         } items?`;
     } else {
       restoreModalConfig.fields[0].value = `Do you want to restore this item?`;
@@ -376,7 +408,7 @@ export class MainComponent {
           const FIRST_MOVED_FILE_ID = files.at(0)?.id || '';
 
           if (!CURRENT_DIR_FILES_IDS.includes(FIRST_MOVED_FILE_ID)) {
-            this.selectedFiles = files;
+            this.directoryService.selectedFiles = files;
             this.insertFilesInOrder(files);
             filesAdded = true;
           } else {
@@ -552,12 +584,15 @@ export class MainComponent {
   }
 
   moveToDirectory(directory: Directory) {
-    if (this.selectedDirectories.length > 0) {
-      this.moveDirectories([...this.selectedDirectories], directory);
+    if (this.directoryService.selectedDirectories.length > 0) {
+      this.moveDirectories(
+        [...this.directoryService.selectedDirectories],
+        directory
+      );
     }
-    if (this.selectedFiles.length > 0) {
+    if (this.directoryService.selectedFiles.length > 0) {
       this.moveFiles(
-        [...this.selectedFiles],
+        [...this.directoryService.selectedFiles],
         this.directoryService.directory,
         directory
       );
@@ -567,7 +602,8 @@ export class MainComponent {
   addSelectedDirectory(event: MouseEvent, directory: Directory) {
     if (event.shiftKey) {
       if (this.lastSelectedElement === this.constElementNames.DIRECTORY) {
-        let lastSelectedElement = this.selectedDirectories.at(-1);
+        let lastSelectedElement =
+          this.directoryService.selectedDirectories.at(-1);
         let lastSelectedElementIndex = 0;
 
         let selectedElementIndex = 0;
@@ -589,13 +625,14 @@ export class MainComponent {
         this.directoryService.directory.directories
           .slice(startIndex, endIndex + 1)
           .forEach((element) => {
-            if (!this.selectedDirectories.includes(element)) {
-              this.selectedDirectories.push(element);
+            if (!this.directoryService.selectedDirectories.includes(element)) {
+              this.directoryService.selectedDirectories.push(element);
             }
           });
       } else if (this.lastSelectedElement === this.constElementNames.FILE) {
         let lastSelectedElement =
-          this.selectedFiles.at(-1) || new FileBuilder().build();
+          this.directoryService.selectedFiles.at(-1) ||
+          new FileBuilder().build();
         let lastSelectedElementIndex = 0;
 
         this.directoryService.directory.files.forEach((element, index) => {
@@ -616,30 +653,31 @@ export class MainComponent {
         this.directoryService.directory.directories
           .slice(selectedElementIndex)
           .forEach((element) => {
-            if (!this.selectedDirectories.includes(element)) {
-              this.selectedDirectories.push(element);
+            if (!this.directoryService.selectedDirectories.includes(element)) {
+              this.directoryService.selectedDirectories.push(element);
             }
           });
         this.directoryService.directory.files
           .slice(0, lastSelectedElementIndex + 1)
           .forEach((element) => {
-            if (!this.selectedFiles.includes(element)) {
-              this.selectedFiles.push(element);
+            if (!this.directoryService.selectedFiles.includes(element)) {
+              this.directoryService.selectedFiles.push(element);
             }
           });
       }
     } else if (event.ctrlKey) {
-      if (!this.selectedDirectories.includes(directory)) {
-        this.selectedDirectories.push(directory);
+      if (!this.directoryService.selectedDirectories.includes(directory)) {
+        this.directoryService.selectedDirectories.push(directory);
       } else {
-        this.selectedDirectories = this.selectedDirectories.filter(
-          (x) => x != directory
-        );
+        this.directoryService.selectedDirectories =
+          this.directoryService.selectedDirectories.filter(
+            (x) => x != directory
+          );
       }
     } else if (event.button === RIGHT_CLICK) {
-      if (!this.selectedDirectories.includes(directory)) {
-        this.selectedDirectories = [directory];
-        this.selectedFiles = [];
+      if (!this.directoryService.selectedDirectories.includes(directory)) {
+        this.directoryService.selectedDirectories = [directory];
+        this.directoryService.selectedFiles = [];
       }
 
       this.lastSelectedElement = this.constElementNames.DIRECTORY;
@@ -647,10 +685,10 @@ export class MainComponent {
     } else {
       let dragNewDirectory =
         event.type === 'dragstart' &&
-        !this.selectedDirectories.includes(directory);
+        !this.directoryService.selectedDirectories.includes(directory);
       if (event.type === 'click' || dragNewDirectory) {
-        this.selectedDirectories = [directory];
-        this.selectedFiles = [];
+        this.directoryService.selectedDirectories = [directory];
+        this.directoryService.selectedFiles = [];
       }
     }
     this.lastSelectedElement = this.constElementNames.DIRECTORY;
@@ -659,7 +697,7 @@ export class MainComponent {
   addSelectedFile(event: MouseEvent, file: FileModel) {
     if (event.shiftKey) {
       if (this.lastSelectedElement === this.constElementNames.FILE) {
-        let lastSelectedElement = this.selectedFiles.at(-1);
+        let lastSelectedElement = this.directoryService.selectedFiles.at(-1);
         let lastSelectedElementIndex = 0;
 
         let selectedElementIndex = 0;
@@ -679,14 +717,15 @@ export class MainComponent {
         this.directoryService.directory.files
           .slice(startIndex, endIndex + 1)
           .forEach((element) => {
-            if (!this.selectedFiles.includes(element)) {
-              this.selectedFiles.push(element);
+            if (!this.directoryService.selectedFiles.includes(element)) {
+              this.directoryService.selectedFiles.push(element);
             }
           });
       } else if (
         this.lastSelectedElement === this.constElementNames.DIRECTORY
       ) {
-        let lastSelectedElement = this.selectedDirectories.at(-1);
+        let lastSelectedElement =
+          this.directoryService.selectedDirectories.at(-1);
         let lastSelectedElementIndex = 0;
 
         this.directoryService.directory.directories.forEach(
@@ -707,37 +746,39 @@ export class MainComponent {
         this.directoryService.directory.directories
           .slice(lastSelectedElementIndex)
           .forEach((element) => {
-            if (!this.selectedDirectories.includes(element)) {
-              this.selectedDirectories.push(element);
+            if (!this.directoryService.selectedDirectories.includes(element)) {
+              this.directoryService.selectedDirectories.push(element);
             }
           });
         this.directoryService.directory.files
           .slice(0, selectedElementIndex + 1)
           .forEach((element) => {
-            if (!this.selectedFiles.includes(element)) {
-              this.selectedFiles.push(element);
+            if (!this.directoryService.selectedFiles.includes(element)) {
+              this.directoryService.selectedFiles.push(element);
             }
           });
       }
     } else if (event.ctrlKey) {
-      if (!this.selectedFiles.includes(file)) {
-        this.selectedFiles.push(file);
+      if (!this.directoryService.selectedFiles.includes(file)) {
+        this.directoryService.selectedFiles.push(file);
       } else {
-        this.selectedFiles = this.selectedFiles.filter((x) => x != file);
+        this.directoryService.selectedFiles =
+          this.directoryService.selectedFiles.filter((x) => x != file);
       }
     } else if (event.button === RIGHT_CLICK) {
-      if (!this.selectedFiles.includes(file)) {
-        this.selectedFiles = [file];
-        this.selectedDirectories = [];
+      if (!this.directoryService.selectedFiles.includes(file)) {
+        this.directoryService.selectedFiles = [file];
+        this.directoryService.selectedDirectories = [];
       }
       this.lastSelectedElement = this.constElementNames.FILE;
       return;
     } else {
       const dragNewFile =
-        event.type === 'dragstart' && !this.selectedFiles.includes(file);
+        event.type === 'dragstart' &&
+        !this.directoryService.selectedFiles.includes(file);
       if (event.type === 'click' || dragNewFile) {
-        this.selectedFiles = [file];
-        this.selectedDirectories = [];
+        this.directoryService.selectedFiles = [file];
+        this.directoryService.selectedDirectories = [];
       }
     }
     this.lastSelectedElement = this.constElementNames.FILE;
@@ -830,20 +871,20 @@ export class MainComponent {
           localStorage.removeItem('copiesFiles');
           localStorage.removeItem('copiedFilesParentAccessKey');
 
-          if (this.selectedFiles.length > 0) {
+          if (this.directoryService.selectedFiles.length > 0) {
             localStorage.setItem(
               'cutFiles',
-              JSON.stringify(this.selectedFiles)
+              JSON.stringify(this.directoryService.selectedFiles)
             );
             localStorage.setItem(
               'cutFilesParentDirectory',
               JSON.stringify(this.directoryService.directory)
             );
           }
-          if (this.selectedDirectories.length > 0) {
+          if (this.directoryService.selectedDirectories.length > 0) {
             localStorage.setItem(
               'cutDirectories',
-              JSON.stringify(this.selectedDirectories)
+              JSON.stringify(this.directoryService.selectedDirectories)
             );
           }
         }
@@ -856,11 +897,11 @@ export class MainComponent {
           localStorage.removeItem('copiesFiles');
           localStorage.removeItem('copiedFilesParentAccessKey');
 
-          if (this.selectedFiles.length > 0) {
+          if (this.directoryService.selectedFiles.length > 0) {
             localStorage.setItem(
               'copiedFiles',
               JSON.stringify(
-                this.selectedFiles.map((file) =>
+                this.directoryService.selectedFiles.map((file) =>
                   new FileBuilder().setId(file.id).setSrc(file.src).build()
                 )
               )
@@ -937,27 +978,36 @@ export class MainComponent {
         ) {
           event.preventDefault();
 
-          this.selectedDirectories = [
+          this.directoryService.selectedDirectories = [
             ...this.directoryService.directory.directories,
           ];
-          this.selectedFiles = [...this.directoryService.directory.files];
+          this.directoryService.selectedFiles = [
+            ...this.directoryService.directory.files,
+          ];
         }
         break;
       case 'Delete':
         if (
           event.shiftKey &&
-          this.selectedFiles.length + this.selectedDirectories.length > 0
+          this.directoryService.selectedFiles.length +
+          this.directoryService.selectedDirectories.length >
+          0
         ) {
           this.openPermanentlyDeleteModal();
         } else if (
-          this.selectedFiles.length + this.selectedDirectories.length >
+          this.directoryService.selectedFiles.length +
+          this.directoryService.selectedDirectories.length >
           0
         ) {
           this.openDeleteModal();
         }
         break;
       case 'F4':
-        if (this.selectedFiles.length + this.selectedDirectories.length > 0) {
+        if (
+          this.directoryService.selectedFiles.length +
+          this.directoryService.selectedDirectories.length >
+          0
+        ) {
           this.openDeleteModal();
         }
         break;
