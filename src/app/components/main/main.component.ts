@@ -695,91 +695,101 @@ export class MainComponent {
   }
 
   addSelectedFile(event: MouseEvent, file: FileModel) {
-    if (event.shiftKey) {
-      if (this.lastSelectedElement === this.constElementNames.FILE) {
-        let lastSelectedElement = this.directoryService.selectedFiles.at(-1);
-        let lastSelectedElementIndex = 0;
+    switch (true) {
+      case event.shiftKey:
+        if (this.lastSelectedElement === this.constElementNames.FILE) {
+          const lastSelectedElement =
+            this.directoryService.selectedFiles.at(-1);
 
-        let selectedElementIndex = 0;
-        this.directoryService.directory.files.forEach((element, index) => {
-          if (element === file) {
-            selectedElementIndex = index;
-          } else if (element === lastSelectedElement) {
-            lastSelectedElementIndex = index;
-          }
-        });
+          let lastSelectedElementIndex = 0;
+          let selectedElementIndex = 0;
 
-        let [startIndex, endIndex] = [
-          lastSelectedElementIndex,
-          selectedElementIndex,
-        ].sort((a, b) => a - b);
-
-        this.directoryService.directory.files
-          .slice(startIndex, endIndex + 1)
-          .forEach((element) => {
-            if (!this.directoryService.selectedFiles.includes(element)) {
-              this.directoryService.selectedFiles.push(element);
-            }
-          });
-      } else if (
-        this.lastSelectedElement === this.constElementNames.DIRECTORY
-      ) {
-        let lastSelectedElement =
-          this.directoryService.selectedDirectories.at(-1);
-        let lastSelectedElementIndex = 0;
-
-        this.directoryService.directory.directories.forEach(
-          (element, index) => {
-            if (element === lastSelectedElement) {
+          this.directoryService.directory.files.forEach((element, index) => {
+            if (element === file) {
+              selectedElementIndex = index;
+            } else if (element === lastSelectedElement) {
               lastSelectedElementIndex = index;
             }
-          }
-        );
+          });
 
-        let selectedElementIndex = 0;
-        this.directoryService.directory.files.forEach((element, index) => {
-          if (element === file) {
-            selectedElementIndex = index;
-          }
-        });
+          const [startIndex, endIndex] = [
+            lastSelectedElementIndex,
+            selectedElementIndex,
+          ].sort((a, b) => a - b);
 
-        this.directoryService.directory.directories
-          .slice(lastSelectedElementIndex)
-          .forEach((element) => {
-            if (!this.directoryService.selectedDirectories.includes(element)) {
-              this.directoryService.selectedDirectories.push(element);
+          this.directoryService.directory.files
+            .slice(startIndex, endIndex + 1)
+            .forEach((element) => {
+              if (!this.directoryService.selectedFiles.includes(element)) {
+                this.directoryService.selectedFiles.push(element);
+              }
+            });
+        } else if (
+          this.lastSelectedElement === this.constElementNames.DIRECTORY
+        ) {
+          const lastSelectedElement =
+            this.directoryService.selectedDirectories.at(-1);
+
+          let lastSelectedElementIndex = 0;
+          let selectedElementIndex = 0;
+
+          this.directoryService.directory.directories.forEach(
+            (element, index) => {
+              if (element === lastSelectedElement) {
+                lastSelectedElementIndex = index;
+              }
+            }
+          );
+
+          this.directoryService.directory.files.forEach((element, index) => {
+            if (element === file) {
+              selectedElementIndex = index;
             }
           });
-        this.directoryService.directory.files
-          .slice(0, selectedElementIndex + 1)
-          .forEach((element) => {
-            if (!this.directoryService.selectedFiles.includes(element)) {
-              this.directoryService.selectedFiles.push(element);
-            }
-          });
-      }
-    } else if (event.ctrlKey) {
-      if (!this.directoryService.selectedFiles.includes(file)) {
-        this.directoryService.selectedFiles.push(file);
-      } else {
-        this.directoryService.selectedFiles =
-          this.directoryService.selectedFiles.filter((x) => x != file);
-      }
-    } else if (event.button === RIGHT_CLICK) {
-      if (!this.directoryService.selectedFiles.includes(file)) {
-        this.directoryService.selectedFiles = [file];
-        this.directoryService.selectedDirectories = [];
-      }
-      this.lastSelectedElement = this.constElementNames.FILE;
-      return;
-    } else {
-      const dragNewFile =
-        event.type === 'dragstart' &&
-        !this.directoryService.selectedFiles.includes(file);
-      if (event.type === 'click' || dragNewFile) {
-        this.directoryService.selectedFiles = [file];
-        this.directoryService.selectedDirectories = [];
-      }
+
+          this.directoryService.directory.directories
+            .slice(lastSelectedElementIndex)
+            .forEach((element) => {
+              if (
+                !this.directoryService.selectedDirectories.includes(element)
+              ) {
+                this.directoryService.selectedDirectories.push(element);
+              }
+            });
+          this.directoryService.directory.files
+            .slice(0, selectedElementIndex + 1)
+            .forEach((element) => {
+              if (!this.directoryService.selectedFiles.includes(element)) {
+                this.directoryService.selectedFiles.push(element);
+              }
+            });
+        }
+
+        break;
+      case event.ctrlKey:
+        if (!this.directoryService.selectedFiles.includes(file)) {
+          this.directoryService.selectedFiles.push(file);
+        } else {
+          this.directoryService.selectedFiles =
+            this.directoryService.selectedFiles.filter((x) => x != file);
+        }
+        break;
+      case event.button === RIGHT_CLICK:
+        if (!this.directoryService.selectedFiles.includes(file)) {
+          this.directoryService.selectedFiles = [file];
+          this.directoryService.selectedDirectories = [];
+        }
+        this.lastSelectedElement = this.constElementNames.FILE;
+        return;
+      default:
+        const dragNewFile =
+          event.type === 'dragstart' &&
+          !this.directoryService.selectedFiles.includes(file);
+        if (event.type === 'click' || dragNewFile) {
+          this.directoryService.selectedFiles = [file];
+          this.directoryService.selectedDirectories = [];
+        }
+        break;
     }
     this.lastSelectedElement = this.constElementNames.FILE;
   }
@@ -817,30 +827,6 @@ export class MainComponent {
         }
       },
     });
-  }
-
-  mapFilesWithSrc(cutFiles: string) {
-    let parsedFiles = JSON.parse(cutFiles).map((element: any) => {
-      let fileSrc = element._src.changingThisBreaksApplicationSecurity || '';
-
-      let safeFileUrl: SafeUrl = '';
-
-      if (fileSrc) {
-        safeFileUrl = this.sanitizer.bypassSecurityTrustUrl(fileSrc);
-      }
-
-      return new FileBuilder()
-        .setId(element._id)
-        .setName(element._name)
-        .setParentDirectory(element._parent_directory)
-        .setUser(element._user)
-        .setType(element._type)
-        .setSize(element._size)
-        .setSrc(safeFileUrl)
-        .build();
-    });
-
-    return parsedFiles;
   }
 
   handleKeyDown(event: KeyboardEvent) {
