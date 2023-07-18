@@ -843,133 +843,50 @@ export class MainComponent {
     return parsedFiles;
   }
 
-  copyFiles(files: FileModel[], sourceAccessKey: string) {
-    const fileIds = files.map((file) => file.id);
-    this.data
-      .copyFiles(
-        fileIds,
-        sourceAccessKey,
-        this.directoryService.directory.access_key
-      )
-      .subscribe({
-        next: (data: FileModel[]) => {
-          data.forEach((file, idx) => {
-            file.src = files[idx].src;
-            this.directoryService.directory.files.push(file);
-          });
-        },
-      });
-  }
-
   handleKeyDown(event: KeyboardEvent) {
     switch (event.key) {
       case 'x':
         if (event.ctrlKey) {
-          localStorage.removeItem('cutFiles');
-          localStorage.removeItem('cutDirectories');
-          localStorage.removeItem('cutFilesParentDirectory');
-          localStorage.removeItem('copiesFiles');
-          localStorage.removeItem('copiedFilesParentAccessKey');
+          this.directoryService.copiedFiles = this.selectedFiles;
+          this.directoryService.copiedDirectories = this.selectedDirectories;
 
-          if (this.directoryService.selectedFiles.length > 0) {
-            localStorage.setItem(
-              'cutFiles',
-              JSON.stringify(this.directoryService.selectedFiles)
-            );
-            localStorage.setItem(
-              'cutFilesParentDirectory',
-              JSON.stringify(this.directoryService.directory)
-            );
-          }
-          if (this.directoryService.selectedDirectories.length > 0) {
-            localStorage.setItem(
-              'cutDirectories',
-              JSON.stringify(this.directoryService.selectedDirectories)
-            );
-          }
+          this.directoryService.copySource = this.directory;
+          this.directoryService.copyOperation = 'CUT';
         }
         break;
       case 'c':
         if (event.ctrlKey) {
-          localStorage.removeItem('cutFiles');
-          localStorage.removeItem('cutDirectories');
-          localStorage.removeItem('cutFilesParentDirectory');
-          localStorage.removeItem('copiesFiles');
-          localStorage.removeItem('copiedFilesParentAccessKey');
+          this.directoryService.copiedFiles = this.selectedFiles;
+          this.directoryService.copiedDirectories = this.selectedDirectories;
 
-          if (this.directoryService.selectedFiles.length > 0) {
-            localStorage.setItem(
-              'copiedFiles',
-              JSON.stringify(
-                this.directoryService.selectedFiles.map((file) =>
-                  new FileBuilder().setId(file.id).setSrc(file.src).build()
-                )
-              )
-            );
-            localStorage.setItem(
-              'copiedFilesParentAccessKey',
-              this.directoryService.directory.access_key
-            );
-          }
+          this.directoryService.copySource = this.directory;
+          this.directoryService.copyOperation = 'COPY';
         }
+
         break;
       case 'v':
-        if (event.ctrlKey) {
-          const cutDirectories = localStorage.getItem('cutDirectories');
-          const cutFiles = localStorage.getItem('cutFiles');
-          const cutFilesParentDirectory = localStorage.getItem(
-            'cutFilesParentDirectory'
-          );
-
-          const copiedFiles = localStorage.getItem('copiedFiles');
-          const copiedFilesParentAccessKey = localStorage.getItem(
-            'copiedFilesParentAccessKey'
-          );
-
-          if (cutDirectories) {
-            let parsedDirectories = JSON.parse(cutDirectories).map(
-              (element: any) => {
-                return new DirectoryBuilder()
-                  .setId(element._id)
-                  .setAccessKey(element._access_key)
-                  .setName(element._name)
-                  .setParentDirectory(element._parent_directory)
-                  .build();
-              }
-            );
-            this.moveDirectories(
-              parsedDirectories,
-              this.directoryService.directory
-            );
+        if (event.ctrlKey && this.directoryService.copyOperation === 'COPY') {
+          if (this.directoryService.copiedFiles.length > 0) {
+            this.directoryService.pasteCopiedFiles();
           }
-
-          if (cutFiles && cutFilesParentDirectory) {
-            const parsedFiles = this.mapFilesWithSrc(cutFiles);
-            let parsedDirectory = JSON.parse(cutFilesParentDirectory);
-
-            let parentDirectory = new DirectoryBuilder()
-              .setId(parsedDirectory._id)
-              .setAccessKey(parsedDirectory._access_key)
-              .build();
-
+        } else if (
+          event.ctrlKey &&
+          this.directoryService.copyOperation === 'CUT'
+        ) {
+          if (this.directoryService.copiedFiles.length > 0) {
             this.moveFiles(
-              parsedFiles,
-              parentDirectory,
-              this.directoryService.directory
+              this.directoryService.copiedFiles,
+              this.directoryService.copySource,
+              this.directory
             );
           }
-          if (copiedFiles && copiedFilesParentAccessKey) {
-            const parsedFiles = this.mapFilesWithSrc(copiedFiles);
-            this.copyFiles(parsedFiles, copiedFilesParentAccessKey);
+          if (this.directoryService.copiedDirectories.length > 0) {
+            this.moveDirectories(
+              this.directoryService.copiedDirectories,
+              this.directoryService.copySource
+            );
           }
-
-          localStorage.removeItem('cutFiles');
-          localStorage.removeItem('cutFilesParentDirectory');
-          localStorage.removeItem('cutDirectories');
-          localStorage.removeItem('copiedFiles');
-          localStorage.removeItem('copiedFilesParentAccessKey');
         }
-
         break;
       case 'a':
         if (

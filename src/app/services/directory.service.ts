@@ -11,8 +11,15 @@ import { DataService } from './data.service';
 })
 export class DirectoryService {
   directory: Directory = new DirectoryBuilder().build();
+
   selectedFiles: FileModel[] = [];
   selectedDirectories: Directory[] = [];
+
+  copiedFiles: FileModel[] = [];
+  copiedDirectories: Directory[] = [];
+
+  copyOperation: string = ''; // COPY || CUT
+  copySource: Directory = new DirectoryBuilder().build();
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -44,5 +51,19 @@ export class DirectoryService {
         });
       },
     });
+  }
+
+  pasteCopiedFiles() {
+    const fileIds = this.copiedFiles.map((file) => file.id);
+    this.data
+      .copyFiles(fileIds, this.copySource.access_key, this.directory.access_key)
+      .subscribe({
+        next: (data: FileModel[]) => {
+          data.forEach((file, idx) => {
+            file.src = this.copiedFiles[idx].src;
+            this.directory.files.push(file);
+          });
+        },
+      });
   }
 }
