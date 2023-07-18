@@ -296,4 +296,30 @@ export class DataService {
       observe: 'response',
     });
   }
+
+  copyFiles(
+    files: string[],
+    sourceAccessKey: string,
+    destinationAccessKey: string
+  ) {
+    let body = {
+      files: files,
+      source_access_key: sourceAccessKey,
+      destination_access_key: destinationAccessKey,
+    };
+
+    return this.http.post(Config.Host + '/api/files/copy', body).pipe(
+      map((data: any) =>
+        data.map((file: any) => {
+          return new FileBuilder()
+            .setName(file.name)
+            .setId(file.id)
+            .setParentDirectory(file.parent_directory)
+            .setSize(file.size)
+            .setType(file.type)
+            .build();
+        })
+      )
+    );
+  }
 }

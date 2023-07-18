@@ -763,6 +763,44 @@ export class MainComponent {
     });
   }
 
+  mapFilesWithSrc(cutFiles: string) {
+    let parsedFiles = JSON.parse(cutFiles).map((element: any) => {
+      let fileSrc = element._src.changingThisBreaksApplicationSecurity || '';
+
+      let safeFileUrl: SafeUrl = '';
+
+      if (fileSrc) {
+        safeFileUrl = this.sanitizer.bypassSecurityTrustUrl(fileSrc);
+      }
+
+      return new FileBuilder()
+        .setId(element._id)
+        .setName(element._name)
+        .setParentDirectory(element._parent_directory)
+        .setUser(element._user)
+        .setType(element._type)
+        .setSize(element._size)
+        .setSrc(safeFileUrl)
+        .build();
+    });
+
+    return parsedFiles;
+  }
+
+  copyFiles(files: FileModel[], sourceAccessKey: string) {
+    const fileIds = files.map((file) => file.id);
+    this.data
+      .copyFiles(fileIds, sourceAccessKey, this.directory.access_key)
+      .subscribe({
+        next: (data: FileModel[]) => {
+          data.forEach((file, idx) => {
+            file.src = files[idx].src;
+            this.directory.files.push(file);
+          });
+        },
+      });
+  }
+
   handleKeyDown(event: KeyboardEvent) {
     switch (event.key) {
       case 'x':
@@ -770,6 +808,8 @@ export class MainComponent {
           localStorage.removeItem('cutFiles');
           localStorage.removeItem('cutDirectories');
           localStorage.removeItem('cutFilesParentDirectory');
+          localStorage.removeItem('copiesFiles');
+          localStorage.removeItem('copiedFilesParentAccessKey');
 
           if (this.selectedFiles.length > 0) {
             localStorage.setItem(
@@ -789,12 +829,41 @@ export class MainComponent {
           }
         }
         break;
+      case 'c':
+        if (event.ctrlKey) {
+          localStorage.removeItem('cutFiles');
+          localStorage.removeItem('cutDirectories');
+          localStorage.removeItem('cutFilesParentDirectory');
+          localStorage.removeItem('copiesFiles');
+          localStorage.removeItem('copiedFilesParentAccessKey');
+
+          if (this.selectedFiles.length > 0) {
+            localStorage.setItem(
+              'copiedFiles',
+              JSON.stringify(
+                this.selectedFiles.map((file) =>
+                  new FileBuilder().setId(file.id).setSrc(file.src).build()
+                )
+              )
+            );
+            localStorage.setItem(
+              'copiedFilesParentAccessKey',
+              this.directory.access_key
+            );
+          }
+        }
+        break;
       case 'v':
         if (event.ctrlKey) {
-          let cutDirectories = localStorage.getItem('cutDirectories');
-          let cutFiles = localStorage.getItem('cutFiles');
-          let cutFilesParentDirectory = localStorage.getItem(
+          const cutDirectories = localStorage.getItem('cutDirectories');
+          const cutFiles = localStorage.getItem('cutFiles');
+          const cutFilesParentDirectory = localStorage.getItem(
             'cutFilesParentDirectory'
+          );
+
+          const copiedFiles = localStorage.getItem('copiedFiles');
+          const copiedFilesParentAccessKey = localStorage.getItem(
+            'copiedFilesParentAccessKey'
           );
 
           if (cutDirectories) {
@@ -812,27 +881,7 @@ export class MainComponent {
           }
 
           if (cutFiles && cutFilesParentDirectory) {
-            let parsedFiles = JSON.parse(cutFiles).map((element: any) => {
-              let fileSrc =
-                element._src.changingThisBreaksApplicationSecurity || '';
-
-              let safeFileUrl: SafeUrl = '';
-
-              if (fileSrc) {
-                safeFileUrl = this.sanitizer.bypassSecurityTrustUrl(fileSrc);
-              }
-
-              return new FileBuilder()
-                .setId(element._id)
-                .setName(element._name)
-                .setParentDirectory(element._parent_directory)
-                .setUser(element._user)
-                .setType(element._type)
-                .setSize(element._size)
-                .setSrc(safeFileUrl)
-                .build();
-            });
-
+            const parsedFiles = this.mapFilesWithSrc(cutFiles);
             let parsedDirectory = JSON.parse(cutFilesParentDirectory);
 
             let parentDirectory = new DirectoryBuilder()
@@ -842,11 +891,18 @@ export class MainComponent {
 
             this.moveFiles(parsedFiles, parentDirectory, this.directory);
           }
+          if (copiedFiles && copiedFilesParentAccessKey) {
+            const parsedFiles = this.mapFilesWithSrc(copiedFiles);
+            this.copyFiles(parsedFiles, copiedFilesParentAccessKey);
+          }
 
           localStorage.removeItem('cutFiles');
           localStorage.removeItem('cutFilesParentDirectory');
           localStorage.removeItem('cutDirectories');
+          localStorage.removeItem('copiedFiles');
+          localStorage.removeItem('copiedFilesParentAccessKey');
         }
+
         break;
       case 'a':
         if (
