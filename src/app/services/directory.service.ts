@@ -66,4 +66,21 @@ export class DirectoryService {
         },
       });
   }
+
+  pasteCopiedDirectories() {
+    const directoryIdList = this.copiedDirectories.map(
+      (directory) => directory.id
+    );
+    this.data
+      .copyDirectories(
+        directoryIdList,
+        this.copySource.access_key,
+        this.directory.access_key
+      )
+      .subscribe({
+        next: (data: Directory[]) => {
+          this.directory.directories.push(...data);
+        },
+      });
+  }
 }

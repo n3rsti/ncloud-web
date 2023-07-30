@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { Directory, DirectoryBuilder } from '../../models/directory.model';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { FileBuilder, FileModel } from '../../models/file.model';
@@ -854,6 +854,9 @@ export class MainComponent {
         if (event.ctrlKey && this.directoryService.copyOperation === 'COPY') {
           if (this.directoryService.copiedFiles.length > 0) {
             this.directoryService.pasteCopiedFiles();
+          }
+          if (this.directoryService.copiedDirectories.length > 0) {
+            this.directoryService.pasteCopiedDirectories();
           }
         } else if (
           event.ctrlKey &&

@@ -322,4 +322,29 @@ export class DataService {
       )
     );
   }
+
+  copyDirectories(
+    directories: string[],
+    sourceAccessKey: string,
+    destinationAccessKey: string
+  ) {
+    let body = {
+      directories: directories,
+      source_access_key: sourceAccessKey,
+      destination_access_key: destinationAccessKey,
+    };
+
+    return this.http.post(Config.Host + '/api/directories/copy', body).pipe(
+      map((data: any) =>
+        data.map((file: any) => {
+          return new DirectoryBuilder()
+            .setId(file.id)
+            .setName(file.name)
+            .setParentDirectory(file.parent_directory)
+            .setAccessKey(file.access_key)
+            .build();
+        })
+      )
+    );
+  }
 }
