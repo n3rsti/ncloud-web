@@ -1,10 +1,9 @@
 module.exports = {
   prefix: '',
-  purge: {
-    content: [
-      './src/**/*.{html,ts}',
-    ]
-  },
+  content: [
+    "./node_modules/flowbite/**/*.js",
+    './src/**/*.{html,ts}',
+  ],
   darkMode: 'class', // or 'media' or 'class'
   theme: {
     extend: {
@@ -19,7 +18,4 @@ module.exports = {
     extend: {},
   },
   plugins: [require('@tailwindcss/forms'),require('@tailwindcss/typography'), require('daisyui'), require('flowbite/plugin')],
-  content: [
-    "./node_modules/flowbite/**/*.js"
-  ]
 };
