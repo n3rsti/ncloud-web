@@ -323,15 +323,10 @@ export class DataService {
     );
   }
 
-  copyDirectories(
-    directories: string[],
-    sourceAccessKey: string,
-    destinationAccessKey: string
-  ) {
+  copyDirectories(directories: string[], destination: string) {
     let body = {
       directories: directories,
-      source_access_key: sourceAccessKey,
-      destination_access_key: destinationAccessKey,
+      destination: destination,
     };
 
     return this.http.post(Config.Host + '/api/directories/copy', body).pipe(
