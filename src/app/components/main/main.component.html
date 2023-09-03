@@ -84,56 +84,63 @@
   <div
     #contextMenu
     id="contextMenu"
-    class="utility:keep-selected scale-0 absolute top-0 left-0 bg-white rounded overflow-hidden w-44 text-sm z-20"
+    class="utility:keep-selected scale-0 absolute top-0 left-0 bg-gray-900 border border-gray-800 rounded-md overflow-hidden w-56 text-sm z-20 p-2"
   >
     <ul class="text-left font-medium">
       <ng-container *ngIf="contextMenuElementType === constElementNames.FILE">
         <ng-container
           *ngIf="selectedDirectories.length + selectedFiles.length === 1"
         >
-          <li
-            class="flex items-center text-gray-600 cursor-pointer hover:bg-gray-100 py-2 pl-4"
+          <app-context-menu-field
             (click)="
               openFileDetails(contextMenuElementIndex, constElementNames.FILE)
             "
+            [icon]="'fa-solid fa-circle-info'"
           >
-            <i class="fa-solid fa-circle-info w-4 mr-2"></i>Details
-          </li>
-          <li
-            class="flex items-center text-gray-600 cursor-pointer hover:bg-gray-100 py-2 pl-4"
+            Details
+          </app-context-menu-field>
+          <app-context-menu-field
             (click)="openRenameFileModal(contextMenuElementIndex)"
+            [icon]="'fa-solid fa-pen'"
+            >Rename</app-context-menu-field
           >
-            <i class="fa-solid fa-pen w-4 mr-2"></i>Rename
-          </li>
         </ng-container>
-        <li
+        <app-context-menu-field
           *ngIf="selectedDirectories.length === 0 && !isTrash"
-          class="flex items-center bg-green-400 text-white cursor-pointer hover:bg-green-500 py-2 pl-4"
           (click)="downloadFile(directory.files[contextMenuElementIndex])"
+          [icon]="'fa-solid fa-download'"
+          [colors]="{
+            text: 'green-500',
+            background: 'green-500',
+            opacity: 10
+          }"
+          >Download</app-context-menu-field
         >
-          <i class="fa-solid fa-download w-4 mr-2"></i>Download
-        </li>
-        <li
-          class="flex items-center bg-red-600 text-white cursor-pointer hover:bg-red-700 py-2 pl-4"
+        <app-context-menu-field
           *ngIf="!isTrash"
           (click)="openDeleteModal()"
+          [icon]="'fa-solid fa-trash'"
+          [colors]="{ text: 'red-500', background: 'red-500', opacity: 10 }"
+          >Delete</app-context-menu-field
         >
-          <i class="fa-solid fa-trash w-4 mr-2"></i>Delete
-        </li>
-        <li
-          class="flex items-center bg-red-600 text-white cursor-pointer hover:bg-red-700 py-2 pl-4"
+        <app-context-menu-field
           *ngIf="isTrash"
           (click)="openPermanentlyDeleteModal()"
+          [icon]="'fa-solid fa-trash'"
+          [colors]="{ text: 'red-500', background: 'red-500', opacity: 10 }"
+          >Delete</app-context-menu-field
         >
-          <i class="fa-solid fa-trash w-4 mr-2"></i>Delete
-        </li>
-        <li
-          class="flex items-center bg-green-400 text-white cursor-pointer hover:bg-green-500 py-2 pl-4"
+        <app-context-menu-field
           *ngIf="isTrash"
           (click)="openRestoreModal()"
+          [icon]="'fa-solid fa-rotate-right'"
+          [colors]="{
+            text: 'green-500',
+            background: 'green-500',
+            opacity: 10
+          }"
+          >Restore</app-context-menu-field
         >
-          <i class="fa-solid fa-rotate-right w-4 mr-2"></i>Restore
-        </li>
       </ng-container>
       <ng-container
         *ngIf="contextMenuElementType === constElementNames.DIRECTORY"
@@ -141,8 +148,8 @@
         <ng-container
           *ngIf="selectedDirectories.length + selectedFiles.length === 1"
         >
-          <li
-            class="flex items-center text-gray-600 cursor-pointer hover:bg-gray-100 py-2 pl-4"
+          <app-context-menu-field
+            [icon]="'fa-solid fa-circle-info'"
             (click)="
               openFileDetails(
                 contextMenuElementIndex,
@@ -150,37 +157,43 @@
               )
             "
           >
-            <i class="fa-solid fa-circle-info w-4 mr-2"></i>Details
-          </li>
-          <li
-            class="flex items-center text-gray-600 cursor-pointer hover:bg-gray-100 py-2 pl-4"
+            Details
+          </app-context-menu-field>
+          <app-context-menu-field
             (click)="openRenameDirectoryModal(contextMenuElementIndex)"
+            [icon]="'fa-solid fa-pen'"
           >
-            <i class="fa-solid fa-pen w-4 mr-2"></i>Rename
-          </li>
+            Rename
+          </app-context-menu-field>
         </ng-container>
 
-        <li
-          class="flex items-center bg-red-600 text-white cursor-pointer hover:bg-red-700 py-2 pl-4"
+        <app-context-menu-field
           *ngIf="!isTrash"
           (click)="openDeleteModal()"
+          [icon]="'fa-solid fa-trash'"
+          [colors]="{ text: 'red-500', background: 'red-500', opacity: 10 }"
         >
-          <i class="fa-solid fa-trash w-4 mr-2"></i>Delete
-        </li>
-        <li
-          class="flex items-center bg-red-600 text-white cursor-pointer hover:bg-red-700 py-2 pl-4"
+          Delete
+        </app-context-menu-field>
+        <app-context-menu-field
           *ngIf="isTrash"
           (click)="openPermanentlyDeleteModal()"
+          [icon]="'fa-solid fa-trash'"
+          [colors]="{ text: 'red-500', background: 'red-500', opacity: 10 }"
+          >Delete</app-context-menu-field
         >
-          <i class="fa-solid fa-trash w-4 mr-2"></i>Delete
-        </li>
-        <li
-          class="flex items-center bg-green-400 text-white cursor-pointer hover:bg-green-500 py-2 pl-4"
+        <app-context-menu-field
           *ngIf="isTrash"
           (click)="openRestoreModal()"
+          [icon]="'fa-solid fa-rotate-right'"
+          [colors]="{
+            text: 'green-500',
+            background: 'green-500',
+            opacity: 10
+          }"
         >
-          <i class="fa-solid fa-rotate-right w-4 mr-2"></i>Restore
-        </li>
+          Restore
+        </app-context-menu-field>
       </ng-container>
     </ul>
   </div>

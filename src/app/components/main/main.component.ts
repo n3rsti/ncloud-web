@@ -354,8 +354,16 @@ export class MainComponent {
       return;
     }
 
+    let eventX = event.pageX;
+    const menuWidth = (this.contextMenu.nativeElement as HTMLElement)
+      .clientWidth;
+
+    if (eventX + menuWidth > window.innerWidth) {
+      eventX = window.innerWidth - menuWidth;
+    }
+
     this.contextMenu.nativeElement.classList.remove('scale-0');
-    this.contextMenu.nativeElement.style.transform = `translate(${event.pageX}px, ${event.pageY}px)`;
+    this.contextMenu.nativeElement.style.transform = `translate(${eventX}px, ${event.pageY}px)`;
   }
 
   closeContextMenu() {

@@ -1,0 +1,10 @@
+<li
+  class="flex items-center text-{{
+    colors.text
+  }} rounded-md cursor-pointer hover:bg-{{ colors.background }} py-2 pl-2 {{
+    colors.opacity ? 'hover:bg-opacity-' + colors.opacity : ''
+  }}"
+>
+  <i class="{{ icon }} w-4 mr-3"></i>
+  <ng-content></ng-content>
+</li>

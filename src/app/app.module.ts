@@ -26,6 +26,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { SettingsAccountComponent } from './components/settings/settings-account/settings-account.component';
 import { CustomIconComponent } from './components/custom-icon/custom-icon.component';
+import { ContextMenuFieldComponent } from './components/context-menu-field/context-menu-field.component';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { CustomIconComponent } from './components/custom-icon/custom-icon.compon
     SettingsComponent,
     SettingsAccountComponent,
     CustomIconComponent,
+    ContextMenuFieldComponent,
   ],
   imports: [
     BrowserModule,

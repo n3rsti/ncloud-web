@@ -1,4 +1,4 @@
-interface ModalColors {
+export interface ModalColors {
   background: string;
   font: string;
 }
