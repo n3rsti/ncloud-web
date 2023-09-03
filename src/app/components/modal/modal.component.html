@@ -1,39 +1,14 @@
-<ng-container *ngIf="opened && Config">
+<div
+  class="z-20 fixed top-0 left-0 w-full h-screen {{
+    opened && Config ? '' : 'scale-0'
+  }}"
+>
   <section
-    class="fixed top-0 left-0 w-full h-screen bg-black bg-opacity-50 z-20"
+    class="fixed top-0 left-0 w-full h-screen bg-black {{
+      opened ? 'bg-opacity-50' : 'bg-opacity-0'
+    }} z-20 transition-colors"
     (click)="opened = false"
   ></section>
-  <div
-    class="hidden utility:keep-selected fixed z-20 top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 bg-white shadow p-5 rounded-lg md:min-w-[30%] min-w-[90%]"
-  >
-    <div class="flex items-end mb-3">
-      <h3 class="text-lg font-bold mb-0 mr-auto">{{ Config.title }}</h3>
-      <button class="btn btn-sm btn-circle" (click)="opened = false">✕</button>
-    </div>
-    <form class="space-y-6 flex flex-col" action="#">
-      <ng-container *ngFor="let field of Config.fields">
-        <p *ngIf="field.type === 'text'">{{ field.value }}</p>
-        <input
-          #modalInput
-          *ngIf="field.type === 'input-text'"
-          type="text"
-          [name]="field.name"
-          [id]="field.name"
-          [value]="field.value"
-          [placeholder]="field.additionalData?.['placeholder'] || ''"
-          class="md:min-w-[600px] bg-gray-50 border font-medium border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-        />
-        <button
-          type="submit"
-          *ngIf="field.type === 'button'"
-          (click)="onSubmit()"
-          class="w-full self-end text-white bg-{{ field.additionalData?.['color'] || 'indigo-700' }} hover:bg-{{ field.additionalData?.['hover'] || 'indigo-800' }} focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-        >
-          {{ field.value }}
-        </button>
-      </ng-container>
-    </form>
-  </div>
 
   <!--
     Background backdrop, show/hide based on modal state.
@@ -57,18 +32,20 @@
           To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
       -->
   <div
-    class="utility:keep-selected transform fixed z-20 top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all my-8 w-11/12 sm:w-full max-w-lg"
+    class="{{
+      opened ? '' : 'opacity-50'
+    }} transition-colors utility:keep-selected transform fixed z-20 top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 overflow-hidden rounded-lg bg-white text-left shadow-xl my-8 w-11/12 sm:w-full max-w-lg"
   >
     <div class="bg-white px-4 pb-4 pt-5 p-6">
       <div class="flex items-start">
         <div
           class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-{{
-            Config.colors?.background
+            Config?.colors?.background
           }}"
         >
           <app-custom-icon
-            [icon]="Config.icon || 'warning'"
-            [color]="Config.colors?.font"
+            [icon]="Config?.icon || 'warning'"
+            [color]="Config?.colors?.font"
           ></app-custom-icon>
         </div>
         <div class="ml-4 mt-0 text-left w-full">
@@ -76,16 +53,16 @@
             class="text-base font-semibold leading-6 text-gray-900"
             id="modal-title"
           >
-            {{ Config.title }}
+            {{ Config?.title }}
           </h3>
           <div class="mt-2">
             <p class="text-sm text-gray-500">
-              {{ Config.description }}
+              {{ Config?.description }}
             </p>
           </div>
 
           <form class="space-y-6 flex flex-col mt-3" action="#">
-            <ng-container *ngFor="let field of Config.fields">
+            <ng-container *ngFor="let field of Config?.fields">
               <input
                 #modalInput
                 *ngIf="field.type === 'input-text'"
@@ -102,7 +79,7 @@
       </div>
     </div>
     <div class="bg-gray-50 px-4 py-3 flex flex-row-reverse sm:px-6">
-      <ng-container *ngFor="let field of Config.fields">
+      <ng-container *ngFor="let field of Config?.fields">
         <button
           *ngIf="field.type === 'button'"
           (click)="onSubmit()"
@@ -121,4 +98,4 @@
       </button>
     </div>
   </div>
-</ng-container>
+</div>

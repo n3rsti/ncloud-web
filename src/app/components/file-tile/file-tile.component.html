@@ -1,8 +1,8 @@
 <button
   draggable="true"
   #btn
-  class="utility:focus-on-select-all utility:keep-selected pb-2 border border-gray-200 rounded-lg {{
-    !selectedList.includes(file) ? 'hover:bg-gray-100' : 'bg-gray-200'
+  class="utility:focus-on-select-all utility:keep-selected pb-2 border border-gray-700 rounded-md {{
+    !selectedList.includes(file) ? 'hover:bg-gray-800' : 'bg-gray-700'
   }} flex flex-col justify-center items-center w-full cursor-default context-menu-clickable"
 >
   <img
@@ -21,7 +21,7 @@
 
   <p
     [title]="file.name"
-    class="text-sm text-gray-600 font-medium w-full whitespace-nowrap overflow-hidden overflow-ellipsis text-center mt-2 px-3 cursor-default context-menu-clickable"
+    class="text-sm text-gray-400 font-medium w-full whitespace-nowrap overflow-hidden overflow-ellipsis text-center mt-2 px-3 cursor-default context-menu-clickable"
   >
     {{ file.name }}
   </p>

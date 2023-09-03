@@ -1,5 +1,5 @@
 <nav
-  class="bg-white px-2 sm:px-4 py-2.5 rounded fixed w-full top-0 border-b border-gray-200 z-10 flex items-center h-16"
+  class="bg-gray-1000 px-2 sm:px-4 py-2.5 fixed w-full top-0 border-b border-gray-800 z-10 flex items-center h-16"
 >
   <div
     class="flex-grow flex flex-wrap items-center max-md:justify-between max-md:mx-auto"
@@ -10,13 +10,14 @@
     >
       <div class="w-8/12">
         <i class="fas fa-solid fa-cloud text-2xl text-indigo-700 mr-3"></i>
-        <span class="self-center text-xl font-semibold whitespace-nowrap"
+        <span
+          class="self-center text-white text-xl font-semibold whitespace-nowrap"
           >Ncloud</span
         >
       </div>
     </a>
     <div class="flex md:order-2 md:grow">
-      <div class="relative hidden md:block">
+      <div class="relative hidden md:block w-96">
         <div
           class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
         >
@@ -37,9 +38,9 @@
         </div>
         <button
           (click)="openSearchInput()"
-          class="text-left cursor-text w-96 block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-indigo-500 focus:border-indigo-500"
+          class="text-left cursor-text w-96 block w-full p-2 pl-10 text-sm text-gray-400 border border-gray-500 rounded-lg bg-gray-800 focus:ring-indigo-500 focus:border-indigo-500"
         >
-          Type <kbd class="border rounded p-1">/</kbd> to search
+          Type <kbd class="border border-gray-500 rounded p-1">/</kbd> to search
         </button>
       </div>
       <button

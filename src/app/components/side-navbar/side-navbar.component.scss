@@ -1,15 +1,8 @@
-.a:hover i {
-  color: rgb(66 56 157);
-}
-.a-trash:hover i {
-  color: rgb(220 82 82);
-}
-.a:hover p {
-  color: rgb(17 24 39);
-}
-.selected p {
-  font-weight: 600;
-}
-.selected > * {
-  color: rgb(81 69 205);
+li > a:hover {
+  p {
+    color: #fff;
+  }
+  svg {
+    color: #fff;
+  }
 }
