@@ -163,13 +163,13 @@ export class NavbarComponent {
   addSelectedElementClass() {
     document
       .querySelectorAll('#search_list li')
-    [this.searchElementSelected].classList.add('bg-gray-200');
+    [this.searchElementSelected].classList.add('bg-gray-850');
   }
 
   removeSelectedElementClass() {
     document
       .querySelectorAll('#search_list li')
-    [this.searchElementSelected].classList.remove('bg-gray-200');
+    [this.searchElementSelected].classList.remove('bg-gray-850');
   }
 
   protected readonly FileFormats = FileFormats;
