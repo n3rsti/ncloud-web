@@ -1,6 +1,13 @@
+interface ModalColors {
+  background: string;
+  font: string;
+}
 export interface ModalConfig {
   subjectName: string;
   title: string;
+  description?: string;
+  icon?: string;
+  colors?: ModalColors;
   fields: ModalField[];
   data?: string | number;
 }

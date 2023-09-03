@@ -262,11 +262,11 @@ export class MainComponent {
       this.directoryService.selectedDirectories.length >
       1
     ) {
-      permanentlyDeleteModalConfig.fields[0].value = `Do you want to permanently delete these ${this.directoryService.selectedFiles.length +
+      permanentlyDeleteModalConfig.description = `Do you want to permanently delete these ${this.directoryService.selectedFiles.length +
         this.directoryService.selectedDirectories.length
         } items?`;
     } else {
-      permanentlyDeleteModalConfig.fields[0].value =
+      permanentlyDeleteModalConfig.description =
         'Do you want to permanently delete this item?';
     }
 
@@ -279,11 +279,11 @@ export class MainComponent {
       this.directoryService.selectedDirectories.length >
       1
     ) {
-      deleteModalConfig.fields[0].value = `Do you want to move these ${this.directoryService.selectedDirectories.length +
+      deleteModalConfig.description = `Do you want to move these ${this.directoryService.selectedDirectories.length +
         this.directoryService.selectedFiles.length
         } items to trash?`;
     } else {
-      deleteModalConfig.fields[0].value = `Do you want to move this item to trash?`;
+      deleteModalConfig.description = `Do you want to move this item to trash?`;
     }
 
     this.openModal(deleteModalConfig);
@@ -292,7 +292,7 @@ export class MainComponent {
     if (this.directoryService.selectedDirectories.length === 1) {
       renameDirectoryModalConfig.data =
         this.directoryService.directory.directories[id].id;
-      renameDirectoryModalConfig.fields[1].value =
+      renameDirectoryModalConfig.fields[0].value =
         this.directoryService.directory.directories[id].name;
       this.openModal(renameDirectoryModalConfig);
     }
@@ -301,7 +301,7 @@ export class MainComponent {
   openRenameFileModal(id: number) {
     if (this.directoryService.selectedFiles.length === 1) {
       renameFileModalConfig.data = this.directoryService.directory.files[id].id;
-      renameFileModalConfig.fields[1].value =
+      renameFileModalConfig.fields[0].value =
         this.directoryService.directory.files[id].name;
       this.openModal(renameFileModalConfig);
     }
@@ -317,11 +317,11 @@ export class MainComponent {
       this.directoryService.selectedDirectories.length >
       1
     ) {
-      restoreModalConfig.fields[0].value = `Do you want to restore these ${this.directoryService.selectedDirectories.length +
+      restoreModalConfig.description = `Do you want to restore these ${this.directoryService.selectedDirectories.length +
         this.directoryService.selectedFiles.length
         } items?`;
     } else {
-      restoreModalConfig.fields[0].value = `Do you want to restore this item?`;
+      restoreModalConfig.description = `Do you want to restore this item?`;
     }
 
     this.openModal(restoreModalConfig);

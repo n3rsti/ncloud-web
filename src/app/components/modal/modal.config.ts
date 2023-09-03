@@ -2,12 +2,14 @@ import { ModalConfig } from 'src/app/interfaces';
 
 export let deleteModalConfig: ModalConfig = {
   subjectName: 'deleteItems',
+  description: 'Do you want to move x items to trash?',
   title: 'Delete file',
+  icon: 'warning',
+  colors: {
+    background: 'red-100',
+    font: 'red-600',
+  },
   fields: [
-    {
-      type: 'text',
-      value: 'Do you want to move x items to trash?',
-    },
     {
       type: 'button',
       value: 'Delete',
@@ -19,11 +21,12 @@ export let deleteModalConfig: ModalConfig = {
 export let permanentlyDeleteModalConfig: ModalConfig = {
   subjectName: 'permanentlyDeleteItems',
   title: 'Permanently delete items',
+  description: 'Do you want to permanently delete x items?',
+  colors: {
+    background: 'red-100',
+    font: 'red-600',
+  },
   fields: [
-    {
-      type: 'text',
-      value: 'Do you want to permanently delete x items?',
-    },
     {
       type: 'button',
       value: 'Delete',
@@ -35,11 +38,13 @@ export let permanentlyDeleteModalConfig: ModalConfig = {
 export let restoreModalConfig: ModalConfig = {
   subjectName: 'restoreItems',
   title: 'Restore items',
+  description: 'Do you want to restore these x items?',
+  icon: 'restore',
+  colors: {
+    background: 'green-100',
+    font: 'green-500',
+  },
   fields: [
-    {
-      type: 'text',
-      value: 'Do you want to restore these x items?',
-    },
     {
       type: 'button',
       value: 'Restore',
@@ -51,11 +56,13 @@ export let restoreModalConfig: ModalConfig = {
 export let renameFileModalConfig: ModalConfig = {
   subjectName: 'renameFile',
   title: 'Rename file',
+  description: 'Do you want to rename the file?',
+  icon: 'info',
+  colors: {
+    background: 'blue-100',
+    font: 'blue-500',
+  },
   fields: [
-    {
-      type: 'text',
-      value: 'Do you want to rename the file?',
-    },
     {
       type: 'input-text',
       value: '',
@@ -74,8 +81,7 @@ export let renameDirectoryModalConfig: ModalConfig = Object.create(
 );
 renameDirectoryModalConfig.subjectName = 'renameDirectory';
 renameDirectoryModalConfig.title = 'Rename Directory';
-renameDirectoryModalConfig.fields[0].value =
-  'Do you want to rename the directory?';
+renameDirectoryModalConfig.description = 'Do you want to rename the directory?';
 
 export let createDirectoryModalConfig: ModalConfig = {
   subjectName: 'createDirectory',
@@ -98,11 +104,8 @@ export let createDirectoryModalConfig: ModalConfig = {
 export let logoutModalConfig: ModalConfig = {
   subjectName: 'logout',
   title: 'Logout',
+  description: 'Do you want to logout?',
   fields: [
-    {
-      type: 'text',
-      value: 'Do you want to logout?',
-    },
     {
       type: 'button',
       value: 'Logout',

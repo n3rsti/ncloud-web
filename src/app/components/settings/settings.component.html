@@ -1,0 +1,22 @@
+<main class="flex grow mt-[4rem] p-10">
+  <div class="mr-6 w-40">
+    <ul class="w-full">
+      <li
+        class="cursor-pointer p-1 py-2 rounded-lg flex hover:bg-gray-200 items-center {{
+          selectedRoute == routes.ACCOUNT ? 'bg-gray-100' : ''
+        }}"
+      >
+        <i class="fa-solid fa-gear text-gray-500 mx-2"></i>
+        <span
+          class="text-sm {{
+            selectedRoute == routes.ACCOUNT ? 'font-bold' : ''
+          }}"
+          >Account</span
+        >
+      </li>
+    </ul>
+  </div>
+  <div class="flex grow">
+    <router-outlet></router-outlet>
+  </div>
+</main>
