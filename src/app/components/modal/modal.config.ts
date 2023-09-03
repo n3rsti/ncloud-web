@@ -71,7 +71,7 @@ export let renameFileModalConfig: ModalConfig = {
     {
       type: 'button',
       value: 'Rename',
-      additionalData: { color: 'green-400', hover: 'green-500' },
+      additionalData: { color: 'blue-700', hover: 'blue-800' },
     },
   ],
 };
@@ -87,8 +87,8 @@ export let createDirectoryModalConfig: ModalConfig = {
   subjectName: 'createDirectory',
   title: 'New folder',
   colors: {
-    background: 'indigo-100',
-    font: 'indigo-600',
+    background: 'indigo-500',
+    font: 'indigo-500',
   },
   icon: 'plus',
   fields: [

@@ -2,9 +2,18 @@ module.exports = {
   prefix: "",
   safelist: [
     "bg-red-100",
+    "bg-red-500",
+    "bg-red-600",
     "hover:bg-red-500",
     "hover:bg-opacity-10",
     "hover:bg-green-500",
+    "hover:bg-red-700",
+    "bg-blue-700",
+    "hover:bg-blue-800",
+    "bg-indigo-100",
+    "bg-indigo-600",
+    "bg-indigo-500",
+    "text-indigo-500",
   ],
   content: ["./node_modules/flowbite/**/*.js", "./src/**/*.{html,ts}"],
   darkMode: "class", // or 'media' or 'class'
