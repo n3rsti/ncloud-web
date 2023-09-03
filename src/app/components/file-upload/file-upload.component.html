@@ -52,27 +52,46 @@
 </section>
 <section
   [ngClass]="{ 'translate-y-full': !fileUploadPanelOpened }"
-  class="z-10 fixed bottom-0 left-0 w-full bg-white rounded-t rounded-xl p-5 border-t border-indigo-700 transition-all hidden max-sm:block"
+  class="z-10 fixed bottom-0 left-0 w-full bg-gray-900 rounded-t rounded-xl border-t border-indigo-700 transition-all hidden max-sm:block"
 >
-  <div class="flex items-end mb-3">
-    <label for="file-upload" class="text-lg font-bold mb-0 mr-auto"
-      >Select files</label
+  <div class="flex items-end">
+    <h3
+      for="file-upload"
+      class="mb-1 text-lg text-gray-400 font-semibold mr-auto px-5"
     >
+      Upload files
+    </h3>
     <button
       (click)="fileUploadPanelOpened = false"
-      class="btn btn-sm btn-circle"
+      class="mt-2 mr-2 ml-auto btn btn-sm btn-circle text-gray-400 p-2 hover:bg-gray-800 rounded-full h-6 w-6 flex items-center justify-center box-content"
     >
       ✕
     </button>
   </div>
   <form action="" (ngSubmit)="mobileFileUpload($event)">
-    <input type="file" name="file-upload" id="file-upload" multiple />
-    <button
-      type="submit"
-      class="mt-3 w-full text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-    >
-      Upload
-    </button>
+    <input
+      class="bg-gray-800"
+      type="file"
+      name="file-upload"
+      id="file-upload"
+      multiple
+    />
+    <label for="file-upload" class="text-gray-400 flex items-center px-5 py-3">
+      <div
+        class="cursor-pointer w-32 p-2 text-center rounded-md bg-indigo-600 hover:bg-indigo-700 text-white mr-5"
+      >
+        <i class="fa-solid fa-upload"></i>
+      </div>
+      Select files to upload
+    </label>
+    <div class="border-t border-gray-800 bg-gray-1000 px-5 py-3 box-content">
+      <button
+        type="submit"
+        class="p-3 w-full text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+      >
+        Upload
+      </button>
+    </div>
   </form>
 </section>
 <button
