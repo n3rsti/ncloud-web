@@ -110,6 +110,10 @@ export let logoutModalConfig: ModalConfig = {
   subjectName: 'logout',
   title: 'Logout',
   description: 'Do you want to logout?',
+  colors: {
+    background: 'indigo-500',
+    font: 'indigo-500',
+  },
   fields: [
     {
       type: 'button',
