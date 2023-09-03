@@ -24,6 +24,9 @@ module.exports = {
         "1/8": "12.5%",
         "1/7": "calc(100% / 7)",
       },
+      colors: {
+        "gray-850": "rgb(24, 32, 47)",
+      },
     },
   },
   variants: {
