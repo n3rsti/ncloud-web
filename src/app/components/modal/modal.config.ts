@@ -86,6 +86,11 @@ renameDirectoryModalConfig.description = 'Do you want to rename the directory?';
 export let createDirectoryModalConfig: ModalConfig = {
   subjectName: 'createDirectory',
   title: 'New folder',
+  colors: {
+    background: 'indigo-100',
+    font: 'indigo-600',
+  },
+  icon: 'plus',
   fields: [
     {
       type: 'input-text',
