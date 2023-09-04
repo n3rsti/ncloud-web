@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { Directory, DirectoryBuilder } from '../../models/directory.model';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { FileBuilder, FileModel } from '../../models/file.model';

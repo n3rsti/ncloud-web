@@ -90,7 +90,7 @@ export let createDirectoryModalConfig: ModalConfig = {
     background: 'indigo-500',
     font: 'indigo-500',
   },
-  icon: 'plus',
+  icon: 'folder',
   fields: [
     {
       type: 'input-text',

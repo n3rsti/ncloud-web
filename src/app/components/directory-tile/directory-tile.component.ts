@@ -30,11 +30,11 @@ export class DirectoryTileComponent {
   @Output() dropEventEmitter = new EventEmitter<string>();
 
   addHoverClass() {
-    this.directoryTile?.nativeElement.classList.add('bg-gray-100');
+    this.directoryTile?.nativeElement.classList.add('bg-gray-800');
   }
 
   removeHoverClass() {
-    this.directoryTile?.nativeElement.classList.remove('bg-gray-100');
+    this.directoryTile?.nativeElement.classList.remove('bg-gray-800');
   }
 
   dropEvent(event: any) {
@@ -42,5 +42,6 @@ export class DirectoryTileComponent {
     if (event.dataTransfer.types.length == 0) {
       this.dropEventEmitter.emit(this.directory.id);
     }
+    this.removeHoverClass();
   }
 }

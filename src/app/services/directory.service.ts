@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { Directory, DirectoryBuilder } from '../models/directory.model';
 import { FileModel } from '../models/file.model';
@@ -24,7 +24,8 @@ export class DirectoryService {
   constructor(
     private sanitizer: DomSanitizer,
     private data: DataService,
-    private router: Router
+    private router: Router,
+    private titleService: Title
   ) { }
 
   getDirectory(id: string) {
@@ -35,6 +36,8 @@ export class DirectoryService {
           localStorage.setItem('mainDirectoryId', this.directory.id);
           this.router.navigate(['/' + this.directory.id]);
         }
+
+        this.titleService.setTitle(`${this.directory.name} | NCloud`);
 
         this.directory.files.forEach((file) => {
           if (FileFormats.FILES_TO_DISPLAY.includes(file.type)) {
