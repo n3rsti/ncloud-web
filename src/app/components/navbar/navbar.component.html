@@ -163,8 +163,13 @@
           </ng-container>
 
           <ng-container *ngIf="searchDirectoryResults.length > 0">
-            <hr class="m-2" />
-            <p class="text-sm font-semibold ml-2 my-1">Directories</p>
+            <hr
+              class="m-2 border-gray-800"
+              *ngIf="searchFileResults.length > 0"
+            />
+            <p class="text-sm text-gray-400 font-semibold ml-2 my-1">
+              Directories
+            </p>
             <app-search-result
               *ngFor="let directory of searchDirectoryResults"
               [value]="directory.name"

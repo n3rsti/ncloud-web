@@ -48,7 +48,7 @@ export let restoreModalConfig: ModalConfig = {
     {
       type: 'button',
       value: 'Restore',
-      additionalData: { color: 'green-400', hover: 'green-500' },
+      additionalData: { color: 'green-600', hover: 'green-700' },
     },
   ],
 };
