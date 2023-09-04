@@ -6,7 +6,7 @@ export let deleteModalConfig: ModalConfig = {
   title: 'Delete file',
   icon: 'warning',
   colors: {
-    background: 'red-100',
+    background: 'red-500',
     font: 'red-600',
   },
   fields: [
@@ -23,7 +23,7 @@ export let permanentlyDeleteModalConfig: ModalConfig = {
   title: 'Permanently delete items',
   description: 'Do you want to permanently delete x items?',
   colors: {
-    background: 'red-100',
+    background: 'red-500',
     font: 'red-600',
   },
   fields: [
@@ -41,7 +41,7 @@ export let restoreModalConfig: ModalConfig = {
   description: 'Do you want to restore these x items?',
   icon: 'restore',
   colors: {
-    background: 'green-100',
+    background: 'green-500',
     font: 'green-500',
   },
   fields: [
@@ -59,7 +59,7 @@ export let renameFileModalConfig: ModalConfig = {
   description: 'Do you want to rename the file?',
   icon: 'info',
   colors: {
-    background: 'blue-100',
+    background: 'blue-500',
     font: 'blue-500',
   },
   fields: [

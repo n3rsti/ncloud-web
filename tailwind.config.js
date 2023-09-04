@@ -4,6 +4,7 @@ module.exports = {
     "bg-red-100",
     "bg-red-500",
     "bg-red-600",
+    "bg-green-100",
     "bg-green-500",
     "bg-green-600",
     "bg-blue-500",
