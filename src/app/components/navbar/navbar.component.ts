@@ -9,6 +9,7 @@ import { ModalService } from 'src/app/services/modal.service';
 import { logoutModalConfig } from '../modal/modal.config';
 import { Subscription } from 'rxjs';
 import { ModalOutput } from 'src/app/interfaces';
+import { SideNavbarService } from 'src/app/services/side-navbar.service';
 
 @Component({
   selector: 'app-navbar',
@@ -92,7 +93,8 @@ export class NavbarComponent {
   constructor(
     private data: DataService,
     private router: Router,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private sideNavbarService: SideNavbarService
   ) { }
 
   ngOnInit() {
@@ -181,5 +183,9 @@ export class NavbarComponent {
 
   openLogoutModal() {
     this.modalService.input.next(logoutModalConfig);
+  }
+
+  openSideNavbar() {
+    this.sideNavbarService.openSubject.next(true);
   }
 }

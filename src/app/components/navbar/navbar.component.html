@@ -6,7 +6,7 @@
   >
     <a
       [routerLink]="['/']"
-      class="flex items-center ml-1 w-56 max-md:justify-start max-md:pl-3"
+      class="hidden md:flex items-center ml-1 w-56 max-md:justify-start max-md:pl-3"
     >
       <div class="w-8/12">
         <i class="fas fa-solid fa-cloud text-2xl text-indigo-700 mr-3"></i>
@@ -16,6 +16,12 @@
         >
       </div>
     </a>
+    <button
+      (click)="openSideNavbar()"
+      class="flex md:hidden ml-1 p-2.5 cursor-pointer hover:bg-gray-800 rounded-lg"
+    >
+      <i class="fa-solid fa-bars text-lg leading-5 text-gray-500"></i>
+    </button>
     <div class="flex md:order-2 md:grow">
       <div class="relative hidden md:block w-96">
         <div
@@ -49,7 +55,7 @@
         aria-controls="navbar-search"
         aria-expanded="false"
         (click)="openSearchInput()"
-        class="md:hidden text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 rounded-lg text-sm p-2.5 mr-1"
+        class="md:hidden text-gray-500 hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-200 rounded-lg text-sm p-2.5 mr-1"
       >
         <svg
           class="w-5 h-5"
