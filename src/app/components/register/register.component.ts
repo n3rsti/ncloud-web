@@ -28,6 +28,8 @@ export class RegisterComponent {
   }
 
   submitForm() {
+    this.isConflict = false;
+    this.isInvalid = false;
     return this.data.register(this.username, this.password).subscribe({
       next: (data) => {
         if (data.status === 201) {

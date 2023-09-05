@@ -80,8 +80,8 @@
   </div>
 
   <div
-    *ngIf="isInvalid"
-    class="sm:mx-auto sm:w-full sm:max-w-sm bg-red-50 rounded-md mt-4 p-4 text-sm flex"
+    *ngIf="isInvalid || isConflict"
+    class="sm:mx-auto sm:w-full sm:max-w-sm bg-red-500 bg-opacity-10 rounded-md mt-4 p-4 text-sm flex"
   >
     <div class="mr-3">
       <svg
@@ -98,38 +98,19 @@
         ></path>
       </svg>
     </div>
-    <div>
-      <h2 class="text-red-800 font-medium">Error. Check the requirements</h2>
+    <div *ngIf="isInvalid">
+      <h2 class="text-red-400 font-semibold">Check the requirements</h2>
       <div>
-        <ul class="list-disc text-red-700 mt-2 pl-5">
+        <ul class="list-disc text-red-400 mt-2 pl-5">
           <li>Your username must be at least 1 character</li>
           <li>Your password must be at least 5 characters</li>
         </ul>
       </div>
     </div>
-  </div>
-  <div
-    *ngIf="isConflict"
-    class="sm:mx-auto sm:w-full sm:max-w-sm bg-red-50 rounded-md mt-4 p-4 text-sm flex"
-  >
-    <div class="mr-3">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-        aria-hidden="true"
-        class="w-5 h-5 text-red-400"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
-          clip-rule="evenodd"
-        ></path>
-      </svg>
-    </div>
-    <div>
-      <h2 class="text-red-800 font-medium">Error</h2>
-      <p class="text-red-700 mt-2">User already exists</p>
+
+    <div *ngIf="isConflict">
+      <h2 class="text-red-400 font-semibold">Error</h2>
+      <p class="text-red-400 mt-2">User already exists</p>
     </div>
   </div>
 </div>
