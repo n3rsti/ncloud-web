@@ -1,7 +1,6 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FileModel } from '../../models/file.model';
 import { DataService } from '../../services/data.service';
-import { Directory, DirectoryBuilder } from '../../models/directory.model';
 import { ToastService } from 'src/app/services/toast.service';
 import { Subject } from 'rxjs';
 import { DirectoryService } from 'src/app/services/directory.service';
@@ -106,6 +105,7 @@ export class FileUploadComponent {
       this.uploadFiles(files);
     }
   }
+
   closeUploadPanel(event: DragEvent) {
     let target = event.relatedTarget;
     while (target) {
