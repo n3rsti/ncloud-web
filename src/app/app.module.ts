@@ -27,6 +27,7 @@ import { SettingsComponent } from './components/settings/settings.component';
 import { SettingsAccountComponent } from './components/settings/settings-account/settings-account.component';
 import { CustomIconComponent } from './components/custom-icon/custom-icon.component';
 import { ContextMenuFieldComponent } from './components/context-menu-field/context-menu-field.component';
+import { FileRowComponent } from './components/file-row/file-row.component';
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { ContextMenuFieldComponent } from './components/context-menu-field/conte
     SettingsAccountComponent,
     CustomIconComponent,
     ContextMenuFieldComponent,
+    FileRowComponent,
   ],
   imports: [
     BrowserModule,

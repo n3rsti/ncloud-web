@@ -1,28 +1,14 @@
-<button
-  draggable="true"
-  #btn
-  class="utility:focus-on-select-all utility:keep-selected pb-2 border border-gray-800 rounded-md {{
+<button draggable="true" #btn class="utility:focus-on-select-all utility:keep-selected pb-2 border border-gray-800 rounded-md {{
     !selectedList.includes(file) ? 'hover:bg-gray-850' : 'bg-gray-800'
-  }} flex flex-col justify-center items-center w-full cursor-default context-menu-clickable"
->
-  <img
-    [src]="file.src"
-    alt="{{ file.name }} image"
-    *ngIf="file.src !== ''"
-    class="w-full h-32 object-cover context-menu-clickable"
-    (load)="getImgDetails($event, file)"
-  />
-  <div
-    *ngIf="file.src === ''"
-    class="flex h-32 w-full justify-center items-center context-menu-clickable"
-  >
+  }} flex flex-col justify-center items-center w-full cursor-default context-menu-clickable">
+  <img [src]="file.src" alt="{{ file.name }} image" *ngIf="file.src !== ''"
+    class="w-full h-32 object-cover context-menu-clickable" (load)="getImgDetails($event, file)" />
+  <div *ngIf="file.src === ''" class="flex h-32 w-full justify-center items-center context-menu-clickable">
     <i class="fa-solid fa-{{ icon }} text-{{ color }} text-6xl mb-1"></i>
   </div>
 
-  <p
-    [title]="file.name"
-    class="text-sm text-gray-400 font-medium w-full whitespace-nowrap overflow-hidden overflow-ellipsis text-center mt-2 px-3 cursor-default context-menu-clickable"
-  >
+  <p [title]="file.name"
+    class="text-sm text-gray-400 font-medium w-full whitespace-nowrap overflow-hidden overflow-ellipsis text-center mt-2 px-3 cursor-default context-menu-clickable">
     {{ file.name }}
   </p>
 </button>

@@ -1,15 +1,15 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { FileBuilder, FileModel } from '../../models/file.model';
 import { ActivatedRoute } from '@angular/router';
-import { FileFormats } from '../../utils';
+import { FileBuilder, FileModel } from 'src/app/models/file.model';
 import { DirectoryService } from 'src/app/services/directory.service';
+import { FileFormats } from 'src/app/utils';
 
 @Component({
-  selector: 'app-file-tile',
-  templateUrl: './file-tile.component.html',
-  styleUrls: ['./file-tile.component.scss'],
+  selector: 'app-file-row',
+  templateUrl: './file-row.component.html',
+  styleUrls: ['./file-row.component.scss']
 })
-export class FileTileComponent {
+export class FileRowComponent {
   @Input() file: FileModel = new FileBuilder().build();
   highlightedFile: string = '';
 
@@ -35,31 +35,17 @@ export class FileTileComponent {
     });
   }
 
+  get shortDate() {
+    const options: Intl.DateTimeFormatOptions = {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }
+
+    return new Intl.DateTimeFormat("en-GB", options).format(this.file.creationDate);
+  }
+
   get selectedList() {
     return this.directoryService.selectedFiles;
-  }
-
-  getImgDetails(event: any, file: FileModel) {
-    const img = event.target;
-
-    if (file.additional_data == null) {
-      file.additional_data = [
-        {
-          name: 'Resolution',
-          value: `${img.naturalWidth}x${img.naturalHeight}`,
-        },
-      ];
-    } else {
-      file.additional_data.push({
-        name: 'Resolution',
-        value: `${img.naturalWidth}x${img.naturalHeight}`,
-      });
-    }
-  }
-
-  ngAfterViewInit() {
-    if (this.highlightedFile === this.file.id) {
-      this.btn?.nativeElement.focus();
-    }
   }
 }

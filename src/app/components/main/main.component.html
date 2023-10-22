@@ -1,64 +1,62 @@
 <div class="w-full mt-16 flex flex-grow">
   <app-side-navbar [directory]="directory"></app-side-navbar>
 
-  <main
-    class="w-full relative bg-gray-900"
-    (dragenter)="openUploadPanel($event)"
-  >
-    <div
-      class="flex items-center overflow-x-hidden mr-3 h-20 border-b border-gray-800"
-    >
+  <main class="w-full relative bg-gray-900" (dragenter)="openUploadPanel($event)">
+    <div class="flex items-center overflow-x-hidden mr-3 h-20 border-b border-gray-800">
       <h1 class="px-4 text-xl font-semibold text-white max-md:pl-3">
         {{ directory.name }}
       </h1>
 
-      <button
-        (click)="openCreateDirectoryModal()"
-        class="ml-auto mr-2 flex items-center justify-center w-44 h-10 text-white bg-indigo-700 hover:bg-indigo-800 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer"
-      >
+      <button (click)="openCreateDirectoryModal()"
+        class="ml-auto mr-2 flex items-center justify-center w-44 h-10 text-white bg-indigo-700 hover:bg-indigo-800 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer">
         New folder
       </button>
     </div>
-    <div
-      class="mt-3 px-4 grid grid-cols-8 max-2xl:grid-cols-6 max-xl:grid-cols-5 max-lg:grid-cols-3 max-md:grid-cols-3 max-sm:grid-cols-2 gap-2 mb-5"
-    >
-      <app-directory-tile
-        *ngFor="let dir of directory.directories; let i = index"
-        [directory]="dir"
-        (keydown)="onFileKeydown($event, i, constElementNames.DIRECTORY)"
-        (dblclick)="this.router.navigate(['/' + dir.id])"
-        (contextmenu)="
+    <ng-container *ngIf="displayChoice === displayChoices.GRID">
+      <div
+        class="mt-3 px-4 grid grid-cols-8 max-2xl:grid-cols-6 max-xl:grid-cols-5 max-lg:grid-cols-3 max-md:grid-cols-3 max-sm:grid-cols-2 gap-2 mb-5">
+        <app-directory-tile *ngFor="let dir of directory.directories; let i = index" [directory]="dir"
+          (keydown)="onFileKeydown($event, i, constElementNames.DIRECTORY)"
+          (dblclick)="this.router.navigate(['/' + dir.id])" (contextmenu)="
           openContextMenu($event, i, constElementNames.DIRECTORY);
           addSelectedDirectory($event, dir)
-        "
-        (dropEventEmitter)="moveToDirectory(dir)"
-        (click)="addSelectedDirectory($event, dir)"
-        (dragstart)="addSelectedDirectory($event, dir)"
-      >
-      </app-directory-tile>
-    </div>
+          " (dropEventEmitter)="moveToDirectory(dir)" (click)="addSelectedDirectory($event, dir)"
+          (dragstart)="addSelectedDirectory($event, dir)">
+        </app-directory-tile>
+      </div>
 
-    <div
-      class="px-4 grid grid-cols-8 max-2xl:grid-cols-6 max-xl:grid-cols-5 max-lg:grid-cols-3 max-md:grid-cols-3 max-sm:grid-cols-2 gap-2 last-of-type:mb-16"
-    >
-      <app-file-tile
-        *ngFor="let file of directory.files; let i = index"
-        [file]="file"
-        (keydown)="onFileKeydown($event, i, constElementNames.FILE)"
-        (dblclick)="openFileCarousel(file.id)"
-        (contextmenu)="
+      <div
+        class="px-4 grid grid-cols-8 max-2xl:grid-cols-6 max-xl:grid-cols-5 max-lg:grid-cols-3 max-md:grid-cols-3 max-sm:grid-cols-2 gap-2 last-of-type:mb-16">
+        <app-file-tile *ngFor="let file of directory.files; let i = index" [file]="file"
+          (keydown)="onFileKeydown($event, i, constElementNames.FILE)" (dblclick)="openFileCarousel(file.id)"
+          (contextmenu)="
           openContextMenu($event, i, constElementNames.FILE);
           addSelectedFile($event, file)
-        "
-        (click)="addSelectedFile($event, file)"
-        draggable="true"
-        (dragstart)="addSelectedFile($event, file)"
-      ></app-file-tile>
-    </div>
-    <div
-      *ngIf="directory.files.length + directory.directories.length === 0"
-      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center"
-    >
+          " (click)="addSelectedFile($event, file)" draggable="true"
+          (dragstart)="addSelectedFile($event, file)"></app-file-tile>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="displayChoice === displayChoices.LIST">
+      <ul class="w-full">
+        <li *ngIf="this.directory.directories.length + this.directory.files.length > 0"
+          class="w-full grid grid-cols-[auto_5fr_3fr_3fr] gap-6 text-gray-500 text-sm py-3 border-b-2 border-b-gray-800 p-3">
+          <p class="w-10">Name</p>
+          <p></p>
+          <p>Size</p>
+          <p>Date created</p>
+        </li>
+        <li class="w-full box-border" *ngFor="let file of directory.files; let i = index;">
+          <app-file-row [file]="file" (keydown)="onFileKeydown($event, i, constElementNames.FILE)"
+            (dblclick)="openFileCarousel(file.id)" (contextmenu)="
+          openContextMenu($event, i, constElementNames.FILE);
+          addSelectedFile($event, file)
+          " (click)="addSelectedFile($event, file)" draggable="true"
+            (dragstart)="addSelectedFile($event, file)"></app-file-row>
+        </li>
+      </ul>
+    </ng-container>
+    <div *ngIf="directory.files.length + directory.directories.length === 0"
+      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
       <ng-container *ngIf="isTrash">
         <i class="fa-solid fa-trash text-5xl text-gray-400 mb-5"></i>
         <h3 class="text-gray-600">Recycle bin is empty</h3>
@@ -66,132 +64,73 @@
       <ng-container *ngIf="!isTrash">
         <i class="fa-regular fa-face-surprise text-6xl text-gray-400 mb-5"></i>
         <h3 class="text-gray-600">Folder is empty</h3>
-        <p
-          class="text-sm text-indigo-600 cursor-pointer hover:underline"
-          (click)="openCreateDirectoryModal()"
-        >
+        <p class="text-sm text-indigo-600 cursor-pointer hover:underline" (click)="openCreateDirectoryModal()">
           Create a new folder
         </p>
       </ng-container>
     </div>
     <app-file-upload [openSubject]="fileUploadSubject"></app-file-upload>
   </main>
-  <app-file-carousel
-    *ngIf="directory.files.length > 0"
-    [openedSubject]="fileCarouselSubject"
-  ></app-file-carousel>
+  <app-file-carousel *ngIf="directory.files.length > 0" [openedSubject]="fileCarouselSubject"></app-file-carousel>
   <app-item-details [openedSubject]="fileDetailsSubject"></app-item-details>
-  <div
-    #contextMenu
-    id="contextMenu"
-    class="utility:keep-selected scale-0 absolute top-0 left-0 bg-gray-900 border border-gray-800 rounded-md overflow-hidden w-56 text-sm z-20 p-2"
-  >
+  <div #contextMenu id="contextMenu"
+    class="utility:keep-selected scale-0 absolute top-0 left-0 bg-gray-900 border border-gray-800 rounded-md overflow-hidden w-56 text-sm z-20 p-2">
     <ul class="text-left font-medium">
       <ng-container *ngIf="contextMenuElementType === constElementNames.FILE">
-        <ng-container
-          *ngIf="selectedDirectories.length + selectedFiles.length === 1"
-        >
-          <app-context-menu-field
-            (click)="
+        <ng-container *ngIf="selectedDirectories.length + selectedFiles.length === 1">
+          <app-context-menu-field (click)="
               openFileDetails(contextMenuElementIndex, constElementNames.FILE)
-            "
-            [icon]="'fa-solid fa-circle-info'"
-          >
+            " [icon]="'fa-solid fa-circle-info'">
             Details
           </app-context-menu-field>
-          <app-context-menu-field
-            (click)="openRenameFileModal(contextMenuElementIndex)"
-            [icon]="'fa-solid fa-pen'"
-            >Rename</app-context-menu-field
-          >
+          <app-context-menu-field (click)="openRenameFileModal(contextMenuElementIndex)"
+            [icon]="'fa-solid fa-pen'">Rename</app-context-menu-field>
         </ng-container>
-        <app-context-menu-field
-          *ngIf="selectedDirectories.length === 0 && !isTrash"
-          (click)="downloadFile(directory.files[contextMenuElementIndex])"
-          [icon]="'fa-solid fa-download'"
+        <app-context-menu-field *ngIf="selectedDirectories.length === 0 && !isTrash"
+          (click)="downloadFile(directory.files[contextMenuElementIndex])" [icon]="'fa-solid fa-download'" [colors]="{
+            text: 'green-500',
+            background: 'green-500',
+            opacity: 10
+          }">Download</app-context-menu-field>
+        <app-context-menu-field *ngIf="!isTrash" (click)="openDeleteModal()" [icon]="'fa-solid fa-trash'"
+          [colors]="{ text: 'red-500', background: 'red-500', opacity: 10 }">Delete</app-context-menu-field>
+        <app-context-menu-field *ngIf="isTrash" (click)="openPermanentlyDeleteModal()" [icon]="'fa-solid fa-trash'"
+          [colors]="{ text: 'red-500', background: 'red-500', opacity: 10 }">Delete</app-context-menu-field>
+        <app-context-menu-field *ngIf="isTrash" (click)="openRestoreModal()" [icon]="'fa-solid fa-rotate-right'"
           [colors]="{
             text: 'green-500',
             background: 'green-500',
             opacity: 10
-          }"
-          >Download</app-context-menu-field
-        >
-        <app-context-menu-field
-          *ngIf="!isTrash"
-          (click)="openDeleteModal()"
-          [icon]="'fa-solid fa-trash'"
-          [colors]="{ text: 'red-500', background: 'red-500', opacity: 10 }"
-          >Delete</app-context-menu-field
-        >
-        <app-context-menu-field
-          *ngIf="isTrash"
-          (click)="openPermanentlyDeleteModal()"
-          [icon]="'fa-solid fa-trash'"
-          [colors]="{ text: 'red-500', background: 'red-500', opacity: 10 }"
-          >Delete</app-context-menu-field
-        >
-        <app-context-menu-field
-          *ngIf="isTrash"
-          (click)="openRestoreModal()"
-          [icon]="'fa-solid fa-rotate-right'"
-          [colors]="{
-            text: 'green-500',
-            background: 'green-500',
-            opacity: 10
-          }"
-          >Restore</app-context-menu-field
-        >
+          }">Restore</app-context-menu-field>
       </ng-container>
-      <ng-container
-        *ngIf="contextMenuElementType === constElementNames.DIRECTORY"
-      >
-        <ng-container
-          *ngIf="selectedDirectories.length + selectedFiles.length === 1"
-        >
-          <app-context-menu-field
-            [icon]="'fa-solid fa-circle-info'"
-            (click)="
+      <ng-container *ngIf="contextMenuElementType === constElementNames.DIRECTORY">
+        <ng-container *ngIf="selectedDirectories.length + selectedFiles.length === 1">
+          <app-context-menu-field [icon]="'fa-solid fa-circle-info'" (click)="
               openFileDetails(
                 contextMenuElementIndex,
                 constElementNames.DIRECTORY
               )
-            "
-          >
+            ">
             Details
           </app-context-menu-field>
-          <app-context-menu-field
-            (click)="openRenameDirectoryModal(contextMenuElementIndex)"
-            [icon]="'fa-solid fa-pen'"
-          >
+          <app-context-menu-field (click)="openRenameDirectoryModal(contextMenuElementIndex)"
+            [icon]="'fa-solid fa-pen'">
             Rename
           </app-context-menu-field>
         </ng-container>
 
-        <app-context-menu-field
-          *ngIf="!isTrash"
-          (click)="openDeleteModal()"
-          [icon]="'fa-solid fa-trash'"
-          [colors]="{ text: 'red-500', background: 'red-500', opacity: 10 }"
-        >
+        <app-context-menu-field *ngIf="!isTrash" (click)="openDeleteModal()" [icon]="'fa-solid fa-trash'"
+          [colors]="{ text: 'red-500', background: 'red-500', opacity: 10 }">
           Delete
         </app-context-menu-field>
-        <app-context-menu-field
-          *ngIf="isTrash"
-          (click)="openPermanentlyDeleteModal()"
-          [icon]="'fa-solid fa-trash'"
-          [colors]="{ text: 'red-500', background: 'red-500', opacity: 10 }"
-          >Delete</app-context-menu-field
-        >
-        <app-context-menu-field
-          *ngIf="isTrash"
-          (click)="openRestoreModal()"
-          [icon]="'fa-solid fa-rotate-right'"
+        <app-context-menu-field *ngIf="isTrash" (click)="openPermanentlyDeleteModal()" [icon]="'fa-solid fa-trash'"
+          [colors]="{ text: 'red-500', background: 'red-500', opacity: 10 }">Delete</app-context-menu-field>
+        <app-context-menu-field *ngIf="isTrash" (click)="openRestoreModal()" [icon]="'fa-solid fa-rotate-right'"
           [colors]="{
             text: 'green-500',
             background: 'green-500',
             opacity: 10
-          }"
-        >
+          }">
           Restore
         </app-context-menu-field>
       </ng-container>

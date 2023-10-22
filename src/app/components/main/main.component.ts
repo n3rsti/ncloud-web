@@ -6,7 +6,7 @@ import { Subject, Subscription } from "rxjs";
 import { FileBuilder, FileModel } from "../../models/file.model";
 import { ModalConfig, ModalOutput } from "../../interfaces";
 import { decodeJWT, FileFormats } from "../../utils";
-import { ConstNames } from "../../constants";
+import { ConstNames, DisplayChoices } from "../../constants";
 import {
   createDirectoryModalConfig,
   deleteModalConfig,
@@ -33,6 +33,12 @@ export class MainComponent {
 
   directoryId: string = "";
   isTrash = true;
+
+  displayChoice = "";
+
+  get displayChoices() {
+    return DisplayChoices;
+  }
 
   fileUploadOpened = false;
 
@@ -88,6 +94,8 @@ export class MainComponent {
     this.modalServiceSub?.unsubscribe();
   }
   ngOnInit() {
+    this.displayChoice = localStorage.getItem("displayChoice") || DisplayChoices.GRID;
+
     document.body.addEventListener("click", this.clickEvent);
     document.body.addEventListener("keydown", this.keyboardEvent);
 
