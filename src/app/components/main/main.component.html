@@ -2,15 +2,22 @@
   <app-side-navbar [directory]="directory"></app-side-navbar>
 
   <main class="w-full relative bg-gray-900" (dragenter)="openUploadPanel($event)">
-    <div class="flex items-center overflow-x-hidden mr-3 h-20 border-b border-gray-800">
-      <h1 class="px-4 text-xl font-semibold text-white max-md:pl-3">
+    <div
+      class="p-3 sm:p-0 flex flex-col sm:flex-row sm:items-center overflow-x-hidden sm:mr-3 sm:h-20 border-b border-gray-800">
+      <h1 class="px-4 py-2 sm:py-0 text-xl mb-2 sm:mb-0 font-semibold text-white max-md:pl-3">
         {{ directory.name }}
       </h1>
 
-      <button (click)="openCreateDirectoryModal()"
-        class="ml-auto mr-2 flex items-center justify-center w-44 h-10 text-white bg-indigo-700 hover:bg-indigo-800 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer">
-        New folder
-      </button>
+      <div class="sm:ml-auto flex items-center my-2 sm:my-0 p-2">
+        <i class="fa-solid fa-grip text-xl text-indigo-700 cursor-pointer mr-1 {{ displayChoice === displayChoices.GRID ? 'bg-indigo-800' : '' }} hover:bg-indigo-500 hover:bg-opacity-10 bg-opacity-10 rounded-md h-10 w-10 flex items-center justify-center"
+          (click)="changeDisplayChoice(displayChoices.GRID)"></i>
+        <i class="fa-solid fa-list text-xl text-indigo-700 cursor-pointer mr-4 {{ displayChoice === displayChoices.LIST ? 'bg-indigo-800' : '' }} hover:bg-indigo-500 hover:bg-opacity-10 bg-opacity-10 rounded-md h-10 w-10 flex items-center justify-center"
+          (click)="changeDisplayChoice(displayChoices.LIST)"></i>
+        <button (click)="openCreateDirectoryModal()"
+          class="ml-auto sm:ml-0 mr-2 flex items-center justify-center w-44 h-10 text-white bg-indigo-700 hover:bg-indigo-800 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer">
+          New folder
+        </button>
+      </div>
     </div>
     <ng-container *ngIf="displayChoice === displayChoices.GRID">
       <div

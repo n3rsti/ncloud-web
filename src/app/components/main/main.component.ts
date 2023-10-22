@@ -968,4 +968,9 @@ export class MainComponent {
       },
     });
   }
+
+  changeDisplayChoice(choice: string) {
+    localStorage.setItem("displayChoice", choice);
+    this.displayChoice = choice;
+  }
 }
