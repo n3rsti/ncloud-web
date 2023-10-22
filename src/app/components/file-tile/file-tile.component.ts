@@ -49,7 +49,7 @@ export class FileTileComponent {
           value: `${img.naturalWidth}x${img.naturalHeight}`,
         },
       ];
-    } else {
+    } else if (file.additional_data.filter(x => x.name === "Resolution").length === 0) {
       file.additional_data.push({
         name: 'Resolution',
         value: `${img.naturalWidth}x${img.naturalHeight}`,

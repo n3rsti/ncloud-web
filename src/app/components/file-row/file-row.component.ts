@@ -35,6 +35,24 @@ export class FileRowComponent {
     });
   }
 
+  getImgDetails(event: any, file: FileModel) {
+    const img = event.target;
+
+    if (file.additional_data == null) {
+      file.additional_data = [
+        {
+          name: 'Resolution',
+          value: `${img.naturalWidth}x${img.naturalHeight}`,
+        },
+      ];
+    } else if (file.additional_data.filter(x => x.name === "Resolution").length === 0) {
+      file.additional_data.push({
+        name: 'Resolution',
+        value: `${img.naturalWidth}x${img.naturalHeight}`,
+      });
+    }
+  }
+
   get shortDate() {
     const options: Intl.DateTimeFormatOptions = {
       day: "numeric",

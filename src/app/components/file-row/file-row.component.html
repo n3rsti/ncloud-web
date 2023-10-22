@@ -2,7 +2,8 @@
   class="utility_focus-on-select-all utility:keep-selected w-full grid grid-cols-[auto_5fr_3fr_3fr] gap-6 cursor-default context-menu-clickable {{ !selectedList.includes(file) ? 'hover:bg-gray-850' : 'bg-gray-800' }} px-2">
 
   <div class="h-12 p-2 flex justify-center items-center">
-    <img *ngIf="file.src !== ''" [src]="file.src" alt="{{ file.name }} image" class="h-full w-6 object-cover">
+    <img *ngIf="file.src !== ''" [src]="file.src" alt="{{ file.name }} image" class="h-full w-6 object-cover"
+      (load)="getImgDetails($event, file)">
     <div *ngIf="file.src === ''" class="flex items-center justify-center w-6 context-menu-clickable">
       <i class="fa-solid fa-{{ icon }} text-{{ color }} text-2xl mb-1"></i>
     </div>
