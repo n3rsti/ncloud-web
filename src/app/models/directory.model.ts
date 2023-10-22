@@ -83,6 +83,10 @@ export class Directory {
   set access_key(value: string) {
     this._access_key = value;
   }
+
+  get creationDate() {
+    return new Date(parseInt(this.id.substring(0, 8), 16) * 1000);
+  }
 }
 
 export class DirectoryBuilder extends Directory {

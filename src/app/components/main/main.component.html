@@ -45,6 +45,15 @@
           <p>Size</p>
           <p>Date created</p>
         </li>
+        <li class="w-full box-border" *ngFor="let dir of directory.directories; let i = index">
+          <app-directory-row [directory]="dir" (keydown)="onFileKeydown($event, i, constElementNames.DIRECTORY)"
+            (dblclick)="this.router.navigate(['/' + dir.id])" (contextmenu)="
+            openContextMenu($event, i, constElementNames.DIRECTORY);
+            addSelectedDirectory($event, dir)
+            " (dropEventEmitter)="moveToDirectory(dir)" (click)="addSelectedDirectory($event, dir)"
+            (dragstart)="addSelectedDirectory($event, dir)">></app-directory-row>
+
+        </li>
         <li class="w-full box-border" *ngFor="let file of directory.files; let i = index;">
           <app-file-row [file]="file" (keydown)="onFileKeydown($event, i, constElementNames.FILE)"
             (dblclick)="openFileCarousel(file.id)" (contextmenu)="

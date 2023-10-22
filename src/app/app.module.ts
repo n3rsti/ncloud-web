@@ -28,6 +28,7 @@ import { SettingsAccountComponent } from './components/settings/settings-account
 import { CustomIconComponent } from './components/custom-icon/custom-icon.component';
 import { ContextMenuFieldComponent } from './components/context-menu-field/context-menu-field.component';
 import { FileRowComponent } from './components/file-row/file-row.component';
+import { DirectoryRowComponent } from './components/directory-row/directory-row.component';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import { FileRowComponent } from './components/file-row/file-row.component';
     CustomIconComponent,
     ContextMenuFieldComponent,
     FileRowComponent,
+    DirectoryRowComponent,
   ],
   imports: [
     BrowserModule,
