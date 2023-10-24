@@ -1,4 +1,4 @@
-<button #directoryTile
+<button #directoryTile draggable="true"
   class="utility_focus-on-select-all utility:keep-selected w-full grid grid-cols-[auto_5fr_3fr_3fr] gap-6 cursor-default context-menu-clickable {{ !selectedList.includes(directory) ? 'hover:bg-gray-850' : 'bg-gray-800' }} px-2">
 
   <div class="h-12 p-2 flex justify-center items-center">
@@ -15,7 +15,7 @@
   <div></div>
   <div class="flex items-center">
     <p class="text-left font-medium text-sm text-gray-400">
-      {{ shortDate }}
+      {{ directory.shortCreated }}
     </p>
   </div>
 

@@ -46,6 +46,6 @@ export class DirectoryRowComponent {
       year: "numeric",
     }
 
-    return new Intl.DateTimeFormat("en-GB", options).format(this.directory.creationDate);
+    return new Intl.DateTimeFormat("en-GB", options).format(this.directory.created);
   }
 }

@@ -14,6 +14,7 @@ export class FileModel {
   private _src: SafeUrl = '';
   private _size: number;
   private _additional_data: [additionalData] | null = null;
+  private _created: number;
 
   constructor(
     id: string,
@@ -22,7 +23,8 @@ export class FileModel {
     user: string,
     type: string,
     size: number,
-    src: SafeUrl
+    src: SafeUrl,
+    created: number
   ) {
     this._id = id;
     this._name = name;
@@ -31,6 +33,7 @@ export class FileModel {
     this._type = type;
     this._size = size;
     this._src = src;
+    this._created = created;
   }
 
   get id(): string {
@@ -123,13 +126,33 @@ export class FileModel {
   }
 
   get creationDate() {
-    return new Date(parseInt(this.id.substring(0, 8), 16) * 1000);
+    return new Date(this.created).toLocaleString();
   }
+
+  get shortCreated() {
+    const options: Intl.DateTimeFormatOptions = {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }
+
+    return new Intl.DateTimeFormat("en-GB", options).format(this.created);
+  }
+
+  get created() {
+    return this._created;
+  }
+
+  set created(value: number) {
+    this._created = value;
+  }
+
+
 }
 
 export class FileBuilder extends FileModel {
   constructor() {
-    super('', '', '', '', '', 0, '');
+    super('', '', '', '', '', 0, '', 0);
   }
 
   setId(id: string) {
@@ -167,6 +190,11 @@ export class FileBuilder extends FileModel {
     return this;
   }
 
+  setCreated(created: number) {
+    this.created = created;
+    return this;
+  }
+
   build() {
     return new FileModel(
       this.id,
@@ -175,7 +203,8 @@ export class FileBuilder extends FileModel {
       this.user,
       this.type,
       this.size,
-      this.src
+      this.src,
+      this.created
     );
   }
 }

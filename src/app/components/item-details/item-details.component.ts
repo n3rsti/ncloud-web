@@ -43,8 +43,8 @@ export class ItemDetailsComponent {
   }
 
   // These functions are in FileModel as well, but there is a bug where a new uploaded file can't access these methods, even though they are typof FileModel
-  getCreationDate(id: string) {
-    return new Date(parseInt(id.substring(0, 8), 16) * 1000).toLocaleString();
+  getCreationDate(date: number) {
+    return new Date(date).toLocaleString();
   }
 
   getHumanReadableSize(size: number): string {

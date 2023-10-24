@@ -54,6 +54,7 @@ export class DataService {
             .setParentDirectory(directory.parent_directory)
             .setUser(directory.user)
             .setAccessKey(directory.access_key)
+            .setCreated(directory.created)
             .setDirectories(
               directory.directories.map((dir: any) => {
                 return new DirectoryBuilder()
@@ -61,6 +62,7 @@ export class DataService {
                   .setName(dir.name)
                   .setParentDirectory(dir.parent_directory)
                   .setAccessKey(dir.access_key)
+                  .setCreated(dir.created)
                   .build();
               })
             )
@@ -73,6 +75,7 @@ export class DataService {
                   .setUser(file.user)
                   .setType(file.type)
                   .setSize(file.size)
+                  .setCreated(file.created)
                   .build();
               })
             )

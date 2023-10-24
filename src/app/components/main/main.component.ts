@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from "@angular/core";
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { DataService } from "../../services/data.service";
 import { Directory, DirectoryBuilder } from "../../models/directory.model";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -28,7 +28,7 @@ const LEFT_CLICK = 0;
   templateUrl: "./main.component.html",
   styleUrls: ["./main.component.scss"],
 })
-export class MainComponent {
+export class MainComponent implements OnInit {
   constElementNames = ConstNames;
 
   directoryId: string = "";
@@ -93,6 +93,7 @@ export class MainComponent {
 
     this.modalServiceSub?.unsubscribe();
   }
+
   ngOnInit() {
     this.displayChoice = localStorage.getItem("displayChoice") || DisplayChoices.GRID;
 

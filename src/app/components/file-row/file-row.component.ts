@@ -60,7 +60,9 @@ export class FileRowComponent {
       year: "numeric",
     }
 
-    return new Intl.DateTimeFormat("en-GB", options).format(this.file.creationDate);
+    console.log(this.file, this.file.created)
+
+    return new Intl.DateTimeFormat("en-GB", options).format(this.file.created);
   }
 
   get selectedList() {
