@@ -20,7 +20,9 @@
         <app-item-details-row [name]="'Size'"
           [value]="getHumanReadableSize(directory.files[itemIndex].size)"></app-item-details-row>
         <app-item-details-row [name]="'Date created'"
-          [value]="getCreationDate(directory.files[itemIndex].created)"></app-item-details-row>
+          [value]="directory.files[itemIndex].creationDate"></app-item-details-row>
+        <app-item-details-row [name]="'Date modified'"
+          [value]="directory.files[itemIndex].modificationDate"></app-item-details-row>
 
         <app-item-details-row *ngFor="let data of directory.files[itemIndex].additional_data" [name]="data.name"
           [value]="data.value"></app-item-details-row>

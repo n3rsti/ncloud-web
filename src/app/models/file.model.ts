@@ -15,6 +15,7 @@ export class FileModel {
   private _size: number;
   private _additional_data: [additionalData] | null = null;
   private _created: number;
+  private _modified: number;
 
   constructor(
     id: string,
@@ -24,7 +25,8 @@ export class FileModel {
     type: string,
     size: number,
     src: SafeUrl,
-    created: number
+    created: number,
+    modified: number,
   ) {
     this._id = id;
     this._name = name;
@@ -34,6 +36,7 @@ export class FileModel {
     this._size = size;
     this._src = src;
     this._created = created;
+    this._modified = modified;
   }
 
   get id(): string {
@@ -125,6 +128,15 @@ export class FileModel {
     this._additional_data = value;
   }
 
+
+  get created() {
+    return this._created;
+  }
+
+  set created(value: number) {
+    this._created = value;
+  }
+
   get creationDate() {
     return new Date(this.created).toLocaleString();
   }
@@ -139,12 +151,26 @@ export class FileModel {
     return new Intl.DateTimeFormat("en-GB", options).format(this.created);
   }
 
-  get created() {
-    return this._created;
+  get modified() {
+    return this._modified;
   }
 
-  set created(value: number) {
-    this._created = value;
+  set modified(value: number) {
+    this._modified = value;
+  }
+
+  get modificationDate() {
+    return new Date(this.modified).toLocaleString();
+  }
+
+  get shortModified() {
+    const options: Intl.DateTimeFormatOptions = {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }
+
+    return new Intl.DateTimeFormat("en-GB", options).format(this.modified);
   }
 
 
@@ -152,7 +178,7 @@ export class FileModel {
 
 export class FileBuilder extends FileModel {
   constructor() {
-    super('', '', '', '', '', 0, '', 0);
+    super('', '', '', '', '', 0, '', 0, 0);
   }
 
   setId(id: string) {
@@ -195,6 +221,11 @@ export class FileBuilder extends FileModel {
     return this;
   }
 
+  setModified(modified: number) {
+    this.modified = modified;
+    return this;
+  }
+
   build() {
     return new FileModel(
       this.id,
@@ -204,7 +235,8 @@ export class FileBuilder extends FileModel {
       this.type,
       this.size,
       this.src,
-      this.created
+      this.created,
+      this.modified,
     );
   }
 }

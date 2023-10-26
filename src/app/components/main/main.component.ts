@@ -226,7 +226,10 @@ export class MainComponent implements OnInit {
   fileUploadSubject: Subject<any> = new Subject();
 
   openUploadPanel(event: DragEvent) {
-    if (event.dataTransfer?.types.includes("Files") && event.dataTransfer?.types.length === 1) {
+    const length = event.dataTransfer?.types.length;
+
+    // Length 1 for chrome, length 2 for ff
+    if (event.dataTransfer?.types.includes("Files") && length === 1 || length == 2) {
       this.fileUploadSubject.next(true);
     }
   }

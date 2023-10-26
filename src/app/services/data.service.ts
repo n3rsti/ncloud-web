@@ -78,6 +78,7 @@ export class DataService {
                   .setType(file.type)
                   .setSize(file.size)
                   .setCreated(file.created)
+                  .setModified(file.modified)
                   .build();
               })
             )
@@ -120,6 +121,8 @@ export class DataService {
             .setParentDirectory(data.parent_directory)
             .setUser(data.user)
             .setAccessKey(data.access_key)
+            .setCreated(data.created)
+            .setModified(data.modified)
             .build()
         )
       );
@@ -148,6 +151,8 @@ export class DataService {
               .setParentDirectory(file.parent_directory)
               .setSize(file.size)
               .setType(file.type)
+              .setCreated(file.created)
+              .setModified(file.modified)
               .build();
           })
         )

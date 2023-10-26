@@ -50,7 +50,7 @@
           <p class="w-10">Name</p>
           <p></p>
           <p>Size</p>
-          <p>Date created</p>
+          <p>Date modified</p>
         </li>
         <li class="w-full box-border" *ngFor="let dir of directory.directories; let i = index">
           <app-directory-row [directory]="dir" (keydown)="onFileKeydown($event, i, constElementNames.DIRECTORY)"
