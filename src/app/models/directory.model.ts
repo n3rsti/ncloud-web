@@ -8,6 +8,7 @@ export class Directory {
   private _directories: Directory[];
   private _files: FileModel[];
   private _created: number;
+  private _modified: number;
 
   private _access_key: string;
 
@@ -20,6 +21,7 @@ export class Directory {
     files: FileModel[],
     accessKey: string,
     created: number,
+    modified: number,
   ) {
     this._id = id;
     this._name = name;
@@ -29,6 +31,7 @@ export class Directory {
     this._files = files;
     this._access_key = accessKey;
     this._created = created;
+    this._modified = modified;
   }
 
   get files(): FileModel[] {
@@ -108,11 +111,33 @@ export class Directory {
 
     return new Intl.DateTimeFormat("en-GB", options).format(this.created);
   }
+
+  get modified() {
+    return this._modified;
+  }
+
+  set modified(value: number) {
+    this._modified = value;
+  }
+
+  get modificationDate() {
+    return new Date(this.modified).toLocaleString();
+  }
+
+  get shortModified() {
+    const options: Intl.DateTimeFormatOptions = {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }
+
+    return new Intl.DateTimeFormat("en-GB", options).format(this.modified);
+  }
 }
 
 export class DirectoryBuilder extends Directory {
   constructor() {
-    super('', '', '', '', [], [], '', 0);
+    super('', '', '', '', [], [], '', 0, 0);
   }
 
   setId(id: string) {
@@ -155,6 +180,11 @@ export class DirectoryBuilder extends Directory {
     return this;
   }
 
+  setModified(modified: number) {
+    this.modified = modified;
+    return this;
+  }
+
   build() {
     return new Directory(
       this.id,
@@ -164,7 +194,8 @@ export class DirectoryBuilder extends Directory {
       this.directories,
       this.files,
       this.access_key,
-      this.created
+      this.created,
+      this.modified
     );
   }
 }

@@ -28,6 +28,10 @@
       </dl>
       <dl *ngIf="type === ConstNames.DIRECTORY">
         <app-item-details-row [name]="'Name'" [value]="directory.directories[itemIndex].name"></app-item-details-row>
+        <app-item-details-row [name]="'Date created'"
+          [value]="directory.directories[itemIndex].creationDate"></app-item-details-row>
+        <app-item-details-row [name]="'Date modified'"
+          [value]="directory.directories[itemIndex].modificationDate"></app-item-details-row>
       </dl>
     </div>
   </div>

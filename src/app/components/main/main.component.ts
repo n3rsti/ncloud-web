@@ -226,7 +226,7 @@ export class MainComponent implements OnInit {
   fileUploadSubject: Subject<any> = new Subject();
 
   openUploadPanel(event: DragEvent) {
-    if (event.dataTransfer?.types.includes("Files")) {
+    if (event.dataTransfer?.types.includes("Files") && event.dataTransfer?.types.length === 1) {
       this.fileUploadSubject.next(true);
     }
   }

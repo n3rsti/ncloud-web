@@ -55,6 +55,7 @@ export class DataService {
             .setUser(directory.user)
             .setAccessKey(directory.access_key)
             .setCreated(directory.created)
+            .setModified(directory.modified)
             .setDirectories(
               directory.directories.map((dir: any) => {
                 return new DirectoryBuilder()
@@ -63,6 +64,7 @@ export class DataService {
                   .setParentDirectory(dir.parent_directory)
                   .setAccessKey(dir.access_key)
                   .setCreated(dir.created)
+                  .setModified(dir.modified)
                   .build();
               })
             )
