@@ -133,6 +133,19 @@ export class Directory {
 
     return new Intl.DateTimeFormat("en-GB", options).format(this.modified);
   }
+  static clone(directory: Directory) {
+    return new Directory(
+      directory.id,
+      directory.name,
+      directory.parent_directory,
+      directory.user,
+      directory.directories,
+      directory.files,
+      directory.access_key,
+      directory.created,
+      directory.modified,
+    )
+  }
 }
 
 export class DirectoryBuilder extends Directory {

@@ -605,6 +605,24 @@ export class MainComponent implements OnInit {
       });
   }
 
+  downloadFiles() {
+    const sourceDirectory = Directory.clone(this.directory);
+    sourceDirectory.files = this.directoryService.selectedFiles;
+
+    this.data.downloadFiles(sourceDirectory).subscribe({
+      next: (data) => {
+        // Convert blob to URL
+        const urlCreator = window.URL || window.webkitURL;
+
+        let link = document.createElement("a");
+        link.href = urlCreator.createObjectURL(data);
+        link.download = "Files";
+        link.click();
+        link.remove();
+      }
+    })
+  }
+
   moveToDirectory(directory: Directory) {
     if (this.directoryService.selectedDirectories.length > 0) {
       this.moveDirectories(

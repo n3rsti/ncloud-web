@@ -100,6 +100,19 @@ export class DataService {
     });
   }
 
+  downloadFiles(directory: Directory) {
+    let body = [{
+      "id": directory.id, "access_key": directory.access_key, "files": directory.files.map(file => {
+        return file.id;
+      })
+    }]
+
+
+    console.log(body)
+
+    return this.http.post(Config.Host + `/api/files/download`, body, { responseType: 'blob', observe: 'body' })
+  }
+
   createDirectory(newDirectory: Directory, accessKey: string) {
     let headers = new HttpHeaders({
       DirectoryAccessKey: accessKey,

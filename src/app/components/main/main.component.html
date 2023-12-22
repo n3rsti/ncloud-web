@@ -101,13 +101,20 @@
           </app-context-menu-field>
           <app-context-menu-field (click)="openRenameFileModal(contextMenuElementIndex)"
             [icon]="'fa-solid fa-pen'">Rename</app-context-menu-field>
+          <app-context-menu-field *ngIf="selectedDirectories.length === 0 && !isTrash"
+            (click)="downloadFile(directory.files[contextMenuElementIndex])" [icon]="'fa-solid fa-download'" [colors]="{
+                 text: 'green-500',
+                 background: 'green-500',
+                 opacity: 10
+                 }">Download</app-context-menu-field>
         </ng-container>
-        <app-context-menu-field *ngIf="selectedDirectories.length === 0 && !isTrash"
-          (click)="downloadFile(directory.files[contextMenuElementIndex])" [icon]="'fa-solid fa-download'" [colors]="{
-            text: 'green-500',
-            background: 'green-500',
-            opacity: 10
-          }">Download</app-context-menu-field>
+
+        <app-context-menu-field *ngIf="selectedDirectories.length === 0 && !isTrash" (click)="downloadFiles()"
+          [icon]="'fa-solid fa-download'" [colors]="{
+                 text: 'green-500',
+                 background: 'green-500',
+                 opacity: 10
+                 }">Download</app-context-menu-field>
         <app-context-menu-field *ngIf="!isTrash" (click)="openDeleteModal()" [icon]="'fa-solid fa-trash'"
           [colors]="{ text: 'red-500', background: 'red-500', opacity: 10 }">Delete</app-context-menu-field>
         <app-context-menu-field *ngIf="isTrash" (click)="openPermanentlyDeleteModal()" [icon]="'fa-solid fa-trash'"
