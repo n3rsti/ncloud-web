@@ -103,7 +103,7 @@ export class DataService {
   downloadFiles(directory: Directory) {
     let body = [{
       "id": directory.id, "access_key": directory.access_key, "files": directory.files.map(file => {
-        return file.id;
+        return [file.id, file.name];
       })
     }]
 
